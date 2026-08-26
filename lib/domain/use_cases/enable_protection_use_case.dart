@@ -1,5 +1,5 @@
-import '../../data/repositories/blocklist_repository.dart';
-import '../../data/repositories/protection_repository.dart';
+import 'package:clearguard/data/repositories/blocklist_repository.dart';
+import 'package:clearguard/data/repositories/protection_repository.dart';
 
 class EnableProtectionUseCase {
   EnableProtectionUseCase({

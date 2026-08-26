@@ -1,12 +1,13 @@
+import 'dart:async';
+
+import 'package:clearguard/domain/models/pending_action.dart';
+import 'package:clearguard/domain/models/protection_status.dart';
+import 'package:clearguard/ui/core/widgets/status_badge.dart';
+import 'package:clearguard/ui/features/dashboard/view_models/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../domain/models/pending_action.dart';
-import '../../../../domain/models/protection_status.dart';
-import '../../../core/widgets/status_badge.dart';
-import '../view_models/dashboard_view_model.dart';
-
 class DashboardView extends StatefulWidget {
-  const DashboardView({super.key, required this.viewModel});
+  const DashboardView({required this.viewModel, super.key});
 
   final DashboardViewModel viewModel;
 
@@ -18,7 +19,7 @@ class _DashboardViewState extends State<DashboardView> {
   @override
   void initState() {
     super.initState();
-    widget.viewModel.initialize();
+    unawaited(widget.viewModel.initialize());
   }
 
   @override
@@ -38,17 +39,21 @@ class _DashboardViewState extends State<DashboardView> {
                 if (widget.viewModel.blockedDomainCount != null)
                   Center(
                     child: Text(
-                      '${widget.viewModel.blockedDomainCount} domínios na lista de bloqueio',
+                      '${widget.viewModel.blockedDomainCount} domínios na '
+                      'lista de bloqueio',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                 const SizedBox(height: 32),
                 ...widget.viewModel.pendingActions
                     .where((a) => a.state == PendingActionState.pending)
-                    .map((action) => _PendingActionCard(
-                          action: action,
-                          onCancel: () => widget.viewModel.cancelPendingAction(action.id),
-                        )),
+                    .map(
+                      (action) => _PendingActionCard(
+                        action: action,
+                        onCancel: () =>
+                            widget.viewModel.cancelPendingAction(action.id),
+                      ),
+                    ),
                 const SizedBox(height: 24),
                 _buildPrimaryAction(context),
               ],
@@ -61,7 +66,9 @@ class _DashboardViewState extends State<DashboardView> {
 
   Widget _buildPrimaryAction(BuildContext context) {
     final hasPendingDisable = widget.viewModel.pendingActions.any(
-      (a) => a.type == PendingActionType.disableProtection && a.state == PendingActionState.pending,
+      (a) =>
+          a.type == PendingActionType.disableProtection &&
+          a.state == PendingActionState.pending,
     );
 
     if (widget.viewModel.status == ProtectionStatus.disabled) {
@@ -73,11 +80,14 @@ class _DashboardViewState extends State<DashboardView> {
     }
 
     return OutlinedButton.icon(
-      onPressed: hasPendingDisable ? null : () => _promptDisableProtection(context),
+      onPressed:
+          hasPendingDisable ? null : () => _promptDisableProtection(context),
       icon: const Icon(Icons.shield_outlined),
-      label: Text(hasPendingDisable
-          ? 'Desativação já solicitada'
-          : 'Solicitar desativação da proteção'),
+      label: Text(
+        hasPendingDisable
+            ? 'Desativação já solicitada'
+            : 'Solicitar desativação da proteção',
+      ),
     );
   }
 
@@ -109,13 +119,15 @@ class _DashboardViewState extends State<DashboardView> {
 
     if (confirmed != true || !context.mounted) return;
 
-    final success = await widget.viewModel.requestDisableProtection(pinController.text);
+    final success = await widget.viewModel.requestDisableProtection(
+      pinController.text,
+    );
     if (!context.mounted) return;
 
     if (!success && widget.viewModel.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(widget.viewModel.errorMessage!)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(widget.viewModel.errorMessage!)));
     }
   }
 }

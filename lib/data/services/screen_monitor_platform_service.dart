@@ -2,7 +2,8 @@ import 'package:flutter/services.dart';
 
 class ScreenMonitorPlatformService {
   ScreenMonitorPlatformService({MethodChannel? channel})
-      : _channel = channel ?? const MethodChannel('com.clearguard.app/screen_monitor');
+      : _channel =
+            channel ?? const MethodChannel('com.clearguard.app/screen_monitor');
 
   final MethodChannel _channel;
 

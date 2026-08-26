@@ -196,6 +196,15 @@ def merge_manifest() -> None:
     print(f"merged manifest at {manifest_path}")
 
 
+def remove_stock_widget_test() -> None:
+    stock_test = ROOT / "test" / "widget_test.dart"
+    if not stock_test.exists():
+        return
+    if "MyApp" in stock_test.read_text():
+        stock_test.unlink()
+        print(f"removed stock template test at {stock_test}")
+
+
 def main() -> None:
     if not (ROOT / "android").exists():
         sys.exit("android/ not found. Run `flutter create --platforms=android "
@@ -204,6 +213,7 @@ def main() -> None:
     copy_kotlin_sources()
     copy_resources()
     merge_manifest()
+    remove_stock_widget_test()
     print("native Android integration applied")
 
 

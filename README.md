@@ -23,4 +23,4 @@ flutter pub get
 flutter test
 ```
 
-For the Android side, follow `native_android/README.md`. To build an APK without setting anything up locally, run the `Build Android app` workflow from the Actions tab.
+For the Android side, follow `native_android/README.md`. To build an APK without setting anything up locally, run the `Build Android app` workflow from the Actions tab. Every push and pull request also runs formatting, static analysis (`very_good_analysis`), and tests through the `CI` workflow, and Dependabot keeps dependencies up to date automatically.

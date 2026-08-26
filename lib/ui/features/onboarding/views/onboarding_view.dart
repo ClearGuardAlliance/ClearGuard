@@ -1,9 +1,12 @@
+import 'package:clearguard/ui/features/onboarding/view_models/onboarding_view_model.dart';
 import 'package:flutter/material.dart';
 
-import '../view_models/onboarding_view_model.dart';
-
 class OnboardingView extends StatefulWidget {
-  const OnboardingView({super.key, required this.viewModel, required this.onFinished});
+  const OnboardingView({
+    required this.viewModel,
+    required this.onFinished,
+    super.key,
+  });
 
   final OnboardingViewModel viewModel;
   final VoidCallback onFinished;
@@ -34,7 +37,9 @@ class _OnboardingViewState extends State<OnboardingView> {
       listenable: widget.viewModel,
       builder: (context, _) {
         if (widget.viewModel.step == OnboardingStep.done) {
-          WidgetsBinding.instance.addPostFrameCallback((_) => widget.onFinished());
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => widget.onFinished(),
+          );
         }
 
         return Scaffold(
@@ -43,10 +48,14 @@ class _OnboardingViewState extends State<OnboardingView> {
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: switch (widget.viewModel.step) {
-                OnboardingStep.accountabilitySetup => _buildAccountabilityStep(),
+                OnboardingStep.accountabilitySetup =>
+                  _buildAccountabilityStep(),
                 OnboardingStep.vpnPermission => _buildVpnPermissionStep(),
-                OnboardingStep.screenMonitorPermission => _buildScreenMonitorStep(),
-                OnboardingStep.done => const Center(child: CircularProgressIndicator()),
+                OnboardingStep.screenMonitorPermission =>
+                  _buildScreenMonitorStep(),
+                OnboardingStep.done => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
               },
             ),
           ),
@@ -93,7 +102,9 @@ class _OnboardingViewState extends State<OnboardingView> {
         const SizedBox(height: 12),
         TextField(
           controller: _partnerController,
-          decoration: const InputDecoration(labelText: 'Como chamar o parceiro (ex: "Ana")'),
+          decoration: const InputDecoration(
+            labelText: 'Como chamar o parceiro (ex: "Ana")',
+          ),
         ),
         const SizedBox(height: 12),
         Row(
@@ -105,7 +116,8 @@ class _OnboardingViewState extends State<OnboardingView> {
               items: const [15, 30, 60, 120]
                   .map((m) => DropdownMenuItem(value: m, child: Text('$m min')))
                   .toList(),
-              onChanged: (value) => setState(() => _delayMinutes = value ?? _delayMinutes),
+              onChanged: (value) =>
+                  setState(() => _delayMinutes = value ?? _delayMinutes),
             ),
           ],
         ),
@@ -118,9 +130,14 @@ class _OnboardingViewState extends State<OnboardingView> {
         ],
         const SizedBox(height: 24),
         FilledButton(
-          onPressed: widget.viewModel.isSubmitting ? null : _submitAccountability,
+          onPressed:
+              widget.viewModel.isSubmitting ? null : _submitAccountability,
           child: widget.viewModel.isSubmitting
-              ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
               : const Text('Continuar'),
         ),
       ],
@@ -132,7 +149,9 @@ class _OnboardingViewState extends State<OnboardingView> {
       pin: _pinController.text,
       pinConfirmation: _pinConfirmController.text,
       webhookUrl: _webhookController.text,
-      partnerLabel: _partnerController.text.isEmpty ? 'seu parceiro' : _partnerController.text,
+      partnerLabel: _partnerController.text.isEmpty
+          ? 'seu parceiro'
+          : _partnerController.text,
       delay: Duration(minutes: _delayMinutes),
     );
   }

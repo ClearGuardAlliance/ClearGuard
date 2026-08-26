@@ -1,4 +1,4 @@
-import '../../data/repositories/accountability_repository.dart';
+import 'package:clearguard/data/repositories/accountability_repository.dart';
 
 class CancelPendingActionUseCase {
   CancelPendingActionUseCase({required AccountabilityRepository repository})

@@ -23,4 +23,4 @@ flutter pub get
 flutter test
 ```
 
-Para a parte Android, siga `native_android/README.md`. Para gerar um APK sem configurar nada localmente, rode o workflow `Build Android app` na aba Actions.
+Para a parte Android, siga `native_android/README.md`. Para gerar um APK sem configurar nada localmente, rode o workflow `Build Android app` na aba Actions. Todo push e pull request também roda formatação, análise estática (`very_good_analysis`) e testes pelo workflow `CI`, e o Dependabot mantém as dependências atualizadas automaticamente.

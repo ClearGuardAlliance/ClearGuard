@@ -1,6 +1,5 @@
+import 'package:clearguard/data/services/blocklist_source_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../services/blocklist_source_service.dart';
 
 class BlocklistRepository {
   BlocklistRepository({required BlocklistSourceService sourceService})
@@ -41,7 +40,7 @@ class BlocklistRepository {
     if (url.isNotEmpty) {
       try {
         remote = await _sourceService.fetchRemote(url);
-      } catch (_) {
+      } on Exception {
         remote = {};
       }
     }

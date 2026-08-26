@@ -27,17 +27,20 @@ void main() {
       expect(action.isReadyToApply, isTrue);
     });
 
-    test('isReadyToApply is false when already applied, even if readyAt passed', () {
-      final action = PendingAction(
-        id: '1',
-        type: PendingActionType.disableProtection,
-        requestedAt: DateTime.now().subtract(const Duration(minutes: 31)),
-        readyAt: DateTime.now().subtract(const Duration(minutes: 1)),
-        state: PendingActionState.applied,
-      );
+    test(
+      'isReadyToApply is false when already applied, even if readyAt passed',
+      () {
+        final action = PendingAction(
+          id: '1',
+          type: PendingActionType.disableProtection,
+          requestedAt: DateTime.now().subtract(const Duration(minutes: 31)),
+          readyAt: DateTime.now().subtract(const Duration(minutes: 1)),
+          state: PendingActionState.applied,
+        );
 
-      expect(action.isReadyToApply, isFalse);
-    });
+        expect(action.isReadyToApply, isFalse);
+      },
+    );
 
     test('timeRemaining never goes negative', () {
       final action = PendingAction(

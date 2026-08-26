@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import '../../domain/models/protection_status.dart';
-import '../services/screen_monitor_platform_service.dart';
-import '../services/vpn_platform_service.dart';
+import 'package:clearguard/data/services/screen_monitor_platform_service.dart';
+import 'package:clearguard/data/services/vpn_platform_service.dart';
+import 'package:clearguard/domain/models/protection_status.dart';
 
 class ProtectionRepository {
   ProtectionRepository({
@@ -20,7 +20,9 @@ class ProtectionRepository {
   Stream<ProtectionStatus> get statusStream => _statusController.stream;
 
   Future<void> initialize() async {
-    _vpnStatusSubscription ??= _vpnService.statusStream().listen(_statusController.add);
+    _vpnStatusSubscription ??= _vpnService.statusStream().listen(
+          _statusController.add,
+        );
     _statusController.add(await _vpnService.currentStatus());
   }
 
@@ -57,7 +59,7 @@ class ProtectionRepository {
   }
 
   void dispose() {
-    _vpnStatusSubscription?.cancel();
-    _statusController.close();
+    unawaited(_vpnStatusSubscription?.cancel());
+    unawaited(_statusController.close());
   }
 }

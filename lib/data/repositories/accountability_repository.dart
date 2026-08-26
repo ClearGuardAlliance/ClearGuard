@@ -1,11 +1,10 @@
+import 'package:clearguard/data/services/notification_outbox.dart';
+import 'package:clearguard/data/services/pending_action_store.dart';
+import 'package:clearguard/data/services/secure_credentials_service.dart';
+import 'package:clearguard/domain/models/accountability_config.dart';
+import 'package:clearguard/domain/models/pending_action.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../domain/models/accountability_config.dart';
-import '../../domain/models/pending_action.dart';
-import '../services/notification_outbox.dart';
-import '../services/pending_action_store.dart';
-import '../services/secure_credentials_service.dart';
 
 class AccountabilityRepository {
   AccountabilityRepository({
@@ -57,21 +56,25 @@ class AccountabilityRepository {
       pinHash: '',
       webhookUrl: prefs.getString(_webhookUrlKey) ?? '',
       partnerLabel: prefs.getString(_partnerLabelKey) ?? 'seu parceiro',
-      sensitiveActionDelay:
-          Duration(minutes: prefs.getInt(_delayMinutesKey) ?? AccountabilityConfig.defaultDelay.inMinutes),
+      sensitiveActionDelay: Duration(
+        minutes: prefs.getInt(_delayMinutesKey) ??
+            AccountabilityConfig.defaultDelay.inMinutes,
+      ),
     );
   }
 
   Future<bool> verifyPin(String pin) => _credentialsService.verifyPin(pin);
 
-  Future<List<PendingAction>> loadPendingActions() => _pendingActionStore.loadAll();
+  Future<List<PendingAction>> loadPendingActions() =>
+      _pendingActionStore.loadAll();
 
   Future<PendingAction> createPendingAction({
     required PendingActionType type,
     Map<String, String> payload = const {},
   }) async {
     final config = await loadConfig();
-    final delay = config?.sensitiveActionDelay ?? AccountabilityConfig.defaultDelay;
+    final delay =
+        config?.sensitiveActionDelay ?? AccountabilityConfig.defaultDelay;
     final now = DateTime.now();
 
     final action = PendingAction(

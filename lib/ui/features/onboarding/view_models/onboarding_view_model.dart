@@ -1,11 +1,15 @@
+import 'package:clearguard/data/repositories/accountability_repository.dart';
+import 'package:clearguard/data/repositories/protection_repository.dart';
+import 'package:clearguard/domain/models/accountability_config.dart';
+import 'package:clearguard/domain/use_cases/enable_protection_use_case.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../../data/repositories/accountability_repository.dart';
-import '../../../../data/repositories/protection_repository.dart';
-import '../../../../domain/models/accountability_config.dart';
-import '../../../../domain/use_cases/enable_protection_use_case.dart';
-
-enum OnboardingStep { accountabilitySetup, vpnPermission, screenMonitorPermission, done }
+enum OnboardingStep {
+  accountabilitySetup,
+  vpnPermission,
+  screenMonitorPermission,
+  done,
+}
 
 class OnboardingViewModel extends ChangeNotifier {
   OnboardingViewModel({
@@ -49,7 +53,8 @@ class OnboardingViewModel extends ChangeNotifier {
       return false;
     }
     if (delay < AccountabilityConfig.minimumDelay) {
-      _fail('O tempo mínimo de espera é de ${AccountabilityConfig.minimumDelay.inMinutes} min.');
+      final minimumMinutes = AccountabilityConfig.minimumDelay.inMinutes;
+      _fail('O tempo mínimo de espera é de $minimumMinutes min.');
       return false;
     }
 
@@ -86,7 +91,8 @@ class OnboardingViewModel extends ChangeNotifier {
   }
 
   Future<bool> confirmScreenMonitorPermission() async {
-    final granted = await _protectionRepository.isScreenMonitorPermissionGranted();
+    final granted =
+        await _protectionRepository.isScreenMonitorPermissionGranted();
     if (granted) {
       await _enableProtectionUseCase();
       _step = OnboardingStep.done;

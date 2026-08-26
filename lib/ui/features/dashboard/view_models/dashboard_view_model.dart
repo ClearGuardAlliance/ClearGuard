@@ -1,16 +1,15 @@
 import 'dart:async';
 
+import 'package:clearguard/data/repositories/accountability_repository.dart';
+import 'package:clearguard/data/repositories/protection_repository.dart';
+import 'package:clearguard/domain/models/pending_action.dart';
+import 'package:clearguard/domain/models/protection_status.dart';
+import 'package:clearguard/domain/use_cases/apply_ready_pending_actions_use_case.dart';
+import 'package:clearguard/domain/use_cases/cancel_pending_action_use_case.dart';
+import 'package:clearguard/domain/use_cases/enable_protection_use_case.dart';
+import 'package:clearguard/domain/use_cases/request_sensitive_action_use_case.dart';
+import 'package:clearguard/domain/use_cases/update_blocklist_use_case.dart';
 import 'package:flutter/foundation.dart';
-
-import '../../../../data/repositories/accountability_repository.dart';
-import '../../../../data/repositories/protection_repository.dart';
-import '../../../../domain/models/pending_action.dart';
-import '../../../../domain/models/protection_status.dart';
-import '../../../../domain/use_cases/apply_ready_pending_actions_use_case.dart';
-import '../../../../domain/use_cases/cancel_pending_action_use_case.dart';
-import '../../../../domain/use_cases/enable_protection_use_case.dart';
-import '../../../../domain/use_cases/request_sensitive_action_use_case.dart';
-import '../../../../domain/use_cases/update_blocklist_use_case.dart';
 
 class DashboardViewModel extends ChangeNotifier {
   DashboardViewModel({
@@ -62,10 +61,7 @@ class DashboardViewModel extends ChangeNotifier {
     _ticker = Timer.periodic(const Duration(seconds: 5), (_) => _tick());
     await _tick();
 
-    try {
-      _blockedDomainCount = await _updateBlocklistUseCase();
-    } catch (_) {
-    }
+    _blockedDomainCount = await _updateBlocklistUseCase();
     notifyListeners();
   }
 
@@ -109,7 +105,7 @@ class DashboardViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    _statusSubscription?.cancel();
+    unawaited(_statusSubscription?.cancel());
     _ticker?.cancel();
     super.dispose();
   }

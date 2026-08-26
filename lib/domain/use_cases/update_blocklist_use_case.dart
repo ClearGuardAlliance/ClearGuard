@@ -1,5 +1,5 @@
-import '../../data/repositories/blocklist_repository.dart';
-import '../../data/repositories/protection_repository.dart';
+import 'package:clearguard/data/repositories/blocklist_repository.dart';
+import 'package:clearguard/data/repositories/protection_repository.dart';
 
 class UpdateBlocklistUseCase {
   UpdateBlocklistUseCase({
@@ -13,7 +13,11 @@ class UpdateBlocklistUseCase {
 
   Future<int> call() async {
     final domains = await _blocklistRepository.effectiveBlockedDomains();
-    await _protectionRepository.syncBlocklist(domains);
+    try {
+      await _protectionRepository.syncBlocklist(domains);
+    } on Exception {
+      return domains.length;
+    }
     return domains.length;
   }
 }

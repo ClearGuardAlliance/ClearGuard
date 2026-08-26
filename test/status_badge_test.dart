@@ -4,17 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('shows the active label when protection is active', (tester) async {
+  testWidgets('shows the active label when protection is active', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      const MaterialApp(home: StatusBadge(status: ProtectionStatus.active)),
+      const MaterialApp(
+        home: Scaffold(body: StatusBadge(status: ProtectionStatus.active)),
+      ),
     );
 
     expect(find.text('Proteção ativa'), findsOneWidget);
   });
 
-  testWidgets('shows the disabled label when protection is disabled', (tester) async {
+  testWidgets('shows the disabled label when protection is disabled', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      const MaterialApp(home: StatusBadge(status: ProtectionStatus.disabled)),
+      const MaterialApp(
+        home: Scaffold(body: StatusBadge(status: ProtectionStatus.disabled)),
+      ),
     );
 
     expect(find.text('Proteção desativada'), findsOneWidget);

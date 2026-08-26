@@ -1,7 +1,7 @@
-import '../../data/repositories/accountability_repository.dart';
-import '../../data/repositories/blocklist_repository.dart';
-import '../../data/repositories/protection_repository.dart';
-import '../models/pending_action.dart';
+import 'package:clearguard/data/repositories/accountability_repository.dart';
+import 'package:clearguard/data/repositories/blocklist_repository.dart';
+import 'package:clearguard/data/repositories/protection_repository.dart';
+import 'package:clearguard/domain/models/pending_action.dart';
 
 class ApplyReadyPendingActionsUseCase {
   ApplyReadyPendingActionsUseCase({
@@ -61,7 +61,9 @@ class ApplyReadyPendingActionsUseCase {
       case PendingActionType.decreaseSensitiveActionDelay:
         final minutes = action.payload['newDelayMinutes'];
         if (minutes != null) {
-          await _accountabilityRepository.applyDelayChange(Duration(minutes: int.parse(minutes)));
+          await _accountabilityRepository.applyDelayChange(
+            Duration(minutes: int.parse(minutes)),
+          );
         }
       case PendingActionType.disableProtection:
       case PendingActionType.deactivateDeviceAdmin:

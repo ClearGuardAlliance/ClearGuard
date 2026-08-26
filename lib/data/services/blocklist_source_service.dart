@@ -11,7 +11,8 @@ Set<String> parseDomainList(String raw) {
 }
 
 class BlocklistSourceService {
-  BlocklistSourceService({http.Client? client}) : _client = client ?? http.Client();
+  BlocklistSourceService({http.Client? client})
+      : _client = client ?? http.Client();
 
   final http.Client _client;
 
@@ -25,7 +26,9 @@ class BlocklistSourceService {
 
     final response = await _client.get(Uri.parse(url));
     if (response.statusCode != 200) {
-      throw Exception('Failed to fetch remote blocklist. Status: ${response.statusCode}');
+      throw Exception(
+        'Failed to fetch remote blocklist. Status: ${response.statusCode}',
+      );
     }
 
     return compute(parseDomainList, response.body);

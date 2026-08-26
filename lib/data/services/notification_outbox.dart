@@ -1,8 +1,7 @@
 import 'dart:convert';
 
+import 'package:clearguard/data/services/webhook_notifier_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'webhook_notifier_service.dart';
 
 class NotificationOutbox {
   NotificationOutbox({required WebhookNotifierService webhookService})
@@ -13,7 +12,10 @@ class NotificationOutbox {
   static const _key = 'notification_outbox_v1';
   static const _maxQueued = 30;
 
-  Future<void> enqueue({required String webhookUrl, required String message}) async {
+  Future<void> enqueue({
+    required String webhookUrl,
+    required String message,
+  }) async {
     final queued = await _load();
     queued.add({'webhookUrl': webhookUrl, 'message': message});
     while (queued.length > _maxQueued) {
@@ -43,7 +45,7 @@ class NotificationOutbox {
         webhookUrl: entry['webhookUrl'] ?? '',
         message: entry['message'] ?? '',
       );
-    } catch (_) {
+    } on Exception {
       return false;
     }
   }

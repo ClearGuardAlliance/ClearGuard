@@ -19,6 +19,17 @@ class PendingAction {
     this.payload = const {},
   });
 
+  factory PendingAction.fromJson(Map<String, dynamic> json) {
+    return PendingAction(
+      id: json['id'] as String,
+      type: PendingActionType.values.byName(json['type'] as String),
+      requestedAt: DateTime.parse(json['requestedAt'] as String),
+      readyAt: DateTime.parse(json['readyAt'] as String),
+      state: PendingActionState.values.byName(json['state'] as String),
+      payload: Map<String, String>.from(json['payload'] as Map? ?? {}),
+    );
+  }
+
   final String id;
   final PendingActionType type;
   final DateTime requestedAt;
@@ -27,8 +38,7 @@ class PendingAction {
   final Map<String, String> payload;
 
   bool get isReadyToApply =>
-      state == PendingActionState.pending &&
-      DateTime.now().isAfter(readyAt);
+      state == PendingActionState.pending && DateTime.now().isAfter(readyAt);
 
   Duration get timeRemaining {
     final remaining = readyAt.difference(DateTime.now());
@@ -54,15 +64,4 @@ class PendingAction {
         'state': state.name,
         'payload': payload,
       };
-
-  factory PendingAction.fromJson(Map<String, dynamic> json) {
-    return PendingAction(
-      id: json['id'] as String,
-      type: PendingActionType.values.byName(json['type'] as String),
-      requestedAt: DateTime.parse(json['requestedAt'] as String),
-      readyAt: DateTime.parse(json['readyAt'] as String),
-      state: PendingActionState.values.byName(json['state'] as String),
-      payload: Map<String, String>.from(json['payload'] as Map? ?? {}),
-    );
-  }
 }

@@ -1,15 +1,14 @@
+import 'package:clearguard/domain/models/protection_status.dart';
 import 'package:flutter/services.dart';
-
-import '../../domain/models/protection_status.dart';
 
 class VpnPlatformService {
   VpnPlatformService({
     MethodChannel? methodChannel,
     EventChannel? statusChannel,
-  })  : _method = methodChannel ??
-            const MethodChannel('com.clearguard.app/vpn'),
-        _status =
-            statusChannel ?? const EventChannel('com.clearguard.app/vpn/status');
+  })  : _method =
+            methodChannel ?? const MethodChannel('com.clearguard.app/vpn'),
+        _status = statusChannel ??
+            const EventChannel('com.clearguard.app/vpn/status');
 
   final MethodChannel _method;
   final EventChannel _status;
@@ -37,7 +36,9 @@ class VpnPlatformService {
   }
 
   Stream<ProtectionStatus> statusStream() {
-    return _status.receiveBroadcastStream().map((event) => _parse(event as String?));
+    return _status.receiveBroadcastStream().map(
+          (event) => _parse(event as String?),
+        );
   }
 
   ProtectionStatus _parse(String? raw) {
