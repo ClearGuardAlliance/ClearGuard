@@ -8,30 +8,48 @@ class StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (color, label, icon) = switch (status) {
-      ProtectionStatus.active => (Colors.green, 'Proteção ativa', Icons.shield),
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final success = isDark ? const Color(0xFFA6F1C8) : const Color(0xFF0B5F3C);
+    final successContainer =
+        isDark ? const Color(0xFF0B4A30) : const Color(0xFFD4F5E2);
+    final warning = isDark ? const Color(0xFFFFD9A6) : const Color(0xFF8A4B00);
+    final warningContainer =
+        isDark ? const Color(0xFF5C3600) : const Color(0xFFFFE7C2);
+
+    final (foreground, background, label, icon) = switch (status) {
+      ProtectionStatus.active => (
+          success,
+          successContainer,
+          'Proteção ativa',
+          Icons.shield,
+        ),
       ProtectionStatus.starting => (
-          Colors.orange,
+          warning,
+          warningContainer,
           'Ativando…',
           Icons.hourglass_top,
         ),
       ProtectionStatus.disabled => (
-          Colors.red,
+          scheme.onErrorContainer,
+          scheme.errorContainer,
           'Proteção desativada',
           Icons.shield_outlined,
         ),
       ProtectionStatus.error => (
-          Colors.grey,
+          scheme.onSurfaceVariant,
+          scheme.surfaceContainerHighest,
           'Erro ao verificar status',
           Icons.error_outline,
         ),
     };
 
     return Chip(
-      avatar: Icon(icon, color: color, size: 18),
-      label: Text(label),
-      backgroundColor: color.withValues(alpha: 0.12),
-      side: BorderSide(color: color.withValues(alpha: 0.4)),
+      avatar: Icon(icon, color: foreground, size: 18),
+      label: Text(label, style: TextStyle(color: foreground)),
+      backgroundColor: background,
+      side: BorderSide.none,
     );
   }
 }

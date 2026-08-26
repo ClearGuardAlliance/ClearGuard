@@ -10,7 +10,7 @@ The main blocking runs on a local VPN that filters DNS queries against the block
 
 ## Architecture
 
-The Flutter code lives in `lib`, split into `data` (services and repositories), `domain` (models and business rules), and `ui` (screens and view models). The native Android code lives in `native_android`, with the VPN service, the screen monitor, and instructions for integrating it into a generated Flutter project.
+The Flutter code lives in `lib`, split into `data` (services and repositories), `domain` (models and business rules), and `ui` (screens and view models). The native Android code lives in `native_android`, with the VPN service, the screen monitor, and instructions for integrating it into a generated Flutter project. The visual identity (`lib/ui/core/theme/app_theme.dart`) is a Material 3 theme built from a deep jade seed color, with Manrope for headings and Inter for body text; both fonts are bundled as local assets so the app never depends on network access to render correctly.
 
 ## Limitations
 

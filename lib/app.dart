@@ -97,6 +97,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
     return MaterialApp(
       title: 'ClearGuard',
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
       debugShowCheckedModeBanner: false,
       home: switch (_isConfigured) {
         null => const Scaffold(

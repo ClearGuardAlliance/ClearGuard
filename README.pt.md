@@ -10,7 +10,7 @@ O bloqueio principal roda numa VPN local que filtra as consultas de DNS pela lis
 
 ## Arquitetura
 
-O código Flutter fica em `lib`, dividido em `data` (serviços e repositórios), `domain` (modelos e regras de negócio) e `ui` (telas e view models). O código nativo Android fica em `native_android`, com o serviço de VPN, o monitor de tela e as instruções para integrar num projeto Flutter gerado.
+O código Flutter fica em `lib`, dividido em `data` (serviços e repositórios), `domain` (modelos e regras de negócio) e `ui` (telas e view models). O código nativo Android fica em `native_android`, com o serviço de VPN, o monitor de tela e as instruções para integrar num projeto Flutter gerado. A identidade visual (`lib/ui/core/theme/app_theme.dart`) é um tema Material 3 construído a partir de um verde-jade profundo, com Manrope nos títulos e Inter no corpo do texto; as duas fontes vêm embutidas como assets locais, então o app nunca depende de rede pra renderizar corretamente.
 
 ## Limitações
 
