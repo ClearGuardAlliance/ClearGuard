@@ -183,31 +183,38 @@ class BlockerVpnService : VpnService() {
         udp: UdpHeader,
         output: FileOutputStream,
     ) {
-        try {
+        for (server in UPSTREAM_DNS_SERVERS) {
+            val responseBytes = queryUpstream(dnsMessage, server) ?: continue
+            writeUdpPacket(
+                output = output,
+                sourceAddress = ip.destinationAddress,
+                sourcePort = udp.destinationPort,
+                destinationAddress = ip.sourceAddress,
+                destinationPort = udp.sourcePort,
+                payload = responseBytes,
+            )
+            return
+        }
+        // Every upstream timed out or was unreachable. The querying app
+        // will simply retry or time out on its own; there is nothing
+        // useful to synthesize here.
+    }
+
+    private fun queryUpstream(dnsMessage: ByteArray, server: String): ByteArray? {
+        return try {
             DatagramSocket().use { socket ->
                 protect(socket)
                 socket.soTimeout = UPSTREAM_TIMEOUT_MS
-                val upstream = InetSocketAddress(InetAddress.getByName(UPSTREAM_DNS), DNS_PORT)
+                val upstream = InetSocketAddress(InetAddress.getByName(server), DNS_PORT)
                 socket.send(DatagramPacket(dnsMessage, dnsMessage.size, upstream))
 
                 val responseBuffer = ByteArray(MAX_PACKET_SIZE)
                 val responsePacket = DatagramPacket(responseBuffer, responseBuffer.size)
                 socket.receive(responsePacket)
-
-                val responseBytes = responsePacket.data.copyOfRange(0, responsePacket.length)
-                writeUdpPacket(
-                    output = output,
-                    sourceAddress = ip.destinationAddress,
-                    sourcePort = udp.destinationPort,
-                    destinationAddress = ip.sourceAddress,
-                    destinationPort = udp.sourcePort,
-                    payload = responseBytes,
-                )
+                responsePacket.data.copyOfRange(0, responsePacket.length)
             }
         } catch (_: Exception) {
-            // Upstream timed out or was unreachable. The querying app will
-            // simply retry or time out on its own; there is nothing useful
-            // to synthesize here.
+            null
         }
     }
 
@@ -284,10 +291,13 @@ class BlockerVpnService : VpnService() {
         private const val VPN_LOCAL_ADDRESS = "10.111.222.1"
         private const val DNS_SERVER_ADDRESS = "10.111.222.2"
 
-        /** Cloudflare's resolver; swap for any upstream the accountability
-         * partner trusts. This is deliberately not user-editable from the
-         * dashboard, since a compromised upstream defeats the blocklist. */
-        private const val UPSTREAM_DNS = "1.1.1.1"
+        /** OpenDNS FamilyShield (Cisco): a DNS resolver that blocks adult
+         * content and known proxy/anonymizer domains itself, on top of our
+         * own local blocklist. Two IPs so a query can retry against the
+         * secondary if the primary times out. Deliberately not
+         * user-editable from the dashboard, since a compromised upstream
+         * defeats the blocklist. */
+        private val UPSTREAM_DNS_SERVERS = listOf("208.67.222.123", "208.67.220.123")
 
         @Volatile
         var currentStatus: Status = Status.DISABLED
