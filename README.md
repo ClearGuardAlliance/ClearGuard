@@ -14,7 +14,7 @@ The Flutter code lives in `lib`, split into `data` (services and repositories), 
 
 ## Limitations
 
-DNS blocking does not stop direct access by IP. The VPN permission and the accessibility service can be revoked by the device owner from system settings, and no non-MDM app can prevent that. Nothing here has been compiled yet, since this machine has neither Flutter nor the Android SDK installed.
+DNS blocking does not stop direct access by IP. The VPN permission and the accessibility service can be revoked by the device owner from system settings, and no non-MDM app can prevent that.
 
 ## Running
 
@@ -23,4 +23,4 @@ flutter pub get
 flutter test
 ```
 
-For the Android side, follow `native_android/README.md`.
+For the Android side, follow `native_android/README.md`. To build an APK without setting anything up locally, run the `Build Android app` workflow from the Actions tab.

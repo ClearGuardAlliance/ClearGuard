@@ -1,4 +1,4 @@
-package com.clearguard.app
+package com.clearguardalliance.clearguard
 
 import android.app.Activity
 import android.content.Intent

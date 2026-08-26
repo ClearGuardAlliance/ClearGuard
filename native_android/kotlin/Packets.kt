@@ -1,4 +1,4 @@
-package com.clearguard.app
+package com.clearguardalliance.clearguard
 
 /**
  * Minimal, hand-rolled IPv4 / UDP / DNS parsing and building, just enough

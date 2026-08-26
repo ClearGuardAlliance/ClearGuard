@@ -1,8 +1,10 @@
 <!--
   Not a standalone file. These are the additions to merge into the
   AndroidManifest.xml that `flutter create` generates under
-  android/app/src/main/. See native_android/README.md for the exact merge
-  steps. Kept separate instead of hand-writing a full manifest because the
+  android/app/src/main/. scripts/setup_native_android.py applies this
+  same set of additions automatically; this file is the human-readable
+  reference for what that script does and for merging by hand if needed.
+  Kept separate instead of hand-writing a full manifest because the
   Flutter-generated base (application class, meta-data for the Flutter
   embedding, etc.) is version-specific and shouldn't be guessed at.
 -->

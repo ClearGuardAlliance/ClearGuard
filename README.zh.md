@@ -14,7 +14,7 @@ Flutter 代码位于 `lib` 目录,分为 `data`(服务与仓库)、`domain`(模�
 
 ## 局限性
 
-DNS 拦截无法阻止通过 IP 地址的直接访问。设备所有者可以在系统设置中撤销 VPN 权限和无障碍服务,任何非 MDM 应用都无法阻止这一点。目前这台机器没有安装 Flutter 或安卓 SDK,所以这里的代码都还没有编译过。
+DNS 拦截无法阻止通过 IP 地址的直接访问。设备所有者可以在系统设置中撤销 VPN 权限和无障碍服务,任何非 MDM 应用都无法阻止这一点。
 
 ## 运行
 
@@ -23,4 +23,4 @@ flutter pub get
 flutter test
 ```
 
-安卓部分请参考 `native_android/README.md`。
+安卓部分请参考 `native_android/README.md`。如果不想在本地配置环境,可以在 Actions 标签页运行 `Build Android app` workflow 来生成 APK。

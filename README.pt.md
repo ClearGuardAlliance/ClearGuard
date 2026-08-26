@@ -14,7 +14,7 @@ O código Flutter fica em `lib`, dividido em `data` (serviços e repositórios),
 
 ## Limitações
 
-O bloqueio por DNS não impede acesso direto por IP. A permissão de VPN e o serviço de acessibilidade podem ser revogados pelo dono do aparelho nas configurações do sistema, e nenhum app fora de MDM consegue impedir isso. Nada aqui foi compilado ainda, pois esta máquina não tem Flutter nem Android SDK instalados.
+O bloqueio por DNS não impede acesso direto por IP. A permissão de VPN e o serviço de acessibilidade podem ser revogados pelo dono do aparelho nas configurações do sistema, e nenhum app fora de MDM consegue impedir isso.
 
 ## Rodando
 
@@ -23,4 +23,4 @@ flutter pub get
 flutter test
 ```
 
-Para a parte Android, siga `native_android/README.md`.
+Para a parte Android, siga `native_android/README.md`. Para gerar um APK sem configurar nada localmente, rode o workflow `Build Android app` na aba Actions.
