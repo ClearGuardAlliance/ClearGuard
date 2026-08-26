@@ -4,9 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/models/pending_action.dart';
 
-/// Persists [PendingAction]s so a scheduled disable/change survives an app
-/// restart or the device rebooting — the accountability delay would be
-/// meaningless if force-closing the app reset it.
 class PendingActionStore {
   static const _key = 'pending_actions_v1';
 

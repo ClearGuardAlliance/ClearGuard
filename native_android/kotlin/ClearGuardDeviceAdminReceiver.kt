@@ -7,7 +7,7 @@ import android.widget.Toast
 
 /**
  * Registers ClearGuard as a device administrator. This does not add a hard
- * technical barrier — Android always lets the device owner deactivate any
+ * technical barrier. Android always lets the device owner deactivate any
  * admin app from Settings > Security > Device admin apps, and no
  * non-MDM app can prevent that. What this buys is friction and honesty:
  * uninstalling requires a deliberate detour through system settings first,

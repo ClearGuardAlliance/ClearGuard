@@ -5,12 +5,6 @@ class PinRejectedException implements Exception {
   const PinRejectedException();
 }
 
-/// Entry point for every action that would weaken protection. The PIN gate
-/// exists mainly to stop an accidental tap, not to stop a determined
-/// technical user — the real barrier is that the action does not take
-/// effect until [PendingAction.readyAt], and the accountability partner is
-/// notified the instant the request is made. See
-/// AccountabilityRepository.createPendingAction.
 class RequestSensitiveActionUseCase {
   RequestSensitiveActionUseCase({required AccountabilityRepository repository})
       : _repository = repository;

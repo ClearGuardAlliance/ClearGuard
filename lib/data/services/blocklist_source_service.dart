@@ -2,9 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 
-/// Top-level so it can run in a background isolate via [compute] — parsing
-/// a multi-thousand-line hosts file on the UI isolate would jank the
-/// dashboard on every sync.
 Set<String> parseDomainList(String raw) {
   return raw
       .split('\n')
@@ -13,9 +10,6 @@ Set<String> parseDomainList(String raw) {
       .toSet();
 }
 
-/// Provides the raw domain sets that feed BlocklistRepository: the bundled
-/// seed list shipped in the app, and an optional remote list the user (or,
-/// ideally, the accountability partner) points at a maintained source.
 class BlocklistSourceService {
   BlocklistSourceService({http.Client? client}) : _client = client ?? http.Client();
 

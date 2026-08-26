@@ -16,8 +16,8 @@ import android.view.accessibility.AccessibilityNodeInfo
  * inside an otherwise-unblocked site) by scanning the visible text on
  * screen for keyword matches and covering the screen when one hits.
  *
- * This is a keyword heuristic over text nodes, not an image classifier —
- * it will not catch a page that is explicit content with no matching text
+ * This is a keyword heuristic over text nodes, not an image classifier.
+ * It will not catch a page that is explicit content with no matching text
  * (e.g. an image with no surrounding label). See README.md for the v2 plan
  * to add on-device NSFW image classification.
  */

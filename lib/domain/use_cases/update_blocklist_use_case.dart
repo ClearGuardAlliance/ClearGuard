@@ -1,9 +1,6 @@
 import '../../data/repositories/blocklist_repository.dart';
 import '../../data/repositories/protection_repository.dart';
 
-/// Re-fetches the remote blocklist (if configured) and pushes the merged
-/// result into the running VPN. Growing the blocklist is never gated;
-/// shrinking it only happens through RequestSensitiveActionUseCase.
 class UpdateBlocklistUseCase {
   UpdateBlocklistUseCase({
     required ProtectionRepository protectionRepository,

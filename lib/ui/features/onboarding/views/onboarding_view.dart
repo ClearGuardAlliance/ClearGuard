@@ -144,7 +144,7 @@ class _OnboardingViewState extends State<OnboardingView> {
         const Icon(Icons.vpn_lock, size: 64),
         const SizedBox(height: 16),
         const Text(
-          'O Android vai pedir permissão de VPN local — é assim que o '
+          'O Android vai pedir permissão de VPN local. É assim que o '
           'ClearGuard filtra os domínios bloqueados, sem enviar seu tráfego '
           'para nenhum servidor externo.',
           textAlign: TextAlign.center,

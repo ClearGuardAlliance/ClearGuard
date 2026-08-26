@@ -7,11 +7,6 @@ import '../../../../domain/use_cases/enable_protection_use_case.dart';
 
 enum OnboardingStep { accountabilitySetup, vpnPermission, screenMonitorPermission, done }
 
-/// Drives first-run setup. The accountability step is placed before the
-/// permission prompts on purpose: a PIN and webhook the device owner set
-/// up alone, with no one else involved yet, is much weaker than one set up
-/// with the partner present — the UI copy nudges toward that, but nothing
-/// technically enforces who is holding the phone during this screen.
 class OnboardingViewModel extends ChangeNotifier {
   OnboardingViewModel({
     required AccountabilityRepository accountabilityRepository,

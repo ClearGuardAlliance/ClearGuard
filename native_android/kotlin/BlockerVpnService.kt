@@ -109,7 +109,7 @@ class BlockerVpnService : VpnService() {
     }
 
     override fun onRevoke() {
-        // The user pulled the VPN permission from system settings — reflect
+        // The user pulled the VPN permission from system settings, so reflect
         // that honestly instead of silently doing nothing.
         stopVpn()
         super.onRevoke()
@@ -132,7 +132,7 @@ class BlockerVpnService : VpnService() {
             try {
                 handlePacket(packet, output)
             } catch (_: Exception) {
-                // Malformed or unsupported packet (e.g. IPv6, TCP DNS) — drop
+                // Malformed or unsupported packet (e.g. IPv6, TCP DNS). Drop
                 // it silently rather than tearing down the tunnel.
             }
         }
@@ -205,7 +205,7 @@ class BlockerVpnService : VpnService() {
                 )
             }
         } catch (_: Exception) {
-            // Upstream timed out or was unreachable — the querying app will
+            // Upstream timed out or was unreachable. The querying app will
             // simply retry or time out on its own; there is nothing useful
             // to synthesize here.
         }
@@ -285,7 +285,7 @@ class BlockerVpnService : VpnService() {
         private const val DNS_SERVER_ADDRESS = "10.111.222.2"
 
         /** Cloudflare's resolver; swap for any upstream the accountability
-         * partner trusts — this is deliberately not user-editable from the
+         * partner trusts. This is deliberately not user-editable from the
          * dashboard, since a compromised upstream defeats the blocklist. */
         private const val UPSTREAM_DNS = "1.1.1.1"
 

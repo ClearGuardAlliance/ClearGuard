@@ -1,7 +1,7 @@
 package com.clearguard.app
 
 /**
- * Minimal, hand-rolled IPv4 / UDP / DNS parsing and building — just enough
+ * Minimal, hand-rolled IPv4 / UDP / DNS parsing and building, just enough
  * to support BlockerVpnService's single job (read a DNS query out of a raw
  * IP packet, answer or forward it, write a DNS response back as a raw IP
  * packet). Not a general-purpose network stack: no IPv6, no TCP, no IP
@@ -123,7 +123,7 @@ internal object DnsResponses {
         offset += 4
         writeUInt16(response, offset, 4) // RDLENGTH
         offset += 2
-        // RDATA 0.0.0.0 — already zero-initialized.
+        // RDATA 0.0.0.0, already zero-initialized.
 
         return response
     }
@@ -165,7 +165,7 @@ internal object PacketBuilder {
         writeUInt16(packet, udpOffset, sourcePort)
         writeUInt16(packet, udpOffset + 2, destinationPort)
         writeUInt16(packet, udpOffset + 4, udpLength)
-        writeUInt16(packet, udpOffset + 6, 0) // checksum disabled — optional over IPv4
+        writeUInt16(packet, udpOffset + 6, 0) // checksum disabled, optional over IPv4
 
         payload.copyInto(packet, udpOffset + UdpHeader.LENGTH)
 

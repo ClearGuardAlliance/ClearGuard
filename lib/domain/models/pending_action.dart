@@ -1,11 +1,3 @@
-/// Every change that would weaken protection goes through a [PendingAction]
-/// instead of applying immediately. This is the core accountability
-/// mechanism: the request is announced to the accountability partner the
-/// moment it is made, and only takes effect after [readyAt], giving the
-/// partner a window to intervene and the requester a cooling-off period.
-///
-/// Actions that strengthen protection (re-enabling, adding a blocked
-/// domain) never go through this — only actions that weaken it do.
 enum PendingActionType {
   disableProtection,
   removeBlocklistDomain,

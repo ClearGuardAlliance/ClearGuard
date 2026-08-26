@@ -21,11 +21,6 @@ import 'ui/features/dashboard/views/dashboard_view.dart';
 import 'ui/features/onboarding/view_models/onboarding_view_model.dart';
 import 'ui/features/onboarding/views/onboarding_view.dart';
 
-/// Composition root. The dependency graph is small enough (a handful of
-/// services/repositories/use cases) that a manual wiring here is clearer
-/// than pulling in a DI container — see
-/// flutter-apply-architecture-best-practices for when that trade-off
-/// should flip.
 class ClearGuardApp extends StatefulWidget {
   const ClearGuardApp({super.key});
 

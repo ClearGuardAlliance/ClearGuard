@@ -19,7 +19,7 @@ import io.flutter.plugin.common.MethodChannel
  * Composition root on the native side: wires the three platform channels the
  * Dart layer talks to (VPN control, VPN status stream, screen-monitor
  * control) to their Android implementations. Business logic itself lives in
- * BlockerVpnService and ScreenContentMonitorService — this class is only
+ * BlockerVpnService and ScreenContentMonitorService. This class is only
  * plumbing.
  */
 class MainActivity : FlutterActivity() {

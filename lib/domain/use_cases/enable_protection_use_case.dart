@@ -1,8 +1,6 @@
 import '../../data/repositories/blocklist_repository.dart';
 import '../../data/repositories/protection_repository.dart';
 
-/// Turns blocking on: resolves the effective blocklist and starts the VPN
-/// and screen monitor. Never gated — see ProtectionRepository.enable.
 class EnableProtectionUseCase {
   EnableProtectionUseCase({
     required ProtectionRepository protectionRepository,

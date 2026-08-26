@@ -2,7 +2,7 @@
 <!--
   No policies declared on purpose. Registering as a device admin at all is
   what makes uninstall require a detour through Settings first (see
-  ClearGuardDeviceAdminReceiver) — ClearGuard doesn't need any of the
+  ClearGuardDeviceAdminReceiver). ClearGuard doesn't need any of the
   actual device-management policies (password limits, camera disable,
   login watching, etc.), and declaring ones it doesn't use would just be
   unjustified privilege for a Play Store review.

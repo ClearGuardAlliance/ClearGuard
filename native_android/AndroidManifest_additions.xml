@@ -1,5 +1,5 @@
 <!--
-  Not a standalone file — these are the additions to merge into the
+  Not a standalone file. These are the additions to merge into the
   AndroidManifest.xml that `flutter create` generates under
   android/app/src/main/. See native_android/README.md for the exact merge
   steps. Kept separate instead of hand-writing a full manifest because the

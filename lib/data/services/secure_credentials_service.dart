@@ -4,10 +4,6 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/// Stores and verifies the accountability PIN. The plaintext PIN is never
-/// persisted or held in memory longer than the call that checks it — only a
-/// salted SHA-256 hash is stored, so ClearGuard itself cannot show the PIN
-/// back to the device owner even if asked to.
 class SecureCredentialsService {
   SecureCredentialsService({FlutterSecureStorage? storage})
       : _storage = storage ?? const FlutterSecureStorage();

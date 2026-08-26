@@ -1,8 +1,3 @@
-/// Settings that make up the accountability layer. [pinHash] is never the
-/// plaintext PIN — see SecureCredentialsService. The recommended setup is
-/// for the accountability partner (not the device owner) to be the one who
-/// types the PIN during onboarding, and for [webhookUrl] to point at a
-/// channel the partner actually reads (a Discord/Slack/Telegram webhook).
 class AccountabilityConfig {
   const AccountabilityConfig({
     required this.pinHash,

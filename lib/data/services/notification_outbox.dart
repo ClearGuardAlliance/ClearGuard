@@ -4,14 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'webhook_notifier_service.dart';
 
-/// Every accountability notification goes through here instead of calling
-/// [WebhookNotifierService] directly, so that having no network never
-/// breaks a local state change (saving a PIN, creating a pending action,
-/// cancelling one). [enqueue] persists the message and returns
-/// immediately; delivery is attempted right away as a best effort, and
-/// [flush] retries whatever is still queued. The accountability model only
-/// works if the partner actually gets notified, so a failed send is kept
-/// and retried, not dropped.
 class NotificationOutbox {
   NotificationOutbox({required WebhookNotifierService webhookService})
       : _webhookService = webhookService;
@@ -24,9 +16,6 @@ class NotificationOutbox {
   Future<void> enqueue({required String webhookUrl, required String message}) async {
     final queued = await _load();
     queued.add({'webhookUrl': webhookUrl, 'message': message});
-    // Drop the oldest first if the queue grows unbounded (e.g. the webhook
-    // URL is permanently broken) — a backlog of stale "this happened 3 days
-    // ago" notifications stops being useful past a point.
     while (queued.length > _maxQueued) {
       queued.removeAt(0);
     }
@@ -35,9 +24,6 @@ class NotificationOutbox {
     await flush();
   }
 
-  /// Attempts to deliver everything queued. Safe to call opportunistically
-  /// (e.g. on a timer or app resume) — entries that still fail stay queued
-  /// for the next attempt, entries that succeed are removed.
   Future<void> flush() async {
     final queued = await _load();
     if (queued.isEmpty) return;
@@ -58,7 +44,6 @@ class NotificationOutbox {
         message: entry['message'] ?? '',
       );
     } catch (_) {
-      // No network, DNS failure, webhook host down, etc. — leave it queued.
       return false;
     }
   }

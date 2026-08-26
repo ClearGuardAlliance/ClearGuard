@@ -3,12 +3,6 @@ import '../../data/repositories/blocklist_repository.dart';
 import '../../data/repositories/protection_repository.dart';
 import '../models/pending_action.dart';
 
-/// Runs on every app launch/resume and drains the pending-action queue:
-/// anything whose delay has elapsed gets applied and its outcome announced
-/// to the accountability partner. Nothing here should require user
-/// interaction — a request that clears its delay while the app is closed
-/// still needs to take effect the next time the app is opened, not wait
-/// for the user to re-confirm it.
 class ApplyReadyPendingActionsUseCase {
   ApplyReadyPendingActionsUseCase({
     required AccountabilityRepository accountabilityRepository,
@@ -28,8 +22,6 @@ class ApplyReadyPendingActionsUseCase {
 
     for (final action in ready) {
       await _apply(action);
-      // markApplied notifies via the config as it stood before this
-      // action's own effect (e.g. a webhook change) takes hold.
       await _accountabilityRepository.markApplied(action);
       await _commit(action);
     }
@@ -42,17 +34,15 @@ class ApplyReadyPendingActionsUseCase {
       case PendingActionType.disableProtection:
         await _protectionRepository.disable();
       case PendingActionType.removeBlocklistDomain:
-        break; // committed in _commit, after the notification is sent
+        break;
       case PendingActionType.changeWebhookUrl:
       case PendingActionType.increaseSensitiveActionDelay:
       case PendingActionType.decreaseSensitiveActionDelay:
       case PendingActionType.deactivateDeviceAdmin:
-        break; // no-op here; see _commit
+        break;
     }
   }
 
-  /// Persists the config-level side effects after the "applied" webhook
-  /// notification has already gone out on the pre-change configuration.
   Future<void> _commit(PendingAction action) async {
     switch (action.type) {
       case PendingActionType.removeBlocklistDomain:
@@ -75,8 +65,7 @@ class ApplyReadyPendingActionsUseCase {
         }
       case PendingActionType.disableProtection:
       case PendingActionType.deactivateDeviceAdmin:
-        break; // disableProtection already applied in _apply; device admin
-        // deactivation is confirmed by the OS dialog itself, not here.
+        break;
     }
   }
 }

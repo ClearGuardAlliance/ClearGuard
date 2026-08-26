@@ -12,12 +12,6 @@ import '../../../../domain/use_cases/enable_protection_use_case.dart';
 import '../../../../domain/use_cases/request_sensitive_action_use_case.dart';
 import '../../../../domain/use_cases/update_blocklist_use_case.dart';
 
-/// Backs the main screen: current protection status, any pending
-/// weakening request with its live countdown, and the actions the user can
-/// take. A periodic tick both refreshes the countdown display and drains
-/// any pending action whose delay has just elapsed, so a disable request
-/// takes effect on schedule even if the user is just staring at the
-/// dashboard when it happens.
 class DashboardViewModel extends ChangeNotifier {
   DashboardViewModel({
     required ProtectionRepository protectionRepository,
@@ -71,22 +65,16 @@ class DashboardViewModel extends ChangeNotifier {
     try {
       _blockedDomainCount = await _updateBlocklistUseCase();
     } catch (_) {
-      // Keep whatever count we already had; the VPN keeps running on the
-      // last successfully synced list.
     }
     notifyListeners();
   }
 
   Future<void> _tick() async {
-    // Best-effort retry of any accountability notification that couldn't
-    // be delivered earlier (e.g. the device was offline at the time).
     unawaited(_accountabilityRepository.flushPendingNotifications());
 
     final justApplied = await _applyReadyPendingActionsUseCase();
     _pendingActions = await _accountabilityRepository.loadPendingActions();
     if (justApplied.isNotEmpty) {
-      // Status stream will also reflect this, but refresh eagerly so the
-      // UI doesn't wait for the next native event.
       _status = await _protectionRepository.refreshStatus();
     }
     notifyListeners();

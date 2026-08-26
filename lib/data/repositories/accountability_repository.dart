@@ -7,18 +7,6 @@ import '../services/notification_outbox.dart';
 import '../services/pending_action_store.dart';
 import '../services/secure_credentials_service.dart';
 
-/// Owns the accountability configuration and the queue of pending
-/// sensitive actions. This is the layer that turns "I want to disable
-/// protection" into "a request was announced and will take effect in N
-/// minutes unless someone intervenes" — see
-/// domain/use_cases/request_sensitive_action_use_case.dart for the flow
-/// that drives it.
-///
-/// Every local state change here (saving the PIN, creating/cancelling a
-/// pending action) completes and persists regardless of network
-/// connectivity — the webhook notification is handed to [NotificationOutbox]
-/// as best-effort and retried later, never awaited as a precondition for
-/// success. See notification_outbox.dart.
 class AccountabilityRepository {
   AccountabilityRepository({
     required SecureCredentialsService credentialsService,
@@ -66,7 +54,7 @@ class AccountabilityRepository {
     if (!await isConfigured()) return null;
     final prefs = await SharedPreferences.getInstance();
     return AccountabilityConfig(
-      pinHash: '', // never exposed outside SecureCredentialsService
+      pinHash: '',
       webhookUrl: prefs.getString(_webhookUrlKey) ?? '',
       partnerLabel: prefs.getString(_partnerLabelKey) ?? 'seu parceiro',
       sensitiveActionDelay:
@@ -78,8 +66,6 @@ class AccountabilityRepository {
 
   Future<List<PendingAction>> loadPendingActions() => _pendingActionStore.loadAll();
 
-  /// Creates and persists a new pending action, then immediately notifies
-  /// the accountability partner. Returns the created action.
   Future<PendingAction> createPendingAction({
     required PendingActionType type,
     Map<String, String> payload = const {},
@@ -157,9 +143,6 @@ class AccountabilityRepository {
     }
   }
 
-  /// Retries any queued notifications that previously failed to send (e.g.
-  /// no network at the time). Cheap to call opportunistically — see
-  /// DashboardViewModel's periodic tick.
   Future<void> flushPendingNotifications() => _notificationOutbox.flush();
 
   String _describeRequested(PendingAction action, Duration delay) {

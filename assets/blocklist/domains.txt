@@ -1,6 +1,6 @@
 # ClearGuard starter blocklist (bundled fallback, used when offline or before
 # the first remote sync). One domain per line, lowercase, no wildcards.
-# This is intentionally a small seed list — production use should sync from
+# This is intentionally a small seed list. Production use should sync from
 # a maintained source (see BlocklistSourceService.remoteListUrl) such as
 # StevenBlack's "unified hosts + porn" list or a paid provider like
 # CleanBrowsing's Adult category feed.

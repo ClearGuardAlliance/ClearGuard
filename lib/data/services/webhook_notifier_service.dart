@@ -3,12 +3,6 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
-/// Sends accountability notifications to the partner's webhook (Discord,
-/// Slack, or a generic endpoint that accepts `{"content": "..."}` or
-/// `{"text": "..."}`). This is the visibility half of the accountability
-/// model: a request to weaken protection is announced the moment it is
-/// made, not after the fact, so the partner has the full delay window to
-/// react — see RequestSensitiveActionUseCase.
 class WebhookNotifierService {
   WebhookNotifierService({http.Client? client}) : _client = client ?? http.Client();
 
