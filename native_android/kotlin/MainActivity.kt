@@ -17,15 +17,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
-/**
- * Composition root on the native side: wires the three platform channels the
- * Dart layer talks to (VPN control, VPN status stream, screen-monitor
- * control) to their Android implementations. Business logic itself lives in
- * BlockerVpnService and ScreenContentMonitorService. This class is only
- * plumbing.
- */
 class MainActivity : FlutterActivity() {
-
     private val vpnChannelName = "com.clearguard.app/vpn"
     private val vpnStatusChannelName = "com.clearguard.app/vpn/status"
     private val screenMonitorChannelName = "com.clearguard.app/screen_monitor"
@@ -144,7 +136,6 @@ class MainActivity : FlutterActivity() {
     private fun requestVpnPermission(result: MethodChannel.Result) {
         val prepareIntent = VpnService.prepare(this)
         if (prepareIntent == null) {
-            // Already granted.
             result.success(true)
             return
         }
@@ -160,9 +151,6 @@ class MainActivity : FlutterActivity() {
                 pendingVpnPermissionResult = null
             }
             DEVICE_ADMIN_REQUEST_CODE -> {
-                // Some OEMs don't return RESULT_OK reliably for this system
-                // dialog, so check the actual admin state instead of trusting
-                // resultCode alone.
                 pendingDeviceAdminResult?.success(isDeviceAdminActive())
                 pendingDeviceAdminResult = null
             }

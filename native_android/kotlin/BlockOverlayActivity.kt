@@ -10,14 +10,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 
-/**
- * Full-screen interstitial ScreenContentMonitorService launches over
- * whatever content it flagged. Its only job is to make the flagged content
- * unreachable without extra steps: cover it, then send the device home
- * instead of just finishing back into the same content.
- */
 class BlockOverlayActivity : Activity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(

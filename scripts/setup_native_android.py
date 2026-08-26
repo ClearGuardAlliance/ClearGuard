@@ -1,16 +1,4 @@
 #!/usr/bin/env python3
-"""
-Applies ClearGuard's native Android integration on top of a freshly
-generated `flutter create` shell. Run after:
-
-    flutter create --platforms=android --org com.clearguardalliance -a kotlin .
-
-Copies the Kotlin sources and resources from native_android/ into android/,
-then merges the permissions, service, activity, and receiver entries into
-AndroidManifest.xml. Safe to run more than once: every insertion checks for
-an existing entry first.
-"""
-
 import shutil
 import sys
 import xml.etree.ElementTree as ET

@@ -22,27 +22,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * A local, single-purpose VPN that filters DNS instead of tunneling all
- * traffic. Only packets addressed to the fake DNS resolver
- * ([DNS_SERVER_ADDRESS]) are routed into this tunnel (see [establishVpn]);
- * everything else keeps flowing over the normal network path. That keeps
- * this service to "parse DNS, decide, respond" instead of needing a full
- * userspace TCP/IP stack.
- *
- * Blocked queries get synthesized an A-record answer of 0.0.0.0 (a
- * sinkhole, same technique Pi-hole/DNS66 use). Allowed queries are
- * forwarded verbatim to a real upstream resolver over a `protect()`-ed
- * socket, so the forwarding socket itself doesn't get captured back into
- * this same tunnel.
- *
- * This is DNS-layer filtering only: it stops resolution of blocked domain
- * names, not access by raw IP or through an already-cached DNS record.
- * ScreenContentMonitorService is the intended complement for content that
- * gets past this layer.
- */
 class BlockerVpnService : VpnService() {
-
     private var tunInterface: ParcelFileDescriptor? = null
     private val running = AtomicBoolean(false)
     private var workerThread: Thread? = null
@@ -73,7 +53,7 @@ class BlockerVpnService : VpnService() {
             .setSession("ClearGuard")
             .addAddress(VPN_LOCAL_ADDRESS, 32)
             .addDnsServer(DNS_SERVER_ADDRESS)
-            // Only DNS-server-bound traffic gets pulled into this tunnel.
+
             .addRoute(DNS_SERVER_ADDRESS, 32)
 
         val establishedInterface = builder.establish()
@@ -109,8 +89,6 @@ class BlockerVpnService : VpnService() {
     }
 
     override fun onRevoke() {
-        // The user pulled the VPN permission from system settings, so reflect
-        // that honestly instead of silently doing nothing.
         stopVpn()
         super.onRevoke()
     }
@@ -132,8 +110,6 @@ class BlockerVpnService : VpnService() {
             try {
                 handlePacket(packet, output)
             } catch (_: Exception) {
-                // Malformed or unsupported packet (e.g. IPv6, TCP DNS). Drop
-                // it silently rather than tearing down the tunnel.
             }
         }
     }
@@ -195,9 +171,6 @@ class BlockerVpnService : VpnService() {
             )
             return
         }
-        // Every upstream timed out or was unreachable. The querying app
-        // will simply retry or time out on its own; there is nothing
-        // useful to synthesize here.
     }
 
     private fun queryUpstream(dnsMessage: ByteArray, server: String): ByteArray? {
@@ -291,12 +264,6 @@ class BlockerVpnService : VpnService() {
         private const val VPN_LOCAL_ADDRESS = "10.111.222.1"
         private const val DNS_SERVER_ADDRESS = "10.111.222.2"
 
-        /** OpenDNS FamilyShield (Cisco): a DNS resolver that blocks adult
-         * content and known proxy/anonymizer domains itself, on top of our
-         * own local blocklist. Two IPs so a query can retry against the
-         * secondary if the primary times out. Deliberately not
-         * user-editable from the dashboard, since a compromised upstream
-         * defeats the blocklist. */
         private val UPSTREAM_DNS_SERVERS = listOf("208.67.222.123", "208.67.220.123")
 
         @Volatile

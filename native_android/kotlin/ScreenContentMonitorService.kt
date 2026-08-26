@@ -8,21 +8,7 @@ import android.content.SharedPreferences
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
-/**
- * Fallback content layer, complementing BlockerVpnService's DNS-level
- * blocking. DNS filtering only stops a domain from resolving in the first
- * place; this catches explicit content that got past that (an
- * already-cached DNS entry, a raw-IP link, a search results page, text
- * inside an otherwise-unblocked site) by scanning the visible text on
- * screen for keyword matches and covering the screen when one hits.
- *
- * This is a keyword heuristic over text nodes, not an image classifier.
- * It will not catch a page that is explicit content with no matching text
- * (e.g. an image with no surrounding label). See README.md for the v2 plan
- * to add on-device NSFW image classification.
- */
 class ScreenContentMonitorService : AccessibilityService() {
-
     private var keywords: Set<String> = emptySet()
     private var lastTriggeredAtMs = 0L
 
@@ -86,9 +72,6 @@ class ScreenContentMonitorService : AccessibilityService() {
 
     override fun onInterrupt() = Unit
 
-    /** Caps how many nodes a single scan walks, so a deeply nested or huge
-     * screen (an endless web page, a chat log) can't stall the
-     * accessibility event thread. */
     private class NodeBudget(private var remaining: Int) {
         fun consume(): Boolean {
             if (remaining <= 0) return false

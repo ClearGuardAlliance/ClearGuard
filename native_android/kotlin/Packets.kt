@@ -1,13 +1,5 @@
 package com.clearguardalliance.clearguard
 
-/**
- * Minimal, hand-rolled IPv4 / UDP / DNS parsing and building, just enough
- * to support BlockerVpnService's single job (read a DNS query out of a raw
- * IP packet, answer or forward it, write a DNS response back as a raw IP
- * packet). Not a general-purpose network stack: no IPv6, no TCP, no IP
- * options, no DNS message compression on the parse side.
- */
-
 internal data class Ipv4Header(
     val headerLength: Int,
     val protocol: Int,
@@ -75,8 +67,7 @@ internal data class DnsQuery(val id: Int, val domainName: String, val questionEn
                     offset += 1
                     break
                 }
-                // DNS name compression pointers are a response-only concern
-                // for us; a query using one is malformed for our purposes.
+
                 if (labelLength and 0xC0 == 0xC0) return null
 
                 offset += 1
@@ -87,7 +78,7 @@ internal data class DnsQuery(val id: Int, val domainName: String, val questionEn
             }
 
             if (offset + 4 > dnsMessage.size) return null
-            val questionEndOffset = offset + 4 // QTYPE + QCLASS
+            val questionEndOffset = offset + 4
 
             return DnsQuery(id = id, domainName = name.toString().lowercase(), questionEndOffset = questionEndOffset)
         }
@@ -95,41 +86,36 @@ internal data class DnsQuery(val id: Int, val domainName: String, val questionEn
 }
 
 internal object DnsResponses {
-    /** Synthesizes a response answering the query with 0.0.0.0 (the
-     * standard DNS-sinkhole technique), reusing the original question
-     * section verbatim and pointing the answer's name at it via a
-     * compression pointer. */
     fun sinkhole(dnsMessage: ByteArray, query: DnsQuery): ByteArray {
         val question = dnsMessage.copyOfRange(12, query.questionEndOffset)
         val response = ByteArray(12 + question.size + ANSWER_LENGTH)
 
         writeUInt16(response, 0, query.id)
         writeUInt16(response, 2, FLAGS_RESPONSE_NO_ERROR)
-        writeUInt16(response, 4, 1) // QDCOUNT
-        writeUInt16(response, 6, 1) // ANCOUNT
-        writeUInt16(response, 8, 0) // NSCOUNT
-        writeUInt16(response, 10, 0) // ARCOUNT
+        writeUInt16(response, 4, 1)
+        writeUInt16(response, 6, 1)
+        writeUInt16(response, 8, 0)
+        writeUInt16(response, 10, 0)
 
         question.copyInto(response, 12)
 
         var offset = 12 + question.size
-        writeUInt16(response, offset, 0xC00C) // pointer to name at byte 12
+        writeUInt16(response, offset, 0xC00C)
         offset += 2
-        writeUInt16(response, offset, 1) // TYPE A
+        writeUInt16(response, offset, 1)
         offset += 2
-        writeUInt16(response, offset, 1) // CLASS IN
+        writeUInt16(response, offset, 1)
         offset += 2
-        writeUInt32(response, offset, 60) // TTL
+        writeUInt32(response, offset, 60)
         offset += 4
-        writeUInt16(response, offset, 4) // RDLENGTH
+        writeUInt16(response, offset, 4)
         offset += 2
-        // RDATA 0.0.0.0, already zero-initialized.
 
         return response
     }
 
     private const val FLAGS_RESPONSE_NO_ERROR = 0x8180
-    private const val ANSWER_LENGTH = 2 + 2 + 2 + 4 + 2 + 4 // name ptr, type, class, ttl, rdlength, rdata
+    private const val ANSWER_LENGTH = 2 + 2 + 2 + 4 + 2 + 4
 }
 
 internal object PacketBuilder {
@@ -147,33 +133,29 @@ internal object PacketBuilder {
         val totalLength = IPV4_HEADER_LENGTH + udpLength
         val packet = ByteArray(totalLength)
 
-        // --- IPv4 header ---
-        packet[0] = ((4 shl 4) or 5).toByte() // version 4, IHL 5 (20 bytes, no options)
-        packet[1] = 0 // DSCP/ECN
+        packet[0] = ((4 shl 4) or 5).toByte()
+        packet[1] = 0
         writeUInt16(packet, 2, totalLength)
-        writeUInt16(packet, 4, 0) // identification
-        writeUInt16(packet, 6, 0) // flags/fragment offset
-        packet[8] = 64 // TTL
+        writeUInt16(packet, 4, 0)
+        writeUInt16(packet, 6, 0)
+        packet[8] = 64
         packet[9] = PROTOCOL_UDP.toByte()
-        writeUInt16(packet, 10, 0) // checksum placeholder
+        writeUInt16(packet, 10, 0)
         sourceAddress.copyInto(packet, 12)
         destinationAddress.copyInto(packet, 16)
         writeUInt16(packet, 10, ipv4Checksum(packet, 0, IPV4_HEADER_LENGTH))
 
-        // --- UDP header ---
         val udpOffset = IPV4_HEADER_LENGTH
         writeUInt16(packet, udpOffset, sourcePort)
         writeUInt16(packet, udpOffset + 2, destinationPort)
         writeUInt16(packet, udpOffset + 4, udpLength)
-        writeUInt16(packet, udpOffset + 6, 0) // checksum disabled, optional over IPv4
+        writeUInt16(packet, udpOffset + 6, 0)
 
         payload.copyInto(packet, udpOffset + UdpHeader.LENGTH)
 
         return packet
     }
 
-    /** Standard Internet checksum (RFC 791): one's-complement sum of all
-     * 16-bit words, computed with the checksum field itself zeroed. */
     private fun ipv4Checksum(packet: ByteArray, offset: Int, length: Int): Int {
         var sum = 0
         var i = offset
