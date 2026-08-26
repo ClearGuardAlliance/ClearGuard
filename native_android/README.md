@@ -50,14 +50,18 @@ technique used by DNS66 and most non-root Android DNS-filtering apps.
 
 ## Known gaps (see also the top-level README's Limitations section)
 
-- `PendingActionType.deactivateDeviceAdmin`, `changeWebhookUrl`, and the
-  delay-change types exist end-to-end in `lib/domain` and
-  `AccountabilityRepository`, but nothing in the Dart UI currently triggers
-  them. Only `disableProtection` is wired into `DashboardView`. Wiring
-  device-admin activation needs an `ACTION_ADD_DEVICE_ADMIN` intent call from
-  `MainActivity`, not yet added.
+- `PendingActionType.deactivateDeviceAdmin` has no corresponding UI action,
+  and it never will: Android does not let a non-MDM app intercept or delay
+  the system's own "remove device admin" flow, so there is nothing for the
+  app to gate. Activating device admin (the useful half) is wired up in
+  Settings, via an `ACTION_ADD_DEVICE_ADMIN` intent from `MainActivity`.
 - The DNS packet parsing/building in `Packets.kt` is unit-testable in
   isolation (pure functions over `ByteArray`) but has not been exercised
   against a real device. Checksum and offset bugs in hand-rolled packet code
   are exactly the kind of thing that looks right on inspection and breaks on
   a real network stack. Test on a device before trusting it.
+- The Settings screen and the device-admin activation flow are new Kotlin
+  code (`MainActivity.kt`'s `device_admin` channel) that, like the rest of
+  `native_android/`, has not been compiled or run on a device from this
+  machine. Reviewed carefully for correctness, but verify on a real device
+  before relying on it.

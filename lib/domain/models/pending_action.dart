@@ -2,6 +2,7 @@ enum PendingActionType {
   disableProtection,
   removeBlocklistDomain,
   changeWebhookUrl,
+  changeRemoteBlocklistUrl,
   increaseSensitiveActionDelay,
   decreaseSensitiveActionDelay,
   deactivateDeviceAdmin,

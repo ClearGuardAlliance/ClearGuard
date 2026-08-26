@@ -36,6 +36,7 @@ class ApplyReadyPendingActionsUseCase {
       case PendingActionType.removeBlocklistDomain:
         break;
       case PendingActionType.changeWebhookUrl:
+      case PendingActionType.changeRemoteBlocklistUrl:
       case PendingActionType.increaseSensitiveActionDelay:
       case PendingActionType.decreaseSensitiveActionDelay:
       case PendingActionType.deactivateDeviceAdmin:
@@ -56,6 +57,13 @@ class ApplyReadyPendingActionsUseCase {
         final newUrl = action.payload['newUrl'];
         if (newUrl != null) {
           await _accountabilityRepository.applyWebhookUrlChange(newUrl);
+        }
+      case PendingActionType.changeRemoteBlocklistUrl:
+        final newUrl = action.payload['newUrl'];
+        if (newUrl != null) {
+          await _blocklistRepository.setRemoteListUrl(newUrl);
+          final domains = await _blocklistRepository.effectiveBlockedDomains();
+          await _protectionRepository.syncBlocklist(domains);
         }
       case PendingActionType.increaseSensitiveActionDelay:
       case PendingActionType.decreaseSensitiveActionDelay:

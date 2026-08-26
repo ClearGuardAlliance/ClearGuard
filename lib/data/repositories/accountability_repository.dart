@@ -163,6 +163,8 @@ class AccountabilityRepository {
         return 'remover domínio da lista de bloqueio';
       case PendingActionType.changeWebhookUrl:
         return 'trocar o webhook de notificação';
+      case PendingActionType.changeRemoteBlocklistUrl:
+        return 'trocar a lista remota de domínios bloqueados';
       case PendingActionType.increaseSensitiveActionDelay:
         return 'aumentar o tempo de espera de mudanças';
       case PendingActionType.decreaseSensitiveActionDelay:

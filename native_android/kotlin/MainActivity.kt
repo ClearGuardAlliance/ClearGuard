@@ -1,7 +1,9 @@
 package com.clearguardalliance.clearguard
 
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.app.admin.DevicePolicyManager
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -27,9 +29,14 @@ class MainActivity : FlutterActivity() {
     private val vpnChannelName = "com.clearguard.app/vpn"
     private val vpnStatusChannelName = "com.clearguard.app/vpn/status"
     private val screenMonitorChannelName = "com.clearguard.app/screen_monitor"
+    private val deviceAdminChannelName = "com.clearguard.app/device_admin"
 
     private var pendingVpnPermissionResult: MethodChannel.Result? = null
+    private var pendingDeviceAdminResult: MethodChannel.Result? = null
     private var vpnStatusEventSink: EventChannel.EventSink? = null
+
+    private val deviceAdminComponent: ComponentName
+        get() = ComponentName(this, ClearGuardDeviceAdminReceiver::class.java)
 
     private val statusReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -102,6 +109,36 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, deviceAdminChannelName)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "isActive" -> result.success(isDeviceAdminActive())
+                    "requestActivation" -> requestDeviceAdminActivation(result)
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    private fun isDeviceAdminActive(): Boolean {
+        val manager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        return manager.isAdminActive(deviceAdminComponent)
+    }
+
+    private fun requestDeviceAdminActivation(result: MethodChannel.Result) {
+        if (isDeviceAdminActive()) {
+            result.success(true)
+            return
+        }
+        val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
+            .putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, deviceAdminComponent)
+            .putExtra(
+                DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                "Torna a desinstalação do ClearGuard um passo deliberado, " +
+                    "em vez de um toque só a partir da tela inicial.",
+            )
+        pendingDeviceAdminResult = result
+        startActivityForResult(intent, DEVICE_ADMIN_REQUEST_CODE)
     }
 
     private fun requestVpnPermission(result: MethodChannel.Result) {
@@ -117,9 +154,18 @@ class MainActivity : FlutterActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == VPN_PERMISSION_REQUEST_CODE) {
-            pendingVpnPermissionResult?.success(resultCode == RESULT_OK)
-            pendingVpnPermissionResult = null
+        when (requestCode) {
+            VPN_PERMISSION_REQUEST_CODE -> {
+                pendingVpnPermissionResult?.success(resultCode == RESULT_OK)
+                pendingVpnPermissionResult = null
+            }
+            DEVICE_ADMIN_REQUEST_CODE -> {
+                // Some OEMs don't return RESULT_OK reliably for this system
+                // dialog, so check the actual admin state instead of trusting
+                // resultCode alone.
+                pendingDeviceAdminResult?.success(isDeviceAdminActive())
+                pendingDeviceAdminResult = null
+            }
         }
     }
 
@@ -133,5 +179,6 @@ class MainActivity : FlutterActivity() {
 
     companion object {
         private const val VPN_PERMISSION_REQUEST_CODE = 4242
+        private const val DEVICE_ADMIN_REQUEST_CODE = 4243
     }
 }

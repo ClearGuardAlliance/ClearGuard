@@ -7,9 +7,14 @@ import 'package:clearguard/ui/features/dashboard/view_models/dashboard_view_mode
 import 'package:flutter/material.dart';
 
 class DashboardView extends StatefulWidget {
-  const DashboardView({required this.viewModel, super.key});
+  const DashboardView({
+    required this.viewModel,
+    required this.onOpenSettings,
+    super.key,
+  });
 
   final DashboardViewModel viewModel;
+  final VoidCallback onOpenSettings;
 
   @override
   State<DashboardView> createState() => _DashboardViewState();
@@ -28,7 +33,15 @@ class _DashboardViewState extends State<DashboardView> {
       listenable: widget.viewModel,
       builder: (context, _) {
         return Scaffold(
-          appBar: AppBar(title: const Text('ClearGuard')),
+          appBar: AppBar(
+            title: const Text('ClearGuard'),
+            actions: [
+              IconButton(
+                onPressed: widget.onOpenSettings,
+                icon: const Icon(Icons.settings_outlined),
+              ),
+            ],
+          ),
           body: RefreshIndicator(
             onRefresh: widget.viewModel.initialize,
             child: ListView(

@@ -4,6 +4,7 @@ import 'package:clearguard/data/repositories/accountability_repository.dart';
 import 'package:clearguard/data/repositories/blocklist_repository.dart';
 import 'package:clearguard/data/repositories/protection_repository.dart';
 import 'package:clearguard/data/services/blocklist_source_service.dart';
+import 'package:clearguard/data/services/device_admin_platform_service.dart';
 import 'package:clearguard/data/services/notification_outbox.dart';
 import 'package:clearguard/data/services/pending_action_store.dart';
 import 'package:clearguard/data/services/screen_monitor_platform_service.dart';
@@ -20,6 +21,8 @@ import 'package:clearguard/ui/features/dashboard/view_models/dashboard_view_mode
 import 'package:clearguard/ui/features/dashboard/views/dashboard_view.dart';
 import 'package:clearguard/ui/features/onboarding/view_models/onboarding_view_model.dart';
 import 'package:clearguard/ui/features/onboarding/views/onboarding_view.dart';
+import 'package:clearguard/ui/features/settings/view_models/settings_view_model.dart';
+import 'package:clearguard/ui/features/settings/views/settings_view.dart';
 import 'package:flutter/material.dart';
 
 class ClearGuardApp extends StatefulWidget {
@@ -39,6 +42,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
   );
   late final _blocklistSourceService = BlocklistSourceService();
   late final _pendingActionStore = PendingActionStore();
+  late final _deviceAdminService = DeviceAdminPlatformService();
 
   late final _protectionRepository = ProtectionRepository(
     vpnService: _vpnService,
@@ -92,6 +96,22 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
     super.dispose();
   }
 
+  void _openSettings(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => SettingsView(
+          viewModel: SettingsViewModel(
+            accountabilityRepository: _accountabilityRepository,
+            blocklistRepository: _blocklistRepository,
+            deviceAdminService: _deviceAdminService,
+            requestSensitiveActionUseCase: _requestSensitiveActionUseCase,
+            cancelPendingActionUseCase: _cancelPendingActionUseCase,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -121,6 +141,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
               cancelPendingActionUseCase: _cancelPendingActionUseCase,
               updateBlocklistUseCase: _updateBlocklistUseCase,
             ),
+            onOpenSettings: () => _openSettings(context),
           ),
       },
     );
