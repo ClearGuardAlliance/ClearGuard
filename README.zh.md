@@ -1,4 +1,4 @@
-<!-- Languages: [Português](README.md) | [English](README.en.md) | [עברית](README.he.md) | [Русский](README.ru.md) | 中文 | [日本語](README.ja.md) | [العربية](README.ar.md) -->
+<!-- Languages: [English](README.md) | [Português](README.pt.md) | [עברית](README.he.md) | [Русский](README.ru.md) | 中文 | [日本語](README.ja.md) | [العربية](README.ar.md) -->
 
 # ClearGuard
 
