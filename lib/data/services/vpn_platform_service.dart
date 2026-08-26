@@ -35,6 +35,20 @@ class VpnPlatformService {
     return _parse(raw);
   }
 
+  Future<bool> isIgnoringBatteryOptimizations() async {
+    final exempt = await _method.invokeMethod<bool>(
+      'isIgnoringBatteryOptimizations',
+    );
+    return exempt ?? false;
+  }
+
+  Future<bool> requestIgnoreBatteryOptimizations() async {
+    final exempt = await _method.invokeMethod<bool>(
+      'requestIgnoreBatteryOptimizations',
+    );
+    return exempt ?? false;
+  }
+
   Stream<ProtectionStatus> statusStream() {
     return _status.receiveBroadcastStream().map(
           (event) => _parse(event as String?),

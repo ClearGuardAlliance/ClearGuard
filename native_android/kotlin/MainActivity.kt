@@ -7,8 +7,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.net.VpnService
-import android.os.Build
+import android.os.PowerManager
 import android.provider.Settings
 import android.view.accessibility.AccessibilityManager
 import androidx.core.content.ContextCompat
@@ -25,6 +26,7 @@ class MainActivity : FlutterActivity() {
 
     private var pendingVpnPermissionResult: MethodChannel.Result? = null
     private var pendingDeviceAdminResult: MethodChannel.Result? = null
+    private var pendingBatteryOptimizationResult: MethodChannel.Result? = null
     private var vpnStatusEventSink: EventChannel.EventSink? = null
 
     private val deviceAdminComponent: ComponentName
@@ -61,6 +63,8 @@ class MainActivity : FlutterActivity() {
                         result.success(null)
                     }
                     "currentStatus" -> result.success(BlockerVpnService.currentStatus.name.lowercase())
+                    "isIgnoringBatteryOptimizations" -> result.success(isIgnoringBatteryOptimizations())
+                    "requestIgnoreBatteryOptimizations" -> requestIgnoreBatteryOptimizations(result)
                     else -> result.notImplemented()
                 }
             }
@@ -133,6 +137,24 @@ class MainActivity : FlutterActivity() {
         startActivityForResult(intent, DEVICE_ADMIN_REQUEST_CODE)
     }
 
+    private fun isIgnoringBatteryOptimizations(): Boolean {
+        val manager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        return manager.isIgnoringBatteryOptimizations(packageName)
+    }
+
+    private fun requestIgnoreBatteryOptimizations(result: MethodChannel.Result) {
+        if (isIgnoringBatteryOptimizations()) {
+            result.success(true)
+            return
+        }
+        val intent = Intent(
+            Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+            Uri.parse("package:$packageName"),
+        )
+        pendingBatteryOptimizationResult = result
+        startActivityForResult(intent, BATTERY_OPTIMIZATION_REQUEST_CODE)
+    }
+
     private fun requestVpnPermission(result: MethodChannel.Result) {
         val prepareIntent = VpnService.prepare(this)
         if (prepareIntent == null) {
@@ -154,6 +176,10 @@ class MainActivity : FlutterActivity() {
                 pendingDeviceAdminResult?.success(isDeviceAdminActive())
                 pendingDeviceAdminResult = null
             }
+            BATTERY_OPTIMIZATION_REQUEST_CODE -> {
+                pendingBatteryOptimizationResult?.success(isIgnoringBatteryOptimizations())
+                pendingBatteryOptimizationResult = null
+            }
         }
     }
 
@@ -168,5 +194,6 @@ class MainActivity : FlutterActivity() {
     companion object {
         private const val VPN_PERMISSION_REQUEST_CODE = 4242
         private const val DEVICE_ADMIN_REQUEST_CODE = 4243
+        private const val BATTERY_OPTIMIZATION_REQUEST_CODE = 4244
     }
 }

@@ -67,6 +67,8 @@ def add_permissions(root: ET.Element, application: ET.Element) -> None:
         "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.BIND_ACCESSIBILITY_SERVICE",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
     ]
 
     existing = {el.get(qn("name")) for el in root.findall("uses-permission")}
@@ -143,6 +145,18 @@ def build_device_admin_receiver() -> ET.Element:
     return receiver
 
 
+def build_boot_receiver() -> ET.Element:
+    receiver = ET.Element("receiver")
+    receiver.set(qn("name"), ".BootReceiver")
+    receiver.set(qn("exported"), "false")
+
+    intent_filter = ET.SubElement(receiver, "intent-filter")
+    action = ET.SubElement(intent_filter, "action")
+    action.set(qn("name"), "android.intent.action.BOOT_COMPLETED")
+
+    return receiver
+
+
 def add_application_entries(application: ET.Element) -> None:
     existing_names = {
         child.get(qn("name")) for child in application if child.get(qn("name"))
@@ -153,6 +167,7 @@ def add_application_entries(application: ET.Element) -> None:
         (".ScreenContentMonitorService", build_accessibility_service),
         (".BlockOverlayActivity", build_overlay_activity),
         (".ClearGuardDeviceAdminReceiver", build_device_admin_receiver),
+        (".BootReceiver", build_boot_receiver),
     ]
 
     for name, build in entries:
@@ -184,6 +199,22 @@ def merge_manifest() -> None:
     print(f"merged manifest at {manifest_path}")
 
 
+def add_gradle_dependencies() -> None:
+    build_file = ANDROID_APP / "build.gradle.kts"
+    if not build_file.exists():
+        sys.exit(f"build.gradle.kts not found at {build_file}. Run flutter create first.")
+
+    text = build_file.read_text()
+    dependency = 'implementation("androidx.datastore:datastore-preferences:1.1.7")'
+    if dependency in text:
+        print("datastore-preferences dependency already present, skipping")
+        return
+
+    text += f"\ndependencies {{\n    {dependency}\n}}\n"
+    build_file.write_text(text)
+    print(f"added datastore-preferences dependency to {build_file}")
+
+
 def remove_stock_widget_test() -> None:
     stock_test = ROOT / "test" / "widget_test.dart"
     if not stock_test.exists():
@@ -201,6 +232,7 @@ def main() -> None:
     copy_kotlin_sources()
     copy_resources()
     merge_manifest()
+    add_gradle_dependencies()
     remove_stock_widget_test()
     print("native Android integration applied")
 

@@ -34,6 +34,12 @@ class ProtectionRepository {
 
   Future<bool> requestVpnPermission() => _vpnService.requestPermission();
 
+  Future<bool> isIgnoringBatteryOptimizations() =>
+      _vpnService.isIgnoringBatteryOptimizations();
+
+  Future<bool> requestIgnoreBatteryOptimizations() =>
+      _vpnService.requestIgnoreBatteryOptimizations();
+
   Future<bool> isScreenMonitorPermissionGranted() =>
       _screenMonitorService.isAccessibilityPermissionGranted();
 

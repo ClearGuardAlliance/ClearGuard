@@ -143,6 +143,21 @@ class _SettingsViewState extends State<SettingsView> {
                         onPressed: () => widget.viewModel.activateDeviceAdmin(),
                         child: const Text('Ativar'),
                       ),
+                    const SizedBox(height: 32),
+                    Text(
+                      'Bateria',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 12),
+                    if (widget.viewModel.isIgnoringBatteryOptimizations)
+                      const Text('Isento: o Android não deve encerrar a '
+                          'proteção em segundo plano para economizar bateria.')
+                    else
+                      FilledButton(
+                        onPressed: () => widget.viewModel
+                            .requestIgnoreBatteryOptimizations(),
+                        child: const Text('Isentar de otimização de bateria'),
+                      ),
                   ],
                 ),
         );

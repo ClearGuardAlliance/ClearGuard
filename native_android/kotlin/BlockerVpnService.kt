@@ -43,6 +43,7 @@ class BlockerVpnService : VpnService() {
             }
             ACTION_STOP -> stopVpn()
         }
+        persistState(applicationContext, running.get(), blockedDomains)
         return START_STICKY
     }
 
@@ -53,7 +54,6 @@ class BlockerVpnService : VpnService() {
             .setSession("ClearGuard")
             .addAddress(VPN_LOCAL_ADDRESS, 32)
             .addDnsServer(DNS_SERVER_ADDRESS)
-
             .addRoute(DNS_SERVER_ADDRESS, 32)
 
         val establishedInterface = builder.establish()
@@ -89,6 +89,11 @@ class BlockerVpnService : VpnService() {
     }
 
     override fun onRevoke() {
+        NativeWebhookNotifier.notify(
+            this,
+            "A permissão de VPN do ClearGuard foi revogada nas configurações " +
+                "do sistema neste dispositivo. A proteção parou de funcionar.",
+        )
         stopVpn()
         super.onRevoke()
     }
@@ -287,5 +292,26 @@ class BlockerVpnService : VpnService() {
                 .putStringArrayListExtra(EXTRA_DOMAINS, ArrayList(domains))
             context.startService(intent)
         }
+
+        fun wasActiveBeforeShutdown(context: Context): Boolean {
+            return statePrefs(context).getBoolean(KEY_ACTIVE, false)
+        }
+
+        fun persistedDomains(context: Context): List<String> {
+            return statePrefs(context).getStringSet(KEY_DOMAINS, emptySet())?.toList() ?: emptyList()
+        }
+
+        private fun persistState(context: Context, active: Boolean, domains: Collection<String>) {
+            statePrefs(context).edit()
+                .putBoolean(KEY_ACTIVE, active)
+                .putStringSet(KEY_DOMAINS, domains.toSet())
+                .apply()
+        }
+
+        private fun statePrefs(context: Context) =
+            context.getSharedPreferences("clearguard_vpn_state", Context.MODE_PRIVATE)
+
+        private const val KEY_ACTIVE = "active"
+        private const val KEY_DOMAINS = "domains"
     }
 }

@@ -33,6 +33,11 @@ class ScreenContentMonitorService : AccessibilityService() {
 
     override fun onUnbind(intent: Intent?): Boolean {
         prefs(this).unregisterOnSharedPreferenceChangeListener(preferenceListener)
+        NativeWebhookNotifier.notify(
+            this,
+            "O serviço de leitura de tela do ClearGuard foi desativado neste " +
+                "dispositivo. A camada extra de bloqueio parou de funcionar.",
+        )
         return super.onUnbind(intent)
     }
 

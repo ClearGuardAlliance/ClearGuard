@@ -1,5 +1,6 @@
 import 'package:clearguard/data/repositories/accountability_repository.dart';
 import 'package:clearguard/data/repositories/blocklist_repository.dart';
+import 'package:clearguard/data/repositories/protection_repository.dart';
 import 'package:clearguard/data/services/device_admin_platform_service.dart';
 import 'package:clearguard/domain/models/accountability_config.dart';
 import 'package:clearguard/domain/models/pending_action.dart';
@@ -11,17 +12,20 @@ class SettingsViewModel extends ChangeNotifier {
   SettingsViewModel({
     required AccountabilityRepository accountabilityRepository,
     required BlocklistRepository blocklistRepository,
+    required ProtectionRepository protectionRepository,
     required DeviceAdminPlatformService deviceAdminService,
     required RequestSensitiveActionUseCase requestSensitiveActionUseCase,
     required CancelPendingActionUseCase cancelPendingActionUseCase,
   })  : _accountabilityRepository = accountabilityRepository,
         _blocklistRepository = blocklistRepository,
+        _protectionRepository = protectionRepository,
         _deviceAdminService = deviceAdminService,
         _requestSensitiveActionUseCase = requestSensitiveActionUseCase,
         _cancelPendingActionUseCase = cancelPendingActionUseCase;
 
   final AccountabilityRepository _accountabilityRepository;
   final BlocklistRepository _blocklistRepository;
+  final ProtectionRepository _protectionRepository;
   final DeviceAdminPlatformService _deviceAdminService;
   final RequestSensitiveActionUseCase _requestSensitiveActionUseCase;
   final CancelPendingActionUseCase _cancelPendingActionUseCase;
@@ -35,6 +39,9 @@ class SettingsViewModel extends ChangeNotifier {
   bool _isDeviceAdminActive = false;
   bool get isDeviceAdminActive => _isDeviceAdminActive;
 
+  bool _isIgnoringBatteryOptimizations = false;
+  bool get isIgnoringBatteryOptimizations => _isIgnoringBatteryOptimizations;
+
   List<PendingAction> _pendingActions = const [];
   List<PendingAction> get pendingActions => _pendingActions;
 
@@ -45,6 +52,8 @@ class SettingsViewModel extends ChangeNotifier {
     _config = await _accountabilityRepository.loadConfig();
     _remoteBlocklistUrl = await _blocklistRepository.remoteListUrl();
     _isDeviceAdminActive = await _deviceAdminService.isActive();
+    _isIgnoringBatteryOptimizations =
+        await _protectionRepository.isIgnoringBatteryOptimizations();
     await _refreshPendingActions();
     notifyListeners();
   }
@@ -125,5 +134,11 @@ class SettingsViewModel extends ChangeNotifier {
     _isDeviceAdminActive = granted;
     notifyListeners();
     return granted;
+  }
+
+  Future<void> requestIgnoreBatteryOptimizations() async {
+    _isIgnoringBatteryOptimizations =
+        await _protectionRepository.requestIgnoreBatteryOptimizations();
+    notifyListeners();
   }
 }

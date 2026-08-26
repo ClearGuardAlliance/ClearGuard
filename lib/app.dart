@@ -103,6 +103,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
           viewModel: SettingsViewModel(
             accountabilityRepository: _accountabilityRepository,
             blocklistRepository: _blocklistRepository,
+            protectionRepository: _protectionRepository,
             deviceAdminService: _deviceAdminService,
             requestSensitiveActionUseCase: _requestSensitiveActionUseCase,
             cancelPendingActionUseCase: _cancelPendingActionUseCase,
