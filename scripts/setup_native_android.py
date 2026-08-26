@@ -191,6 +191,7 @@ def merge_manifest() -> None:
 
     add_permissions(root, application)
     add_application_entries(application)
+    application.set(qn("label"), "@string/app_name")
 
     if hasattr(ET, "indent"):
         ET.indent(tree, space="    ")
