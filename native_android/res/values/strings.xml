@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClearGuard</string>
+    <string name="accessibility_service_description">
+        Lê o texto visível na tela para detectar e bloquear conteúdo explícito
+        que passou pelo filtro de DNS do ClearGuard.
+    </string>
+</resources>

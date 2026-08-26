@@ -1,0 +1,31 @@
+name: clearguard
+description: >
+  ClearGuard blocks pornographic content at the DNS and on-screen level, and
+  makes it hard for the device owner to silently disable protection by
+  gating every sensitive change behind a delay and an accountability
+  partner notification.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.2
+  shared_preferences: ^2.3.2
+  flutter_secure_storage: ^9.2.2
+  crypto: ^3.0.5
+  uuid: ^4.5.1
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/blocklist/domains.txt

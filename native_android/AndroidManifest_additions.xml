@@ -1,0 +1,62 @@
+<!--
+  Not a standalone file — these are the additions to merge into the
+  AndroidManifest.xml that `flutter create` generates under
+  android/app/src/main/. See native_android/README.md for the exact merge
+  steps. Kept separate instead of hand-writing a full manifest because the
+  Flutter-generated base (application class, meta-data for the Flutter
+  embedding, etc.) is version-specific and shouldn't be guessed at.
+-->
+
+<!-- Permissions: add as siblings of the existing <uses-permission> tags,
+     directly under <manifest>. -->
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
+
+<!-- Inside <application>, alongside the existing <activity android:name=".MainActivity" ...>: -->
+
+<service
+    android:name=".BlockerVpnService"
+    android:exported="false"
+    android:foregroundServiceType="specialUse"
+    android:permission="android.permission.BIND_VPN_SERVICE">
+    <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="Parental-control DNS filtering VPN" />
+    <intent-filter>
+        <action android:name="android.net.VpnService" />
+    </intent-filter>
+</service>
+
+<service
+    android:name=".ScreenContentMonitorService"
+    android:exported="false"
+    android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+    <intent-filter>
+        <action android:name="android.accessibilityservice.AccessibilityService" />
+    </intent-filter>
+    <meta-data
+        android:name="android.accessibilityservice"
+        android:resource="@xml/accessibility_service_config" />
+</service>
+
+<activity
+    android:name=".BlockOverlayActivity"
+    android:exported="false"
+    android:excludeFromRecents="true"
+    android:launchMode="singleTask"
+    android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+
+<receiver
+    android:name=".ClearGuardDeviceAdminReceiver"
+    android:exported="false"
+    android:permission="android.permission.BIND_DEVICE_ADMIN">
+    <meta-data
+        android:name="android.app.device_admin"
+        android:resource="@xml/device_admin_policies" />
+    <intent-filter>
+        <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+    </intent-filter>
+</receiver>
