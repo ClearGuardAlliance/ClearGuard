@@ -10,11 +10,13 @@ class DashboardView extends StatefulWidget {
   const DashboardView({
     required this.viewModel,
     required this.onOpenSettings,
+    required this.onOpenTriggerApps,
     super.key,
   });
 
   final DashboardViewModel viewModel;
   final VoidCallback onOpenSettings;
+  final VoidCallback onOpenTriggerApps;
 
   @override
   State<DashboardView> createState() => _DashboardViewState();
@@ -63,6 +65,8 @@ class _DashboardViewState extends State<DashboardView> {
                         ),
                       ),
                     ),
+                const SizedBox(height: 20),
+                _TriggerAppsEntryCard(onTap: widget.onOpenTriggerApps),
                 const SizedBox(height: 28),
                 Text('Como a proteção funciona', style: _sectionTitle(context)),
                 const SizedBox(height: 12),
@@ -229,6 +233,70 @@ class _InfoRow extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _TriggerAppsEntryCard extends StatelessWidget {
+  const _TriggerAppsEntryCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Material(
+      color: scheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.apps_outlined,
+                  color: scheme.onPrimaryContainer,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Apps de risco',
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Veja quais apps instalados podem ser gatilho e '
+                      'receba dicas para lidar com eles.',
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
