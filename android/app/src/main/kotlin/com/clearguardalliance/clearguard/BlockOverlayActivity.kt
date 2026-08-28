@@ -30,14 +30,14 @@ class BlockOverlayActivity : Activity() {
         }
 
         val title = TextView(this).apply {
-            text = "Conteúdo bloqueado pelo ClearGuard"
+            text = getString(R.string.block_overlay_title)
             setTextColor(Color.WHITE)
             textSize = 22f
             gravity = Gravity.CENTER
         }
 
         val closeButton = Button(this).apply {
-            text = "Voltar para a tela inicial"
+            text = getString(R.string.back_to_home_button)
             setOnClickListener { goHome() }
         }
 

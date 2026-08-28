@@ -2,16 +2,34 @@
 <resources>
     <string name="app_name">ClearGuard</string>
     <string name="accessibility_service_description">
-        Lê o texto visível na tela para detectar e bloquear conteúdo explícito
-        que passou pelo filtro de DNS do ClearGuard.
+        Reads the visible text on screen to detect and block explicit content
+        that got past ClearGuard\'s DNS filter.
     </string>
 
     <string name="settings_guard_description">
-        Impede de configurar o aplicativo.
+        Prevents configuring the app.
     </string>
 
     <string name="trigger_app_guard_description">
-        Detecta a abertura de apps da lista de risco para mostrar uma pausa
-        ou bloquear o acesso no horário configurado.
+        Detects when a risk-list app opens to show a pause or block access
+        during the configured hours.
     </string>
+
+    <string name="device_admin_explanation">
+        Makes uninstalling ClearGuard a deliberate step, instead of a single
+        tap from the home screen.
+    </string>
+
+    <string name="block_overlay_title">Content blocked by ClearGuard</string>
+    <string name="back_to_home_button">Back to home screen</string>
+
+    <string name="trigger_guard_block_title">Outside allowed hours</string>
+    <string name="trigger_guard_block_body">
+        This app is blocked at this time by ClearGuard.
+    </string>
+    <string name="trigger_guard_pause_title">
+        Take a breath before continuing
+    </string>
+    <string name="trigger_guard_continue_button">Continue</string>
+    <string name="trigger_guard_ready_label">Ready</string>
 </resources>

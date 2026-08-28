@@ -28,19 +28,19 @@ class TriggerAppGuardActivity : Activity() {
     private fun buildBlockLayout(): LinearLayout {
         val root = baseLayout()
         val title = TextView(this).apply {
-            text = "Fora do horário liberado"
+            text = getString(R.string.trigger_guard_block_title)
             setTextColor(Color.WHITE)
             textSize = 22f
             gravity = Gravity.CENTER
         }
         val subtitle = TextView(this).apply {
-            text = "Esse app fica bloqueado nesse horário pelo ClearGuard."
+            text = getString(R.string.trigger_guard_block_body)
             setTextColor(Color.LTGRAY)
             textSize = 15f
             gravity = Gravity.CENTER
         }
         val closeButton = Button(this).apply {
-            text = "Voltar para a tela inicial"
+            text = getString(R.string.back_to_home_button)
             setOnClickListener { goHome() }
         }
         root.addView(title)
@@ -52,7 +52,7 @@ class TriggerAppGuardActivity : Activity() {
     private fun buildPauseLayout(): LinearLayout {
         val root = baseLayout()
         val title = TextView(this).apply {
-            text = "Respira um pouco antes de continuar"
+            text = getString(R.string.trigger_guard_pause_title)
             setTextColor(Color.WHITE)
             textSize = 22f
             gravity = Gravity.CENTER
@@ -64,12 +64,12 @@ class TriggerAppGuardActivity : Activity() {
             gravity = Gravity.CENTER
         }
         val continueButton = Button(this).apply {
-            text = "Continuar"
+            text = getString(R.string.trigger_guard_continue_button)
             isEnabled = false
             setOnClickListener { finish() }
         }
         val goHomeButton = Button(this).apply {
-            text = "Voltar para a tela inicial"
+            text = getString(R.string.back_to_home_button)
             setOnClickListener { goHome() }
         }
 
@@ -79,7 +79,7 @@ class TriggerAppGuardActivity : Activity() {
             }
 
             override fun onFinish() {
-                countdown.text = "Pronto"
+                countdown.text = getString(R.string.trigger_guard_ready_label)
                 continueButton.isEnabled = true
             }
         }.start()

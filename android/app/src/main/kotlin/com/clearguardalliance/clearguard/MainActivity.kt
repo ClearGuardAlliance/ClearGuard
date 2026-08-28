@@ -172,8 +172,7 @@ class MainActivity : FlutterActivity() {
             .putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, deviceAdminComponent)
             .putExtra(
                 DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                "Torna a desinstalação do ClearGuard um passo deliberado, " +
-                    "em vez de um toque só a partir da tela inicial.",
+                getString(R.string.device_admin_explanation),
             )
         pendingDeviceAdminResult = result
         startActivityForResult(intent, DEVICE_ADMIN_REQUEST_CODE)

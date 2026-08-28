@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClearGuard</string>
+    <string name="accessibility_service_description">
+        Lê o texto visível na tela para detectar e bloquear conteúdo explícito
+        que passou pelo filtro de DNS do ClearGuard.
+    </string>
+
+    <string name="settings_guard_description">
+        Impede de configurar o aplicativo.
+    </string>
+
+    <string name="trigger_app_guard_description">
+        Detecta a abertura de apps da lista de risco para mostrar uma pausa
+        ou bloquear o acesso no horário configurado.
+    </string>
+
+    <string name="device_admin_explanation">
+        Torna a desinstalação do ClearGuard um passo deliberado, em vez de um
+        toque só a partir da tela inicial.
+    </string>
+
+    <string name="block_overlay_title">Conteúdo bloqueado pelo ClearGuard</string>
+    <string name="back_to_home_button">Voltar para a tela inicial</string>
+
+    <string name="trigger_guard_block_title">Fora do horário liberado</string>
+    <string name="trigger_guard_block_body">
+        Esse app fica bloqueado nesse horário pelo ClearGuard.
+    </string>
+    <string name="trigger_guard_pause_title">
+        Respira um pouco antes de continuar
+    </string>
+    <string name="trigger_guard_continue_button">Continuar</string>
+    <string name="trigger_guard_ready_label">Pronto</string>
+</resources>
