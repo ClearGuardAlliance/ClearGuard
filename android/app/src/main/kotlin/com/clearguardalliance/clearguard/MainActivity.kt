@@ -23,6 +23,7 @@ class MainActivity : FlutterActivity() {
     private val vpnStatusChannelName = "com.clearguard.app/vpn/status"
     private val screenMonitorChannelName = "com.clearguard.app/screen_monitor"
     private val deviceAdminChannelName = "com.clearguard.app/device_admin"
+    private val installedAppsChannelName = "com.clearguard.app/installed_apps"
 
     private var pendingVpnPermissionResult: MethodChannel.Result? = null
     private var pendingDeviceAdminResult: MethodChannel.Result? = null
@@ -114,6 +115,29 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, installedAppsChannelName)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "installedFrom" -> {
+                        @Suppress("UNCHECKED_CAST")
+                        val candidates = (call.argument<List<String>>("packages") ?: emptyList())
+                        result.success(installedFrom(candidates))
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    /**
+     * Filters [candidates] down to the packages actually installed. Relies on
+     * the <queries> block in the manifest so each lookup works on Android 11+
+     * without the QUERY_ALL_PACKAGES permission.
+     */
+    private fun installedFrom(candidates: List<String>): List<String> {
+        return candidates.filter { packageName ->
+            runCatching { packageManager.getPackageInfo(packageName, 0) }.isSuccess
+        }
     }
 
     private fun isDeviceAdminActive(): Boolean {

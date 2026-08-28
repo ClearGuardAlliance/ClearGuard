@@ -52,5 +52,25 @@
             <action android:name="android.intent.action.PROCESS_TEXT" />
             <data android:mimeType="text/plain" />
         </intent>
+        <!-- Presence checks for the trigger-apps score. Declaring each
+             package here is what lets getPackageInfo see it on Android 11+
+             without the QUERY_ALL_PACKAGES permission. -->
+        <package android:name="com.instagram.android" />
+        <package android:name="com.zhiliaoapp.musically" />
+        <package android:name="com.snapchat.android" />
+        <package android:name="com.twitter.android" />
+        <package android:name="com.reddit.frontpage" />
+        <package android:name="com.tumblr" />
+        <package android:name="com.facebook.katana" />
+        <package android:name="com.pinterest" />
+        <package android:name="com.tinder" />
+        <package android:name="com.bumble.app" />
+        <package android:name="org.telegram.messenger" />
+        <package android:name="com.discord" />
+        <package android:name="com.nordvpn.android" />
+        <package android:name="com.expressvpn.vpn" />
+        <package android:name="ch.protonvpn.android" />
+        <package android:name="org.torproject.torbrowser" />
+        <package android:name="org.torproject.android" />
     </queries>
 </manifest>
