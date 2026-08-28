@@ -1,5 +1,5 @@
 import 'package:clearguard/domain/models/protection_status.dart';
-import 'package:clearguard/ui/core/widgets/status_badge.dart';
+import 'package:clearguard/ui/core/widgets/protection_status_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,7 +9,9 @@ void main() {
   ) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(body: StatusBadge(status: ProtectionStatus.active)),
+        home: Scaffold(
+          body: ProtectionStatusCard(status: ProtectionStatus.active),
+        ),
       ),
     );
 
@@ -21,7 +23,9 @@ void main() {
   ) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(body: StatusBadge(status: ProtectionStatus.disabled)),
+        home: Scaffold(
+          body: ProtectionStatusCard(status: ProtectionStatus.disabled),
+        ),
       ),
     );
 

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:clearguard/domain/models/pending_action.dart';
 import 'package:clearguard/domain/models/protection_status.dart';
-import 'package:clearguard/ui/core/widgets/status_badge.dart';
+import 'package:clearguard/ui/core/widgets/protection_status_card.dart';
 import 'package:clearguard/ui/features/dashboard/view_models/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
 
@@ -45,29 +45,54 @@ class _DashboardViewState extends State<DashboardView> {
           body: RefreshIndicator(
             onRefresh: widget.viewModel.initialize,
             child: ListView(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               children: [
-                Center(child: StatusBadge(status: widget.viewModel.status)),
-                const SizedBox(height: 16),
-                if (widget.viewModel.blockedDomainCount != null)
-                  Center(
-                    child: Text(
-                      '${widget.viewModel.blockedDomainCount} domínios na '
-                      'lista de bloqueio',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ),
-                const SizedBox(height: 32),
+                ProtectionStatusCard(
+                  status: widget.viewModel.status,
+                  blockedDomainCount: widget.viewModel.blockedDomainCount,
+                ),
                 ...widget.viewModel.pendingActions
                     .where((a) => a.state == PendingActionState.pending)
                     .map(
-                      (action) => _PendingActionCard(
-                        action: action,
-                        onCancel: () =>
-                            widget.viewModel.cancelPendingAction(action.id),
+                      (action) => Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: _PendingActionCard(
+                          action: action,
+                          onCancel: () => widget.viewModel
+                              .cancelPendingAction(action.id),
+                        ),
                       ),
                     ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
+                Text('Como a proteção funciona', style: _sectionTitle(context)),
+                const SizedBox(height: 12),
+                const _InfoRow(
+                  icon: Icons.dns_outlined,
+                  title: 'Filtro por DNS',
+                  description:
+                      'Um túnel VPN local recusa domínios da lista de '
+                      'bloqueio antes que a página chegue a carregar, sem '
+                      'enviar seu tráfego para nenhum servidor externo.',
+                ),
+                const SizedBox(height: 16),
+                const _InfoRow(
+                  icon: Icons.visibility_outlined,
+                  title: 'Monitoramento de tela',
+                  description:
+                      'Um serviço de acessibilidade detecta conteúdo '
+                      'explícito em páginas que já carregaram, como reforço '
+                      'ao filtro de DNS.',
+                ),
+                const SizedBox(height: 16),
+                const _InfoRow(
+                  icon: Icons.shield_moon_outlined,
+                  title: 'Accountability',
+                  description:
+                      'Qualquer tentativa de mexer nessas proteções passa '
+                      'por um PIN e um período de espera, com aviso para o '
+                      'seu parceiro de confiança.',
+                ),
+                const SizedBox(height: 32),
                 _buildPrimaryAction(context),
               ],
             ),
@@ -77,6 +102,9 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
+  TextStyle? _sectionTitle(BuildContext context) =>
+      Theme.of(context).textTheme.titleLarge;
+
   Widget _buildPrimaryAction(BuildContext context) {
     final hasPendingDisable = widget.viewModel.pendingActions.any(
       (a) =>
@@ -85,21 +113,27 @@ class _DashboardViewState extends State<DashboardView> {
     );
 
     if (widget.viewModel.status == ProtectionStatus.disabled) {
-      return FilledButton.icon(
-        onPressed: widget.viewModel.reEnableProtection,
-        icon: const Icon(Icons.shield),
-        label: const Text('Reativar proteção agora'),
+      return SizedBox(
+        width: double.infinity,
+        child: FilledButton.icon(
+          onPressed: widget.viewModel.reEnableProtection,
+          icon: const Icon(Icons.shield),
+          label: const Text('Reativar proteção agora'),
+        ),
       );
     }
 
-    return OutlinedButton.icon(
-      onPressed:
-          hasPendingDisable ? null : () => _promptDisableProtection(context),
-      icon: const Icon(Icons.shield_outlined),
-      label: Text(
-        hasPendingDisable
-            ? 'Desativação já solicitada'
-            : 'Solicitar desativação da proteção',
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed:
+            hasPendingDisable ? null : () => _promptDisableProtection(context),
+        icon: const Icon(Icons.shield_outlined),
+        label: Text(
+          hasPendingDisable
+              ? 'Desativação já solicitada'
+              : 'Solicitar desativação da proteção',
+        ),
       ),
     );
   }
@@ -142,6 +176,60 @@ class _DashboardViewState extends State<DashboardView> {
         context,
       ).showSnackBar(SnackBar(content: Text(widget.viewModel.errorMessage!)));
     }
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
+
+  final IconData icon;
+  final String title;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: scheme.primaryContainer,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: scheme.onPrimaryContainer, size: 20),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
 
