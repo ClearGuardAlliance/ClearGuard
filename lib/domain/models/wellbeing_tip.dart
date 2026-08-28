@@ -4,6 +4,12 @@ class WellbeingTip {
   final String title;
   final String body;
 
+  static WellbeingTip forDay(DateTime date) {
+    final startOfYear = DateTime(date.year);
+    final dayOfYear = date.difference(startOfYear).inDays;
+    return all[dayOfYear % all.length];
+  }
+
   static const all = <WellbeingTip>[
     WellbeingTip(
       title: 'Surfe a onda do impulso',

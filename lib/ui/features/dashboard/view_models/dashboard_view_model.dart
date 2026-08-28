@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:clearguard/data/repositories/accountability_repository.dart';
 import 'package:clearguard/data/repositories/protection_repository.dart';
 import 'package:clearguard/data/repositories/protection_streak_repository.dart';
+import 'package:clearguard/data/services/local_notification_service.dart';
 import 'package:clearguard/domain/models/pending_action.dart';
 import 'package:clearguard/domain/models/protection_status.dart';
 import 'package:clearguard/domain/models/protection_streak.dart';
+import 'package:clearguard/domain/models/wellbeing_tip.dart';
 import 'package:clearguard/domain/use_cases/apply_ready_pending_actions_use_case.dart';
 import 'package:clearguard/domain/use_cases/cancel_pending_action_use_case.dart';
 import 'package:clearguard/domain/use_cases/enable_protection_use_case.dart';
@@ -23,6 +25,7 @@ class DashboardViewModel extends ChangeNotifier {
     required CancelPendingActionUseCase cancelPendingActionUseCase,
     required UpdateBlocklistUseCase updateBlocklistUseCase,
     required ProtectionStreakRepository protectionStreakRepository,
+    required LocalNotificationService notificationService,
   })  : _protectionRepository = protectionRepository,
         _accountabilityRepository = accountabilityRepository,
         _enableProtectionUseCase = enableProtectionUseCase,
@@ -30,7 +33,8 @@ class DashboardViewModel extends ChangeNotifier {
         _applyReadyPendingActionsUseCase = applyReadyPendingActionsUseCase,
         _cancelPendingActionUseCase = cancelPendingActionUseCase,
         _updateBlocklistUseCase = updateBlocklistUseCase,
-        _protectionStreakRepository = protectionStreakRepository;
+        _protectionStreakRepository = protectionStreakRepository,
+        _notificationService = notificationService;
 
   final ProtectionRepository _protectionRepository;
   final AccountabilityRepository _accountabilityRepository;
@@ -40,6 +44,7 @@ class DashboardViewModel extends ChangeNotifier {
   final CancelPendingActionUseCase _cancelPendingActionUseCase;
   final UpdateBlocklistUseCase _updateBlocklistUseCase;
   final ProtectionStreakRepository _protectionStreakRepository;
+  final LocalNotificationService _notificationService;
 
   StreamSubscription<ProtectionStatus>? _statusSubscription;
   Timer? _ticker;
@@ -82,7 +87,28 @@ class DashboardViewModel extends ChangeNotifier {
     _streak = await _protectionStreakRepository.recordDay(
       isProtectionActive: _status == ProtectionStatus.active,
     );
+    unawaited(_refreshDailyReminder());
     notifyListeners();
+  }
+
+  Future<void> _refreshDailyReminder() async {
+    final streak = _streak;
+    if (streak == null) return;
+
+    final tip = WellbeingTip.forDay(DateTime.now());
+    final title = streak.current > 0
+        ? '🔥 ${streak.current} dia(s) seguido(s) protegido'
+        : 'Hora de retomar sua proteção';
+
+    try {
+      await _notificationService.requestPermission();
+      await _notificationService.scheduleDailyReminder(
+        title: title,
+        body: tip.title,
+      );
+    } on Exception {
+      return;
+    }
   }
 
   Future<void> _tick() async {

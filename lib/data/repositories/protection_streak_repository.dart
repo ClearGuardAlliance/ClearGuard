@@ -14,9 +14,6 @@ class ProtectionStreakRepository {
     );
   }
 
-  /// Advances the streak for today. Safe to call more than once a day: only
-  /// the first call each calendar day changes anything. A day only extends
-  /// the streak if protection was active on it; otherwise the streak resets.
   Future<ProtectionStreak> recordDay({
     required bool isProtectionActive,
     DateTime? now,
