@@ -187,8 +187,8 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
               notificationService: _notificationService,
               syncTriggerGuardUseCase: _syncTriggerGuardUseCase,
             ),
-            onOpenSettings: () => _openSettings(context),
-            onOpenTriggerApps: () => _openTriggerApps(context),
+            onOpenSettings: _openSettings,
+            onOpenTriggerApps: _openTriggerApps,
           ),
       },
     );

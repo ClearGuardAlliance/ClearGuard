@@ -17,8 +17,8 @@ class DashboardView extends StatefulWidget {
   });
 
   final DashboardViewModel viewModel;
-  final VoidCallback onOpenSettings;
-  final VoidCallback onOpenTriggerApps;
+  final void Function(BuildContext) onOpenSettings;
+  final void Function(BuildContext) onOpenTriggerApps;
 
   @override
   State<DashboardView> createState() => _DashboardViewState();
@@ -42,7 +42,7 @@ class _DashboardViewState extends State<DashboardView> {
             title: Text(l10n.appTitle),
             actions: [
               IconButton(
-                onPressed: widget.onOpenSettings,
+                onPressed: () => widget.onOpenSettings(context),
                 icon: const Icon(Icons.settings_outlined),
               ),
             ],
@@ -73,7 +73,9 @@ class _DashboardViewState extends State<DashboardView> {
                       ),
                     ),
                 const SizedBox(height: 20),
-                _TriggerAppsEntryCard(onTap: widget.onOpenTriggerApps),
+                _TriggerAppsEntryCard(
+                  onTap: () => widget.onOpenTriggerApps(context),
+                ),
                 const SizedBox(height: 28),
                 Text(
                   l10n.howProtectionWorksTitle,
