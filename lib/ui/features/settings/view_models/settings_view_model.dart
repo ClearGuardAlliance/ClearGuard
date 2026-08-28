@@ -64,9 +64,17 @@ class SettingsViewModel extends ChangeNotifier {
   Future<void> initialize() async {
     _config = await _accountabilityRepository.loadConfig();
     _remoteBlocklistUrl = await _blocklistRepository.remoteListUrl();
-    _isDeviceAdminActive = await _deviceAdminService.isActive();
-    _isIgnoringBatteryOptimizations =
-        await _protectionRepository.isIgnoringBatteryOptimizations();
+    try {
+      _isDeviceAdminActive = await _deviceAdminService.isActive();
+    } on Exception {
+      _isDeviceAdminActive = false;
+    }
+    try {
+      _isIgnoringBatteryOptimizations =
+          await _protectionRepository.isIgnoringBatteryOptimizations();
+    } on Exception {
+      _isIgnoringBatteryOptimizations = false;
+    }
     _blockWindow = await _blockWindowRepository.current();
     await _refreshPendingActions();
     notifyListeners();
