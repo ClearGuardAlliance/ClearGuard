@@ -19,7 +19,7 @@ void main() {
     test('wraps around after the catalog length', () {
       final day0 = WellbeingTip.forDay(DateTime(2026));
       final wrapped = WellbeingTip.forDay(
-        DateTime(2026).add(Duration(days: WellbeingTip.all.length)),
+        DateTime(2026).add(Duration(days: WellbeingTip.values.length)),
       );
 
       expect(day0, wrapped);

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:clearguard/domain/models/pending_action.dart';
 import 'package:clearguard/domain/models/protection_status.dart';
 import 'package:clearguard/domain/models/protection_streak.dart';
+import 'package:clearguard/l10n/generated/app_localizations.dart';
 import 'package:clearguard/ui/core/widgets/protection_status_card.dart';
 import 'package:clearguard/ui/features/dashboard/view_models/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
@@ -32,12 +33,13 @@ class _DashboardViewState extends State<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ListenableBuilder(
       listenable: widget.viewModel,
       builder: (context, _) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('ClearGuard'),
+            title: Text(l10n.appTitle),
             actions: [
               IconButton(
                 onPressed: widget.onOpenSettings,
@@ -73,36 +75,30 @@ class _DashboardViewState extends State<DashboardView> {
                 const SizedBox(height: 20),
                 _TriggerAppsEntryCard(onTap: widget.onOpenTriggerApps),
                 const SizedBox(height: 28),
-                Text('Como a proteção funciona', style: _sectionTitle(context)),
+                Text(
+                  l10n.howProtectionWorksTitle,
+                  style: _sectionTitle(context),
+                ),
                 const SizedBox(height: 12),
-                const _InfoRow(
+                _InfoRow(
                   icon: Icons.dns_outlined,
-                  title: 'Filtro por DNS',
-                  description:
-                      'Um túnel VPN local recusa domínios da lista de '
-                      'bloqueio antes que a página chegue a carregar, sem '
-                      'enviar seu tráfego para nenhum servidor externo.',
+                  title: l10n.dnsFilterTitle,
+                  description: l10n.dnsFilterBody,
                 ),
                 const SizedBox(height: 16),
-                const _InfoRow(
+                _InfoRow(
                   icon: Icons.visibility_outlined,
-                  title: 'Monitoramento de tela',
-                  description:
-                      'Um serviço de acessibilidade detecta conteúdo '
-                      'explícito em páginas que já carregaram, como reforço '
-                      'ao filtro de DNS.',
+                  title: l10n.screenMonitorInfoTitle,
+                  description: l10n.screenMonitorInfoBody,
                 ),
                 const SizedBox(height: 16),
-                const _InfoRow(
+                _InfoRow(
                   icon: Icons.shield_moon_outlined,
-                  title: 'Accountability',
-                  description:
-                      'Qualquer tentativa de mexer nessas proteções passa '
-                      'por um PIN e um período de espera, com aviso para o '
-                      'seu parceiro de confiança.',
+                  title: l10n.accountabilityInfoTitle,
+                  description: l10n.accountabilityInfoBody,
                 ),
                 const SizedBox(height: 32),
-                _buildPrimaryAction(context),
+                _buildPrimaryAction(context, l10n),
               ],
             ),
           ),
@@ -114,7 +110,7 @@ class _DashboardViewState extends State<DashboardView> {
   TextStyle? _sectionTitle(BuildContext context) =>
       Theme.of(context).textTheme.titleLarge;
 
-  Widget _buildPrimaryAction(BuildContext context) {
+  Widget _buildPrimaryAction(BuildContext context, AppLocalizations l10n) {
     final hasPendingDisable = widget.viewModel.pendingActions.any(
       (a) =>
           a.type == PendingActionType.disableProtection &&
@@ -127,7 +123,7 @@ class _DashboardViewState extends State<DashboardView> {
         child: FilledButton.icon(
           onPressed: widget.viewModel.reEnableProtection,
           icon: const Icon(Icons.shield),
-          label: const Text('Reativar proteção agora'),
+          label: Text(l10n.reactivateProtectionButton),
         ),
       );
     }
@@ -140,34 +136,35 @@ class _DashboardViewState extends State<DashboardView> {
         icon: const Icon(Icons.shield_outlined),
         label: Text(
           hasPendingDisable
-              ? 'Desativação já solicitada'
-              : 'Solicitar desativação da proteção',
+              ? l10n.disableAlreadyRequestedButton
+              : l10n.requestDisableProtectionButton,
         ),
       ),
     );
   }
 
   Future<void> _promptDisableProtection(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final pinController = TextEditingController();
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Confirmar com PIN'),
+        title: Text(l10n.confirmWithPinTitle),
         content: TextField(
           controller: pinController,
           obscureText: true,
           keyboardType: TextInputType.number,
-          decoration: const InputDecoration(labelText: 'PIN de accountability'),
+          decoration: InputDecoration(labelText: l10n.pinAccountabilityLabel),
           autofocus: true,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(l10n.cancelButton),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Solicitar'),
+            child: Text(l10n.requestButton),
           ),
         ],
       ),
@@ -251,6 +248,7 @@ class _TriggerAppsEntryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return Material(
       color: scheme.surfaceContainerLow,
@@ -281,15 +279,14 @@ class _TriggerAppsEntryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Apps de risco',
+                      l10n.triggerAppsCardTitle,
                       style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Veja quais apps instalados podem ser gatilho e '
-                      'receba dicas para lidar com eles.',
+                      l10n.triggerAppsCardBody,
                       style: textTheme.bodyMedium?.copyWith(
                         color: scheme.onSurfaceVariant,
                       ),
@@ -314,6 +311,7 @@ class _PendingActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final minutesLeft = action.timeRemaining.inMinutes;
     return Card(
       color: Theme.of(context).colorScheme.errorContainer,
@@ -326,12 +324,11 @@ class _PendingActionCard extends StatelessWidget {
             Expanded(
               child: Text(
                 minutesLeft > 0
-                    ? 'Mudança pendente: passa a valer em $minutesLeft min. '
-                        'Seu parceiro já foi avisado.'
-                    : 'Mudança pendente: passa a valer a qualquer momento.',
+                    ? l10n.pendingChangeWithPartner(minutesLeft)
+                    : l10n.pendingChangeAnyMoment,
               ),
             ),
-            TextButton(onPressed: onCancel, child: const Text('Cancelar')),
+            TextButton(onPressed: onCancel, child: Text(l10n.cancelButton)),
           ],
         ),
       ),
@@ -348,9 +345,7 @@ class _StreakBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final days = streak.current == 1
-        ? '1 dia seguido'
-        : '${streak.current} dias seguidos';
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -364,7 +359,7 @@ class _StreakBadge extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              days,
+              l10n.streakDays(streak.current),
               style: textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -372,7 +367,7 @@ class _StreakBadge extends StatelessWidget {
           ),
           if (streak.longest > streak.current)
             Text(
-              'Recorde: ${streak.longest}',
+              l10n.streakRecord(streak.longest),
               style: textTheme.bodySmall?.copyWith(
                 color: scheme.onSurfaceVariant,
               ),

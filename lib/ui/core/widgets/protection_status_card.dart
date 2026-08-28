@@ -1,4 +1,5 @@
 import 'package:clearguard/domain/models/protection_status.dart';
+import 'package:clearguard/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class ProtectionStatusCard extends StatelessWidget {
@@ -15,6 +16,7 @@ class ProtectionStatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final success = isDark ? const Color(0xFF7EE0A8) : const Color(0xFF0E8F4F);
@@ -28,36 +30,36 @@ class ProtectionStatusCard extends StatelessWidget {
         isDark ? const Color(0xFF3D1613) : const Color(0xFFFBDFDC);
 
     final domainCopy = blockedDomainCount != null
-        ? '$blockedDomainCount domínios na lista de bloqueio.'
-        : 'Sincronizando lista de bloqueio…';
+        ? l10n.statusActiveWithDomains(blockedDomainCount!)
+        : l10n.statusSyncingBlocklist;
 
     final (foreground, background, title, subtitle, icon) = switch (status) {
       ProtectionStatus.active => (
           success,
           successContainer,
-          'Proteção ativa',
+          l10n.statusActiveTitle,
           domainCopy,
           Icons.verified_user,
         ),
       ProtectionStatus.starting => (
           warning,
           warningContainer,
-          'Ativando proteção…',
-          'Isso leva só alguns segundos.',
+          l10n.statusStartingTitle,
+          l10n.statusStartingBody,
           Icons.hourglass_top,
         ),
       ProtectionStatus.disabled => (
           danger,
           dangerContainer,
-          'Proteção desativada',
-          'Seu tráfego não está sendo filtrado agora.',
+          l10n.statusDisabledTitle,
+          l10n.statusDisabledBody,
           Icons.gpp_bad,
         ),
       ProtectionStatus.error => (
           scheme.onSurfaceVariant,
           scheme.surfaceContainerHighest,
-          'Não foi possível verificar o status',
-          'Confira sua conexão e tente novamente.',
+          l10n.statusErrorTitle,
+          l10n.statusErrorBody,
           Icons.error_outline,
         ),
     };

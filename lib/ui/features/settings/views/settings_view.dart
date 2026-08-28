@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clearguard/domain/models/accountability_config.dart';
 import 'package:clearguard/domain/models/pending_action.dart';
+import 'package:clearguard/l10n/generated/app_localizations.dart';
 import 'package:clearguard/ui/features/settings/view_models/settings_view_model.dart';
 import 'package:flutter/material.dart';
 
@@ -35,6 +36,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ListenableBuilder(
       listenable: widget.viewModel,
       builder: (context, _) {
@@ -53,7 +55,7 @@ class _SettingsViewState extends State<SettingsView> {
         }
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Configurações')),
+          appBar: AppBar(title: Text(l10n.settingsAppBarTitle)),
           body: config == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
@@ -69,15 +71,15 @@ class _SettingsViewState extends State<SettingsView> {
                     if (widget.viewModel.pendingActions.isNotEmpty)
                       const SizedBox(height: 16),
                     Text(
-                      'Accountability',
+                      l10n.accountabilitySectionTitle,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 12),
                     TextField(
                       controller: _webhookController,
                       keyboardType: TextInputType.url,
-                      decoration: const InputDecoration(
-                        labelText: 'Webhook do parceiro',
+                      decoration: InputDecoration(
+                        labelText: l10n.webhookSettingsLabel,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -85,13 +87,13 @@ class _SettingsViewState extends State<SettingsView> {
                       alignment: Alignment.centerRight,
                       child: OutlinedButton(
                         onPressed: () => _requestWebhookChange(context),
-                        child: const Text('Solicitar mudança'),
+                        child: Text(l10n.requestChangeButton),
                       ),
                     ),
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        const Text('Tempo de espera:'),
+                        Text(l10n.waitTimeLabel),
                         const SizedBox(width: 12),
                         DropdownButton<int>(
                           value: _delayMinutes,
@@ -99,7 +101,7 @@ class _SettingsViewState extends State<SettingsView> {
                               .map(
                                 (m) => DropdownMenuItem(
                                   value: m,
-                                  child: Text('$m min'),
+                                  child: Text(l10n.minutesShort(m)),
                                 ),
                               )
                               .toList(),
@@ -114,20 +116,20 @@ class _SettingsViewState extends State<SettingsView> {
                       alignment: Alignment.centerRight,
                       child: OutlinedButton(
                         onPressed: () => _requestDelayChange(context),
-                        child: const Text('Solicitar mudança'),
+                        child: Text(l10n.requestChangeButton),
                       ),
                     ),
                     const SizedBox(height: 32),
                     Text(
-                      'Lista de bloqueio',
+                      l10n.blocklistSectionTitle,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 12),
                     TextField(
                       controller: _remoteBlocklistController,
                       keyboardType: TextInputType.url,
-                      decoration: const InputDecoration(
-                        labelText: 'URL da lista remota (opcional)',
+                      decoration: InputDecoration(
+                        labelText: l10n.remoteBlocklistUrlLabel,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -135,53 +137,50 @@ class _SettingsViewState extends State<SettingsView> {
                       alignment: Alignment.centerRight,
                       child: OutlinedButton(
                         onPressed: () => _requestRemoteBlocklistChange(context),
-                        child: const Text('Solicitar mudança'),
+                        child: Text(l10n.requestChangeButton),
                       ),
                     ),
                     const SizedBox(height: 32),
                     Text(
-                      'Administrador do dispositivo',
+                      l10n.deviceAdminSectionTitle,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 12),
                     if (widget.viewModel.isDeviceAdminActive)
-                      const Text('Ativo: desinstalar exige passar pelas '
-                          'configurações do sistema primeiro.')
+                      Text(l10n.deviceAdminActiveText)
                     else
                       FilledButton(
                         onPressed: () => widget.viewModel.activateDeviceAdmin(),
-                        child: const Text('Ativar'),
+                        child: Text(l10n.activateButton),
                       ),
                     const SizedBox(height: 32),
                     Text(
-                      'Bateria',
+                      l10n.batterySectionTitle,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 12),
                     if (widget.viewModel.isIgnoringBatteryOptimizations)
-                      const Text('Isento: o Android não deve encerrar a '
-                          'proteção em segundo plano para economizar bateria.')
+                      Text(l10n.batteryExemptText)
                     else
                       FilledButton(
                         onPressed: () => widget.viewModel
                             .requestIgnoreBatteryOptimizations(),
-                        child: const Text('Isentar de otimização de bateria'),
+                        child: Text(l10n.batteryExemptButton),
                       ),
                     const SizedBox(height: 32),
                     Text(
-                      'Bloqueio por horário',
+                      l10n.blockWindowSectionTitle,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Fora do horário liberado, apps de risco ficam '
-                      'bloqueados em vez de só pausados.',
+                      l10n.blockWindowDescription,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 12),
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Ativar bloqueio por horário'),
+                      title: Text(l10n.blockWindowSwitchLabel),
                       value: widget.viewModel.blockWindow.enabled,
                       onChanged: (enabled) => widget.viewModel.setBlockWindow(
                         widget.viewModel.blockWindow.copyWith(
@@ -195,7 +194,9 @@ class _SettingsViewState extends State<SettingsView> {
                           child: OutlinedButton(
                             onPressed: () =>
                                 _pickWindowTime(context, isStart: true),
-                            child: Text('Início: $windowStart'),
+                            child: Text(
+                              l10n.blockWindowStartLabel(windowStart),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -203,7 +204,7 @@ class _SettingsViewState extends State<SettingsView> {
                           child: OutlinedButton(
                             onPressed: () =>
                                 _pickWindowTime(context, isStart: false),
-                            child: Text('Fim: $windowEnd'),
+                            child: Text(l10n.blockWindowEndLabel(windowEnd)),
                           ),
                         ),
                       ],
@@ -287,27 +288,28 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   Future<String?> _promptPin(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final pinController = TextEditingController();
     return showDialog<String>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Confirmar com PIN'),
+        title: Text(l10n.confirmWithPinTitle),
         content: TextField(
           controller: pinController,
           obscureText: true,
           keyboardType: TextInputType.number,
-          decoration: const InputDecoration(labelText: 'PIN de accountability'),
+          decoration: InputDecoration(labelText: l10n.pinAccountabilityLabel),
           autofocus: true,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancelar'),
+            child: Text(l10n.cancelButton),
           ),
           FilledButton(
             onPressed: () =>
                 Navigator.of(dialogContext).pop(pinController.text),
-            child: const Text('Confirmar'),
+            child: Text(l10n.confirmButton),
           ),
         ],
       ),
@@ -323,6 +325,7 @@ class _PendingSettingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final minutesLeft = action.timeRemaining.inMinutes;
     return Card(
       color: Theme.of(context).colorScheme.errorContainer,
@@ -335,11 +338,11 @@ class _PendingSettingCard extends StatelessWidget {
             Expanded(
               child: Text(
                 minutesLeft > 0
-                    ? 'Mudança pendente: passa a valer em $minutesLeft min.'
-                    : 'Mudança pendente: passa a valer a qualquer momento.',
+                    ? l10n.pendingChangeMinutesOnly(minutesLeft)
+                    : l10n.pendingChangeAnyMoment,
               ),
             ),
-            TextButton(onPressed: onCancel, child: const Text('Cancelar')),
+            TextButton(onPressed: onCancel, child: Text(l10n.cancelButton)),
           ],
         ),
       ),

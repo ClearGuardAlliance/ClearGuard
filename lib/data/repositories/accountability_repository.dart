@@ -3,6 +3,8 @@ import 'package:clearguard/data/services/pending_action_store.dart';
 import 'package:clearguard/data/services/secure_credentials_service.dart';
 import 'package:clearguard/domain/models/accountability_config.dart';
 import 'package:clearguard/domain/models/pending_action.dart';
+import 'package:clearguard/l10n/generated/app_localizations.dart';
+import 'package:clearguard/l10n/l10n_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -40,22 +42,22 @@ class AccountabilityRepository {
     await prefs.setString(_partnerLabelKey, partnerLabel);
     await prefs.setInt(_delayMinutesKey, delay.inMinutes);
 
+    final l10n = await loadCurrentLocalizations();
     await _notificationOutbox.enqueue(
       webhookUrl: webhookUrl,
-      message: 'ClearGuard configurado. $partnerLabel agora recebe um aviso '
-          'sempre que uma mudança de proteção for solicitada neste '
-          'dispositivo, com ${delay.inMinutes} min de antecedência antes de '
-          'ela valer.',
+      message: l10n.webhookConfiguredMessage(partnerLabel, delay.inMinutes),
     );
   }
 
   Future<AccountabilityConfig?> loadConfig() async {
     if (!await isConfigured()) return null;
     final prefs = await SharedPreferences.getInstance();
+    final l10n = await loadCurrentLocalizations();
     return AccountabilityConfig(
       pinHash: '',
       webhookUrl: prefs.getString(_webhookUrlKey) ?? '',
-      partnerLabel: prefs.getString(_partnerLabelKey) ?? 'seu parceiro',
+      partnerLabel:
+          prefs.getString(_partnerLabelKey) ?? l10n.defaultPartnerLabel,
       sensitiveActionDelay: Duration(
         minutes: prefs.getInt(_delayMinutesKey) ??
             AccountabilityConfig.defaultDelay.inMinutes,
@@ -90,9 +92,10 @@ class AccountabilityRepository {
     await _pendingActionStore.saveAll([...actions, action]);
 
     if (config != null) {
+      final l10n = await loadCurrentLocalizations();
       await _notificationOutbox.enqueue(
         webhookUrl: config.webhookUrl,
-        message: _describeRequested(action, delay),
+        message: _describeRequested(l10n, action, delay),
       );
     }
 
@@ -107,10 +110,12 @@ class AccountabilityRepository {
     final config = await loadConfig();
     final cancelled = actions.where((action) => action.id == id).firstOrNull;
     if (config != null && cancelled != null) {
+      final l10n = await loadCurrentLocalizations();
       await _notificationOutbox.enqueue(
         webhookUrl: config.webhookUrl,
-        message: 'Pedido de "${_describeType(cancelled.type)}" foi cancelado '
-            'antes de entrar em vigor.',
+        message: l10n.webhookCancelledMessage(
+          _describeType(l10n, cancelled.type),
+        ),
       );
     }
   }
@@ -138,39 +143,45 @@ class AccountabilityRepository {
 
     final config = await loadConfig();
     if (config != null) {
+      final l10n = await loadCurrentLocalizations();
       await _notificationOutbox.enqueue(
         webhookUrl: config.webhookUrl,
-        message: '"${_describeType(action.type)}" agora está em vigor neste '
-            'dispositivo.',
+        message: l10n.webhookAppliedMessage(_describeType(l10n, action.type)),
       );
     }
   }
 
   Future<void> flushPendingNotifications() => _notificationOutbox.flush();
 
-  String _describeRequested(PendingAction action, Duration delay) {
+  String _describeRequested(
+    AppLocalizations l10n,
+    PendingAction action,
+    Duration delay,
+  ) {
     final readyAtLabel = _formatTime(action.readyAt);
-    return 'Pedido: "${_describeType(action.type)}" neste dispositivo. '
-        'Passa a valer às $readyAtLabel (em ${delay.inMinutes} min) se '
-        'ninguém cancelar.';
+    return l10n.webhookRequestedMessage(
+      _describeType(l10n, action.type),
+      readyAtLabel,
+      delay.inMinutes,
+    );
   }
 
-  String _describeType(PendingActionType type) {
+  String _describeType(AppLocalizations l10n, PendingActionType type) {
     switch (type) {
       case PendingActionType.disableProtection:
-        return 'desativar a proteção';
+        return l10n.actionDisableProtection;
       case PendingActionType.removeBlocklistDomain:
-        return 'remover domínio da lista de bloqueio';
+        return l10n.actionRemoveBlocklistDomain;
       case PendingActionType.changeWebhookUrl:
-        return 'trocar o webhook de notificação';
+        return l10n.actionChangeWebhookUrl;
       case PendingActionType.changeRemoteBlocklistUrl:
-        return 'trocar a lista remota de domínios bloqueados';
+        return l10n.actionChangeRemoteBlocklistUrl;
       case PendingActionType.increaseSensitiveActionDelay:
-        return 'aumentar o tempo de espera de mudanças';
+        return l10n.actionIncreaseDelay;
       case PendingActionType.decreaseSensitiveActionDelay:
-        return 'diminuir o tempo de espera de mudanças';
+        return l10n.actionDecreaseDelay;
       case PendingActionType.deactivateDeviceAdmin:
-        return 'desativar o administrador do dispositivo (permite desinstalar)';
+        return l10n.actionDeactivateDeviceAdmin;
     }
   }
 

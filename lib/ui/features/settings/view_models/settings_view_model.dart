@@ -9,6 +9,7 @@ import 'package:clearguard/domain/models/pending_action.dart';
 import 'package:clearguard/domain/use_cases/cancel_pending_action_use_case.dart';
 import 'package:clearguard/domain/use_cases/request_sensitive_action_use_case.dart';
 import 'package:clearguard/domain/use_cases/sync_trigger_guard_use_case.dart';
+import 'package:clearguard/l10n/l10n_util.dart';
 import 'package:flutter/foundation.dart';
 
 class SettingsViewModel extends ChangeNotifier {
@@ -137,7 +138,7 @@ class SettingsViewModel extends ChangeNotifier {
       notifyListeners();
       return true;
     } on PinRejectedException {
-      _errorMessage = 'PIN incorreto.';
+      _errorMessage = (await loadCurrentLocalizations()).pinIncorrectError;
       notifyListeners();
       return false;
     }

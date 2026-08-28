@@ -1,22 +1,4 @@
-enum TriggerAppCategory {
-  socialMedia,
-  dating,
-  messaging,
-  circumvention;
-
-  String get label {
-    switch (this) {
-      case TriggerAppCategory.socialMedia:
-        return 'Rede social';
-      case TriggerAppCategory.dating:
-        return 'App de encontros';
-      case TriggerAppCategory.messaging:
-        return 'Mensagens sem moderação';
-      case TriggerAppCategory.circumvention:
-        return 'Pode contornar o filtro';
-    }
-  }
-}
+enum TriggerAppCategory { socialMedia, dating, messaging, circumvention }
 
 class TriggerApp {
   const TriggerApp({

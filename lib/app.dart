@@ -24,6 +24,7 @@ import 'package:clearguard/domain/use_cases/enable_protection_use_case.dart';
 import 'package:clearguard/domain/use_cases/request_sensitive_action_use_case.dart';
 import 'package:clearguard/domain/use_cases/sync_trigger_guard_use_case.dart';
 import 'package:clearguard/domain/use_cases/update_blocklist_use_case.dart';
+import 'package:clearguard/l10n/generated/app_localizations.dart';
 import 'package:clearguard/ui/core/theme/app_theme.dart';
 import 'package:clearguard/ui/features/dashboard/view_models/dashboard_view_model.dart';
 import 'package:clearguard/ui/features/dashboard/views/dashboard_view.dart';
@@ -155,10 +156,12 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ClearGuard',
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: switch (_isConfigured) {
         null => const Scaffold(
             body: Center(child: CircularProgressIndicator()),

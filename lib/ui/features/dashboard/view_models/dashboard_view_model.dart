@@ -14,6 +14,8 @@ import 'package:clearguard/domain/use_cases/enable_protection_use_case.dart';
 import 'package:clearguard/domain/use_cases/request_sensitive_action_use_case.dart';
 import 'package:clearguard/domain/use_cases/sync_trigger_guard_use_case.dart';
 import 'package:clearguard/domain/use_cases/update_blocklist_use_case.dart';
+import 'package:clearguard/l10n/domain_text.dart';
+import 'package:clearguard/l10n/l10n_util.dart';
 import 'package:flutter/foundation.dart';
 
 class DashboardViewModel extends ChangeNotifier {
@@ -100,16 +102,17 @@ class DashboardViewModel extends ChangeNotifier {
     final streak = _streak;
     if (streak == null) return;
 
+    final l10n = await loadCurrentLocalizations();
     final tip = WellbeingTip.forDay(DateTime.now());
     final title = streak.current > 0
-        ? '🔥 ${streak.current} dia(s) seguido(s) protegido'
-        : 'Hora de retomar sua proteção';
+        ? l10n.notificationStreakTitle(streak.current)
+        : l10n.notificationResumeTitle;
 
     try {
       await _notificationService.requestPermission();
       await _notificationService.scheduleDailyReminder(
         title: title,
-        body: tip.title,
+        body: tip.title(l10n),
       );
     } on Exception {
       return;
@@ -145,7 +148,7 @@ class DashboardViewModel extends ChangeNotifier {
       notifyListeners();
       return true;
     } on PinRejectedException {
-      _errorMessage = 'PIN incorreto.';
+      _errorMessage = (await loadCurrentLocalizations()).pinIncorrectError;
       notifyListeners();
       return false;
     }

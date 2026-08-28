@@ -1,3 +1,4 @@
+import 'package:clearguard/l10n/generated/app_localizations.dart';
 import 'package:clearguard/ui/features/onboarding/view_models/onboarding_view_model.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,7 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ListenableBuilder(
       listenable: widget.viewModel,
       builder: (context, _) {
@@ -43,16 +45,16 @@ class _OnboardingViewState extends State<OnboardingView> {
         }
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Configurar ClearGuard')),
+          appBar: AppBar(title: Text(l10n.onboardingAppBarTitle)),
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: switch (widget.viewModel.step) {
                 OnboardingStep.accountabilitySetup =>
-                  _buildAccountabilityStep(),
-                OnboardingStep.vpnPermission => _buildVpnPermissionStep(),
+                  _buildAccountabilityStep(l10n),
+                OnboardingStep.vpnPermission => _buildVpnPermissionStep(l10n),
                 OnboardingStep.screenMonitorPermission =>
-                  _buildScreenMonitorStep(),
+                  _buildScreenMonitorStep(l10n),
                 OnboardingStep.done => const Center(
                     child: CircularProgressIndicator(),
                   ),
@@ -64,57 +66,54 @@ class _OnboardingViewState extends State<OnboardingView> {
     );
   }
 
-  Widget _buildAccountabilityStep() {
+  Widget _buildAccountabilityStep(AppLocalizations l10n) {
     return ListView(
       children: [
         Text(
-          'Configuração de confiança',
+          l10n.onboardingTrustTitle,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         const SizedBox(height: 8),
-        const Text(
-          'O ideal é que quem digita o PIN e o webhook abaixo seja o seu '
-          'parceiro de confiança, não você. Toda tentativa de desativar a '
-          'proteção vai gerar um aviso nesse webhook antes de valer.',
-        ),
+        Text(l10n.onboardingTrustBody),
         const SizedBox(height: 24),
         TextField(
           controller: _pinController,
           keyboardType: TextInputType.number,
           obscureText: true,
-          decoration: const InputDecoration(labelText: 'PIN (mín. 6 dígitos)'),
+          decoration: InputDecoration(labelText: l10n.pinLabel),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _pinConfirmController,
           keyboardType: TextInputType.number,
           obscureText: true,
-          decoration: const InputDecoration(labelText: 'Confirmar PIN'),
+          decoration: InputDecoration(labelText: l10n.pinConfirmLabel),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _webhookController,
           keyboardType: TextInputType.url,
-          decoration: const InputDecoration(
-            labelText: 'Webhook do parceiro (Discord/Slack/Telegram)',
-          ),
+          decoration: InputDecoration(labelText: l10n.webhookOnboardingLabel),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _partnerController,
-          decoration: const InputDecoration(
-            labelText: 'Como chamar o parceiro (ex: "Ana")',
-          ),
+          decoration: InputDecoration(labelText: l10n.partnerNameLabel),
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            const Text('Tempo de espera antes de qualquer mudança valer:'),
+            Text(l10n.delayBeforeChangeLabel),
             const SizedBox(width: 12),
             DropdownButton<int>(
               value: _delayMinutes,
               items: const [15, 30, 60, 120]
-                  .map((m) => DropdownMenuItem(value: m, child: Text('$m min')))
+                  .map(
+                    (m) => DropdownMenuItem(
+                      value: m,
+                      child: Text(l10n.minutesShort(m)),
+                    ),
+                  )
                   .toList(),
               onChanged: (value) =>
                   setState(() => _delayMinutes = value ?? _delayMinutes),
@@ -138,66 +137,57 @@ class _OnboardingViewState extends State<OnboardingView> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Continuar'),
+              : Text(l10n.continueButton),
         ),
       ],
     );
   }
 
   Future<void> _submitAccountability() async {
+    final l10n = AppLocalizations.of(context)!;
     await widget.viewModel.submitAccountabilitySetup(
       pin: _pinController.text,
       pinConfirmation: _pinConfirmController.text,
       webhookUrl: _webhookController.text,
       partnerLabel: _partnerController.text.isEmpty
-          ? 'seu parceiro'
+          ? l10n.defaultPartnerLabel
           : _partnerController.text,
       delay: Duration(minutes: _delayMinutes),
     );
   }
 
-  Widget _buildVpnPermissionStep() {
+  Widget _buildVpnPermissionStep(AppLocalizations l10n) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Icon(Icons.vpn_lock, size: 64),
         const SizedBox(height: 16),
-        const Text(
-          'O Android vai pedir permissão de VPN local. É assim que o '
-          'ClearGuard filtra os domínios bloqueados, sem enviar seu tráfego '
-          'para nenhum servidor externo.',
-          textAlign: TextAlign.center,
-        ),
+        Text(l10n.vpnPermissionBody, textAlign: TextAlign.center),
         const SizedBox(height: 24),
         FilledButton(
           onPressed: () => widget.viewModel.requestVpnPermission(),
-          child: const Text('Conceder permissão de VPN'),
+          child: Text(l10n.grantVpnButton),
         ),
       ],
     );
   }
 
-  Widget _buildScreenMonitorStep() {
+  Widget _buildScreenMonitorStep(AppLocalizations l10n) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Icon(Icons.accessibility_new, size: 64),
         const SizedBox(height: 16),
-        const Text(
-          'Agora ative o serviço de Acessibilidade do ClearGuard nas '
-          'configurações do Android. Ele complementa o bloqueio por DNS '
-          'detectando conteúdo explícito em páginas que já carregaram.',
-          textAlign: TextAlign.center,
-        ),
+        Text(l10n.screenMonitorBody, textAlign: TextAlign.center),
         const SizedBox(height: 24),
         OutlinedButton(
           onPressed: () => widget.viewModel.openScreenMonitorSettings(),
-          child: const Text('Abrir configurações de Acessibilidade'),
+          child: Text(l10n.openAccessibilitySettingsButton),
         ),
         const SizedBox(height: 12),
         FilledButton(
           onPressed: () => widget.viewModel.confirmScreenMonitorPermission(),
-          child: const Text('Já ativei, continuar'),
+          child: Text(l10n.confirmScreenMonitorButton),
         ),
       ],
     );

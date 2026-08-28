@@ -1,24 +1,6 @@
 import 'package:clearguard/domain/models/trigger_app.dart';
 
-enum TriggerAppsRiskLevel {
-  none,
-  low,
-  medium,
-  high;
-
-  String get label {
-    switch (this) {
-      case TriggerAppsRiskLevel.none:
-        return 'Nenhum app de risco detectado';
-      case TriggerAppsRiskLevel.low:
-        return 'Risco baixo';
-      case TriggerAppsRiskLevel.medium:
-        return 'Risco moderado';
-      case TriggerAppsRiskLevel.high:
-        return 'Risco alto';
-    }
-  }
-}
+enum TriggerAppsRiskLevel { none, low, medium, high }
 
 class TriggerAppsReport {
   const TriggerAppsReport({required this.detectedApps, required this.score});

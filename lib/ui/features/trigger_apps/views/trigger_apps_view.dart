@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:clearguard/domain/models/trigger_app.dart';
 import 'package:clearguard/domain/models/trigger_apps_report.dart';
 import 'package:clearguard/domain/models/wellbeing_tip.dart';
+import 'package:clearguard/l10n/domain_text.dart';
+import 'package:clearguard/l10n/generated/app_localizations.dart';
 import 'package:clearguard/ui/features/trigger_apps/view_models/trigger_apps_view_model.dart';
 import 'package:flutter/material.dart';
 
@@ -24,12 +26,13 @@ class _TriggerAppsViewState extends State<TriggerAppsView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ListenableBuilder(
       listenable: widget.viewModel,
       builder: (context, _) {
         final report = widget.viewModel.report;
         return Scaffold(
-          appBar: AppBar(title: const Text('Apps de risco')),
+          appBar: AppBar(title: Text(l10n.triggerAppsCardTitle)),
           body: widget.viewModel.isLoading || report == null
               ? const Center(child: CircularProgressIndicator())
               : RefreshIndicator(
@@ -41,7 +44,7 @@ class _TriggerAppsViewState extends State<TriggerAppsView> {
                       if (report.detectedApps.isNotEmpty) ...[
                         const SizedBox(height: 28),
                         Text(
-                          'Apps detectados',
+                          l10n.detectedAppsTitle,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 12),
@@ -57,11 +60,11 @@ class _TriggerAppsViewState extends State<TriggerAppsView> {
                       ],
                       const SizedBox(height: 12),
                       Text(
-                        'Dicas',
+                        l10n.tipsTitle,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 12),
-                      for (final tip in WellbeingTip.all)
+                      for (final tip in WellbeingTip.values)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: _TipCard(tip: tip),
@@ -84,6 +87,7 @@ class _RiskSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final success = isDark ? const Color(0xFF7EE0A8) : const Color(0xFF0E8F4F);
@@ -102,25 +106,25 @@ class _RiskSummaryCard extends StatelessWidget {
           success,
           successContainer,
           Icons.check_circle_outline,
-          'Nenhum app da nossa lista de risco foi encontrado.',
+          l10n.riskNoneSubtitle,
         ),
       TriggerAppsRiskLevel.low => (
           success,
           successContainer,
           Icons.info_outline,
-          '${report.detectedApps.length} app(s) de baixo risco encontrado(s).',
+          l10n.riskLowSubtitle(report.detectedApps.length),
         ),
       TriggerAppsRiskLevel.medium => (
           warning,
           warningContainer,
           Icons.warning_amber,
-          '${report.detectedApps.length} app(s) que merecem atenção.',
+          l10n.riskMediumSubtitle(report.detectedApps.length),
         ),
       TriggerAppsRiskLevel.high => (
           danger,
           dangerContainer,
           Icons.error_outline,
-          'Vários apps de risco, incluindo formas de contornar o filtro.',
+          l10n.riskHighSubtitle,
         ),
     };
 
@@ -147,7 +151,7 @@ class _RiskSummaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  report.riskLevel.label,
+                  report.riskLevel.label(l10n),
                   style: textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -178,6 +182,7 @@ class _CategoryGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -189,7 +194,7 @@ class _CategoryGroup extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            category.label,
+            category.label(l10n),
             style: textTheme.titleSmall?.copyWith(
               color: scheme.onSurfaceVariant,
             ),
@@ -222,6 +227,7 @@ class _TipCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -233,12 +239,12 @@ class _TipCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            tip.title,
+            tip.title(l10n),
             style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 4),
           Text(
-            tip.body,
+            tip.body(l10n),
             style: textTheme.bodyMedium?.copyWith(
               color: scheme.onSurfaceVariant,
             ),
