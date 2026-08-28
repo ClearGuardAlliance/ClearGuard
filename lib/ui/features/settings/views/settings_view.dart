@@ -101,12 +101,15 @@ class _SettingsViewState extends State<SettingsView> {
                             () => _delayMinutes = value ?? _delayMinutes,
                           ),
                         ),
-                        const Spacer(),
-                        OutlinedButton(
-                          onPressed: () => _requestDelayChange(context),
-                          child: const Text('Solicitar mudança'),
-                        ),
                       ],
+                    ),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: OutlinedButton(
+                        onPressed: () => _requestDelayChange(context),
+                        child: const Text('Solicitar mudança'),
+                      ),
                     ),
                     const SizedBox(height: 32),
                     Text(
