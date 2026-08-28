@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClearGuard</string>
+    <string name="accessibility_service_description">
+        画面に表示されているテキストを読み取り、ClearGuardのDNSフィルターを
+        すり抜けたアダルトコンテンツを検知してブロックします。
+    </string>
+
+    <string name="settings_guard_description">
+        アプリの設定変更を防止します。
+    </string>
+
+    <string name="trigger_app_guard_description">
+        リスクリストのアプリが開かれたことを検知し、設定された時間帯には
+        一時停止画面またはブロック画面を表示します。
+    </string>
+
+    <string name="device_admin_explanation">
+        ClearGuardのアンインストールを、ホーム画面からのワンタップではなく、
+        意図的な操作が必要な手順にします。
+    </string>
+
+    <string name="block_overlay_title">ClearGuardによってブロックされたコンテンツ</string>
+    <string name="back_to_home_button">ホーム画面に戻る</string>
+
+    <string name="trigger_guard_block_title">許可された時間帯外です</string>
+    <string name="trigger_guard_block_body">
+        現在、このアプリはClearGuardによってブロックされています。
+    </string>
+    <string name="trigger_guard_pause_title">
+        続ける前に、一呼吸置きましょう
+    </string>
+    <string name="trigger_guard_continue_button">続ける</string>
+    <string name="trigger_guard_ready_label">準備完了</string>
+</resources>
