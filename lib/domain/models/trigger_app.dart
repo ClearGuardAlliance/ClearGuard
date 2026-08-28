@@ -1,0 +1,142 @@
+enum TriggerAppCategory {
+  socialMedia,
+  dating,
+  messaging,
+  circumvention;
+
+  String get label {
+    switch (this) {
+      case TriggerAppCategory.socialMedia:
+        return 'Rede social';
+      case TriggerAppCategory.dating:
+        return 'App de encontros';
+      case TriggerAppCategory.messaging:
+        return 'Mensagens sem moderação';
+      case TriggerAppCategory.circumvention:
+        return 'Pode contornar o filtro';
+    }
+  }
+}
+
+class TriggerApp {
+  const TriggerApp({
+    required this.packageName,
+    required this.displayName,
+    required this.category,
+    required this.weight,
+  });
+
+  final String packageName;
+  final String displayName;
+  final TriggerAppCategory category;
+
+  /// Contribution to the overall risk score. Circumvention apps (other VPNs,
+  /// Tor) weigh more because they threaten the DNS filter directly, not just
+  /// exposure to content.
+  final int weight;
+
+  static const catalog = <TriggerApp>[
+    TriggerApp(
+      packageName: 'com.instagram.android',
+      displayName: 'Instagram',
+      category: TriggerAppCategory.socialMedia,
+      weight: 2,
+    ),
+    TriggerApp(
+      packageName: 'com.zhiliaoapp.musically',
+      displayName: 'TikTok',
+      category: TriggerAppCategory.socialMedia,
+      weight: 2,
+    ),
+    TriggerApp(
+      packageName: 'com.snapchat.android',
+      displayName: 'Snapchat',
+      category: TriggerAppCategory.socialMedia,
+      weight: 2,
+    ),
+    TriggerApp(
+      packageName: 'com.twitter.android',
+      displayName: 'X (Twitter)',
+      category: TriggerAppCategory.socialMedia,
+      weight: 2,
+    ),
+    TriggerApp(
+      packageName: 'com.reddit.frontpage',
+      displayName: 'Reddit',
+      category: TriggerAppCategory.socialMedia,
+      weight: 2,
+    ),
+    TriggerApp(
+      packageName: 'com.tumblr',
+      displayName: 'Tumblr',
+      category: TriggerAppCategory.socialMedia,
+      weight: 2,
+    ),
+    TriggerApp(
+      packageName: 'com.facebook.katana',
+      displayName: 'Facebook',
+      category: TriggerAppCategory.socialMedia,
+      weight: 1,
+    ),
+    TriggerApp(
+      packageName: 'com.pinterest',
+      displayName: 'Pinterest',
+      category: TriggerAppCategory.socialMedia,
+      weight: 1,
+    ),
+    TriggerApp(
+      packageName: 'com.tinder',
+      displayName: 'Tinder',
+      category: TriggerAppCategory.dating,
+      weight: 3,
+    ),
+    TriggerApp(
+      packageName: 'com.bumble.app',
+      displayName: 'Bumble',
+      category: TriggerAppCategory.dating,
+      weight: 3,
+    ),
+    TriggerApp(
+      packageName: 'org.telegram.messenger',
+      displayName: 'Telegram',
+      category: TriggerAppCategory.messaging,
+      weight: 2,
+    ),
+    TriggerApp(
+      packageName: 'com.discord',
+      displayName: 'Discord',
+      category: TriggerAppCategory.messaging,
+      weight: 1,
+    ),
+    TriggerApp(
+      packageName: 'com.nordvpn.android',
+      displayName: 'NordVPN',
+      category: TriggerAppCategory.circumvention,
+      weight: 4,
+    ),
+    TriggerApp(
+      packageName: 'com.expressvpn.vpn',
+      displayName: 'ExpressVPN',
+      category: TriggerAppCategory.circumvention,
+      weight: 4,
+    ),
+    TriggerApp(
+      packageName: 'ch.protonvpn.android',
+      displayName: 'Proton VPN',
+      category: TriggerAppCategory.circumvention,
+      weight: 4,
+    ),
+    TriggerApp(
+      packageName: 'org.torproject.torbrowser',
+      displayName: 'Tor Browser',
+      category: TriggerAppCategory.circumvention,
+      weight: 4,
+    ),
+    TriggerApp(
+      packageName: 'org.torproject.android',
+      displayName: 'Orbot',
+      category: TriggerAppCategory.circumvention,
+      weight: 4,
+    ),
+  ];
+}
