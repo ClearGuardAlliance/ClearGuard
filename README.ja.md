@@ -10,7 +10,7 @@ ClearGuard は、ローカル DNS フィルタリングによってポルノコ�
 
 ## アーキテクチャ
 
-Flutter のコードは `lib` にあり、`data`(サービスとリポジトリ)、`domain`(モデルとビジネスルール)、`ui`(画面とビューモデル)に分かれています。Android のネイティブコードは `native_android` にあり、VPN サービス、画面監視サービス、生成された Flutter プロジェクトへの組み込み手順が含まれます。
+Flutter のコードは `lib` にあり、`data`(サービスとリポジトリ)、`domain`(モデルとビジネスルール)、`ui`(画面とビューモデル)に分かれています。Android のネイティブコードは `android/app/src/main/kotlin` にあり、VPN サービスと画面監視サービスに加えて、標準の Gradle/AGP プロジェクト構成が含まれます。
 
 ## 制限事項
 
@@ -23,4 +23,4 @@ flutter pub get
 flutter test
 ```
 
-Android 側については `native_android/README.md` を参照してください。ローカルで何も設定せずに APK をビルドするには、Actions タブから `Build Android app` ワークフローを実行してください。
+Android 側については `android/README.md` を参照してください。ローカルで何も設定せずに APK をビルドするには、Actions タブから `Build Android app` ワークフローを実行してください。

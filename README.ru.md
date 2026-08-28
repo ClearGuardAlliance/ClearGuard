@@ -10,7 +10,7 @@ ClearGuard это приложение для Android, которое блоки
 
 ## Архитектура
 
-Код на Flutter находится в `lib`, разделён на `data` (сервисы и репозитории), `domain` (модели и бизнес правила) и `ui` (экраны и view models). Нативный код для Android находится в `native_android`, вместе со службой VPN, монитором экрана и инструкциями по интеграции в сгенерированный проект Flutter.
+Код на Flutter находится в `lib`, разделён на `data` (сервисы и репозитории), `domain` (модели и бизнес правила) и `ui` (экраны и view models). Нативный код для Android находится в `android/app/src/main/kotlin`, вместе со службой VPN и монитором экрана, наряду со стандартной структурой проекта Gradle/AGP.
 
 ## Ограничения
 
@@ -23,4 +23,4 @@ flutter pub get
 flutter test
 ```
 
-Для Android части следуйте `native_android/README.md`. Чтобы собрать APK без локальной настройки, запустите workflow `Build Android app` во вкладке Actions.
+Подробнее об Android-части — в `android/README.md`. Чтобы собрать APK без локальной настройки, запустите workflow `Build Android app` во вкладке Actions.

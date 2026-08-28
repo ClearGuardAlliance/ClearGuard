@@ -30,12 +30,6 @@ jobs:
         with:
           channel: stable
 
-      - name: Generate native Android shell
-        run: flutter create --platforms=android --org com.clearguardalliance -a kotlin .
-
-      - name: Apply ClearGuard native integration
-        run: python3 scripts/setup_native_android.py
-
       - name: Install dependencies
         run: flutter pub get
 
