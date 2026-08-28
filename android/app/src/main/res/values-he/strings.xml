@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClearGuard</string>
+    <string name="accessibility_service_description">
+        קורא את הטקסט הגלוי על המסך כדי לזהות ולחסום תוכן בוטה
+        שעקף את סינון ה-DNS של ClearGuard.
+    </string>
+
+    <string name="settings_guard_description">
+        מונע שינוי הגדרות באפליקציה.
+    </string>
+
+    <string name="trigger_app_guard_description">
+        מזהה כאשר אפליקציה מרשימת הסיכון נפתחת, כדי להציג השהיה או
+        לחסום גישה בשעות שהוגדרו.
+    </string>
+
+    <string name="device_admin_explanation">
+        הופך את הסרת ההתקנה של ClearGuard לפעולה מודעת, במקום הקשה
+        אחת ממסך הבית.
+    </string>
+
+    <string name="block_overlay_title">תוכן שנחסם על ידי ClearGuard</string>
+    <string name="back_to_home_button">חזרה למסך הבית</string>
+
+    <string name="trigger_guard_block_title">מחוץ לשעות המותרות</string>
+    <string name="trigger_guard_block_body">
+        האפליקציה הזו חסומה כרגע על ידי ClearGuard.
+    </string>
+    <string name="trigger_guard_pause_title">
+        קח נשימה לפני שתמשיך
+    </string>
+    <string name="trigger_guard_continue_button">המשך</string>
+    <string name="trigger_guard_ready_label">מוכן</string>
+</resources>
