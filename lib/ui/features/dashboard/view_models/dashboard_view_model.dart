@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:clearguard/data/repositories/accountability_repository.dart';
 import 'package:clearguard/data/repositories/protection_repository.dart';
+import 'package:clearguard/data/repositories/protection_streak_repository.dart';
 import 'package:clearguard/domain/models/pending_action.dart';
 import 'package:clearguard/domain/models/protection_status.dart';
+import 'package:clearguard/domain/models/protection_streak.dart';
 import 'package:clearguard/domain/use_cases/apply_ready_pending_actions_use_case.dart';
 import 'package:clearguard/domain/use_cases/cancel_pending_action_use_case.dart';
 import 'package:clearguard/domain/use_cases/enable_protection_use_case.dart';
@@ -20,13 +22,15 @@ class DashboardViewModel extends ChangeNotifier {
     required ApplyReadyPendingActionsUseCase applyReadyPendingActionsUseCase,
     required CancelPendingActionUseCase cancelPendingActionUseCase,
     required UpdateBlocklistUseCase updateBlocklistUseCase,
+    required ProtectionStreakRepository protectionStreakRepository,
   })  : _protectionRepository = protectionRepository,
         _accountabilityRepository = accountabilityRepository,
         _enableProtectionUseCase = enableProtectionUseCase,
         _requestSensitiveActionUseCase = requestSensitiveActionUseCase,
         _applyReadyPendingActionsUseCase = applyReadyPendingActionsUseCase,
         _cancelPendingActionUseCase = cancelPendingActionUseCase,
-        _updateBlocklistUseCase = updateBlocklistUseCase;
+        _updateBlocklistUseCase = updateBlocklistUseCase,
+        _protectionStreakRepository = protectionStreakRepository;
 
   final ProtectionRepository _protectionRepository;
   final AccountabilityRepository _accountabilityRepository;
@@ -35,6 +39,7 @@ class DashboardViewModel extends ChangeNotifier {
   final ApplyReadyPendingActionsUseCase _applyReadyPendingActionsUseCase;
   final CancelPendingActionUseCase _cancelPendingActionUseCase;
   final UpdateBlocklistUseCase _updateBlocklistUseCase;
+  final ProtectionStreakRepository _protectionStreakRepository;
 
   StreamSubscription<ProtectionStatus>? _statusSubscription;
   Timer? _ticker;
@@ -50,6 +55,9 @@ class DashboardViewModel extends ChangeNotifier {
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
+
+  ProtectionStreak? _streak;
+  ProtectionStreak? get streak => _streak;
 
   Future<void> initialize() async {
     try {
@@ -70,6 +78,10 @@ class DashboardViewModel extends ChangeNotifier {
     } on Exception {
       // Keep showing the dashboard even if the blocklist sync fails.
     }
+
+    _streak = await _protectionStreakRepository.recordDay(
+      isProtectionActive: _status == ProtectionStatus.active,
+    );
     notifyListeners();
   }
 

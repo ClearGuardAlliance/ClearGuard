@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clearguard/domain/models/pending_action.dart';
 import 'package:clearguard/domain/models/protection_status.dart';
+import 'package:clearguard/domain/models/protection_streak.dart';
 import 'package:clearguard/ui/core/widgets/protection_status_card.dart';
 import 'package:clearguard/ui/features/dashboard/view_models/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,10 @@ class _DashboardViewState extends State<DashboardView> {
                   status: widget.viewModel.status,
                   blockedDomainCount: widget.viewModel.blockedDomainCount,
                 ),
+                if ((widget.viewModel.streak?.current ?? 0) > 0) ...[
+                  const SizedBox(height: 12),
+                  _StreakBadge(streak: widget.viewModel.streak!),
+                ],
                 ...widget.viewModel.pendingActions
                     .where((a) => a.state == PendingActionState.pending)
                     .map(
@@ -329,6 +334,50 @@ class _PendingActionCard extends StatelessWidget {
             TextButton(onPressed: onCancel, child: const Text('Cancelar')),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _StreakBadge extends StatelessWidget {
+  const _StreakBadge({required this.streak});
+
+  final ProtectionStreak streak;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final days = streak.current == 1
+        ? '1 dia seguido'
+        : '${streak.current} dias seguidos';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          const Text('🔥', style: TextStyle(fontSize: 20)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              days,
+              style: textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          if (streak.longest > streak.current)
+            Text(
+              'Recorde: ${streak.longest}',
+              style: textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+        ],
       ),
     );
   }

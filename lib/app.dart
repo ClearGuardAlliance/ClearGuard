@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:clearguard/data/repositories/accountability_repository.dart';
 import 'package:clearguard/data/repositories/blocklist_repository.dart';
 import 'package:clearguard/data/repositories/protection_repository.dart';
+import 'package:clearguard/data/repositories/protection_streak_repository.dart';
 import 'package:clearguard/data/repositories/trigger_apps_repository.dart';
 import 'package:clearguard/data/services/blocklist_source_service.dart';
 import 'package:clearguard/data/services/device_admin_platform_service.dart';
@@ -65,6 +66,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
   late final _triggerAppsRepository = TriggerAppsRepository(
     installedAppsService: _installedAppsService,
   );
+  late final _protectionStreakRepository = ProtectionStreakRepository();
 
   late final _enableProtectionUseCase = EnableProtectionUseCase(
     protectionRepository: _protectionRepository,
@@ -165,6 +167,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
               applyReadyPendingActionsUseCase: _applyReadyPendingActionsUseCase,
               cancelPendingActionUseCase: _cancelPendingActionUseCase,
               updateBlocklistUseCase: _updateBlocklistUseCase,
+              protectionStreakRepository: _protectionStreakRepository,
             ),
             onOpenSettings: () => _openSettings(context),
             onOpenTriggerApps: () => _openTriggerApps(context),
