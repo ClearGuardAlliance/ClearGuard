@@ -10,7 +10,7 @@ O bloqueio principal roda numa VPN local que filtra as consultas de DNS pela lis
 
 ## Arquitetura
 
-O código Flutter fica em `lib`, dividido em `data` (serviços e repositórios), `domain` (modelos e regras de negócio) e `ui` (telas e view models). O código nativo Android fica em `native_android`, com o serviço de VPN, o monitor de tela e as instruções para integrar num projeto Flutter gerado. A identidade visual (`lib/ui/core/theme/app_theme.dart`) é um tema Material 3 construído a partir de um verde-jade profundo, com Manrope nos títulos e Inter no corpo do texto; as duas fontes vêm embutidas como assets locais, então o app nunca depende de rede pra renderizar corretamente.
+O código Flutter fica em `lib`, dividido em `data` (serviços e repositórios), `domain` (modelos e regras de negócio) e `ui` (telas e view models). O código nativo Android fica em `android/app/src/main/kotlin`, com o serviço de VPN e o monitor de tela, junto com a estrutura padrão de projeto Gradle/AGP. A identidade visual (`lib/ui/core/theme/app_theme.dart`) é um tema Material 3 construído a partir de um verde-jade profundo, com Manrope nos títulos e Inter no corpo do texto; as duas fontes vêm embutidas como assets locais, então o app nunca depende de rede pra renderizar corretamente.
 
 ## Limitações
 
@@ -23,4 +23,4 @@ flutter pub get
 flutter test
 ```
 
-Para a parte Android, siga `native_android/README.md`. Para gerar um APK sem configurar nada localmente, rode o workflow `Build Android app` na aba Actions. Todo push e pull request também roda formatação, análise estática (`very_good_analysis`) e testes pelo workflow `CI`, e o Dependabot mantém as dependências atualizadas automaticamente.
+Para a parte Android, veja `android/README.md`. Para gerar um APK sem configurar nada localmente, rode o workflow `Build Android app` na aba Actions. Todo push e pull request também roda formatação, análise estática (`very_good_analysis`) e testes pelo workflow `CI`, e o Dependabot mantém as dependências atualizadas automaticamente.

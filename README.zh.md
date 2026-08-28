@@ -10,7 +10,7 @@ ClearGuard 是一款安卓应用,通过本地 DNS 过滤来阻止色情内容,�
 
 ## 架构
 
-Flutter 代码位于 `lib` 目录,分为 `data`(服务与仓库)、`domain`(模型与业务规则)和 `ui`(界面与视图模型)。安卓原生代码位于 `native_android`,包含 VPN 服务、屏幕监控服务,以及集成到生成的 Flutter 项目中的说明。
+Flutter 代码位于 `lib` 目录,分为 `data`(服务与仓库)、`domain`(模型与业务规则)和 `ui`(界面与视图模型)。安卓原生代码位于 `android/app/src/main/kotlin`,包含 VPN 服务和屏幕监控服务,以及标准的 Gradle/AGP 项目脚手架。
 
 ## 局限性
 
@@ -23,4 +23,4 @@ flutter pub get
 flutter test
 ```
 
-安卓部分请参考 `native_android/README.md`。如果不想在本地配置环境,可以在 Actions 标签页运行 `Build Android app` workflow 来生成 APK。
+安卓部分请参考 `android/README.md`。如果不想在本地配置环境,可以在 Actions 标签页运行 `Build Android app` workflow 来生成 APK。

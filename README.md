@@ -10,7 +10,7 @@ The main blocking runs on a local VPN that filters DNS queries against the block
 
 ## Architecture
 
-The Flutter code lives in `lib`, split into `data` (services and repositories), `domain` (models and business rules), and `ui` (screens and view models). The native Android code lives in `native_android`, with the VPN service, the screen monitor, and instructions for integrating it into a generated Flutter project. The visual identity (`lib/ui/core/theme/app_theme.dart`) is a Material 3 theme built from a deep jade seed color, with Manrope for headings and Inter for body text; both fonts are bundled as local assets so the app never depends on network access to render correctly.
+The Flutter code lives in `lib`, split into `data` (services and repositories), `domain` (models and business rules), and `ui` (screens and view models). The native Android code lives in `android/app/src/main/kotlin`, with the VPN service and the screen monitor, alongside the standard Gradle/AGP project scaffolding. The visual identity (`lib/ui/core/theme/app_theme.dart`) is a Material 3 theme built from a deep jade seed color, with Manrope for headings and Inter for body text; both fonts are bundled as local assets so the app never depends on network access to render correctly.
 
 ## Limitations
 
@@ -23,4 +23,4 @@ flutter pub get
 flutter test
 ```
 
-For the Android side, follow `native_android/README.md`. To build an APK without setting anything up locally, run the `Build Android app` workflow from the Actions tab. Every push and pull request also runs formatting, static analysis (`very_good_analysis`), and tests through the `CI` workflow, and Dependabot keeps dependencies up to date automatically.
+For the Android side, see `android/README.md`. To build an APK without setting anything up locally, run the `Build Android app` workflow from the Actions tab. Every push and pull request also runs formatting, static analysis (`very_good_analysis`), and tests through the `CI` workflow, and Dependabot keeps dependencies up to date automatically.
