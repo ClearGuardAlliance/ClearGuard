@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClearGuard</string>
+    <string name="accessibility_service_description">
+        Считывает видимый текст на экране, чтобы обнаруживать и блокировать
+        откровенный контент, который обошёл DNS-фильтр ClearGuard.
+    </string>
+
+    <string name="settings_guard_description">
+        Запрещает изменять настройки приложения.
+    </string>
+
+    <string name="trigger_app_guard_description">
+        Обнаруживает открытие приложения из списка риска, чтобы показать
+        паузу или заблокировать доступ в настроенные часы.
+    </string>
+
+    <string name="device_admin_explanation">
+        Делает удаление ClearGuard осознанным шагом, а не одним нажатием
+        с главного экрана.
+    </string>
+
+    <string name="block_overlay_title">Контент заблокирован ClearGuard</string>
+    <string name="back_to_home_button">Вернуться на главный экран</string>
+
+    <string name="trigger_guard_block_title">Вне разрешённых часов</string>
+    <string name="trigger_guard_block_body">
+        Это приложение сейчас заблокировано ClearGuard.
+    </string>
+    <string name="trigger_guard_pause_title">
+        Сделайте паузу, прежде чем продолжить
+    </string>
+    <string name="trigger_guard_continue_button">Продолжить</string>
+    <string name="trigger_guard_ready_label">Готово</string>
+</resources>
