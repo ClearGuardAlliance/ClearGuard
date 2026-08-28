@@ -9,4 +9,9 @@
     <string name="settings_guard_description">
         Impede de configurar o aplicativo.
     </string>
+
+    <string name="trigger_app_guard_description">
+        Detecta a abertura de apps da lista de risco para mostrar uma pausa
+        ou bloquear o acesso no horário configurado.
+    </string>
 </resources>

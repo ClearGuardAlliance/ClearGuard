@@ -24,6 +24,7 @@ class MainActivity : FlutterActivity() {
     private val screenMonitorChannelName = "com.clearguard.app/screen_monitor"
     private val deviceAdminChannelName = "com.clearguard.app/device_admin"
     private val installedAppsChannelName = "com.clearguard.app/installed_apps"
+    private val triggerGuardChannelName = "com.clearguard.app/trigger_guard"
 
     private var pendingVpnPermissionResult: MethodChannel.Result? = null
     private var pendingDeviceAdminResult: MethodChannel.Result? = null
@@ -123,6 +124,28 @@ class MainActivity : FlutterActivity() {
                         @Suppress("UNCHECKED_CAST")
                         val candidates = (call.argument<List<String>>("packages") ?: emptyList())
                         result.success(installedFrom(candidates))
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, triggerGuardChannelName)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "syncConfig" -> {
+                        @Suppress("UNCHECKED_CAST")
+                        val packages = (call.argument<List<String>>("packages") ?: emptyList())
+                        val windowEnabled = call.argument<Boolean>("windowEnabled") ?: false
+                        val windowStart = call.argument<Int>("windowStartMinutes") ?: 0
+                        val windowEnd = call.argument<Int>("windowEndMinutes") ?: 0
+                        TriggerAppGuardService.syncConfig(
+                            this,
+                            packages,
+                            windowEnabled,
+                            windowStart,
+                            windowEnd,
+                        )
+                        result.success(null)
                     }
                     else -> result.notImplemented()
                 }
