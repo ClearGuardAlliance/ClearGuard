@@ -129,11 +129,6 @@ class MainActivity : FlutterActivity() {
             }
     }
 
-    /**
-     * Filters [candidates] down to the packages actually installed. Relies on
-     * the <queries> block in the manifest so each lookup works on Android 11+
-     * without the QUERY_ALL_PACKAGES permission.
-     */
     private fun installedFrom(candidates: List<String>): List<String> {
         return candidates.filter { packageName ->
             runCatching { packageManager.getPackageInfo(packageName, 0) }.isSuccess

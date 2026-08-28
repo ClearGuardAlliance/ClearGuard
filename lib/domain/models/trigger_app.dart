@@ -30,9 +30,6 @@ class TriggerApp {
   final String displayName;
   final TriggerAppCategory category;
 
-  /// Contribution to the overall risk score. Circumvention apps (other VPNs,
-  /// Tor) weigh more because they threaten the DNS filter directly, not just
-  /// exposure to content.
   final int weight;
 
   static const catalog = <TriggerApp>[
