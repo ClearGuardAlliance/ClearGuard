@@ -4,11 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('BlockWindow.contains', () {
     test('is false when disabled regardless of time', () {
-      const window = BlockWindow(
-        enabled: false,
-        startMinutes: 23 * 60,
-        endMinutes: 6 * 60,
-      );
+      const window = BlockWindow.defaultWindow;
 
       expect(window.contains(DateTime(2026, 1, 1, 23, 30)), isFalse);
     });

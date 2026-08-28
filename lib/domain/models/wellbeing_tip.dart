@@ -51,5 +51,26 @@ class WellbeingTip {
           'perfeito. Tratar um deslize como fracasso total costuma piorar '
           'a recaída; volte a focar no próximo momento em vez de desistir.',
     ),
+    WellbeingTip(
+      title: 'Tenha um plano se-então',
+      body: 'Decida agora: "se eu sentir vontade de abrir [app], então vou '
+          '[ação específica]". Pesquisas sobre planos se-então mostram que '
+          'essa associação prévia entre gatilho e resposta funciona melhor '
+          'do que confiar só na força de vontade na hora.',
+    ),
+    WellbeingTip(
+      title: 'Mexa o corpo por 10 minutos',
+      body: 'Exercício de intensidade moderada a alta reduz a intensidade '
+          'do impulso quase na mesma hora, segundo estudos com diferentes '
+          'tipos de compulsão. Uma caminhada rápida ou um treino curto '
+          'já ajuda.',
+    ),
+    WellbeingTip(
+      title: 'Trate a culpa com gentileza, não com punição',
+      body: 'Vergonha ("eu sou o problema") está ligada a mais recaída do '
+          'que autocompaixão ("eu escorreguei, e daí?"). Reconhecer o '
+          'deslize sem se atacar é o que a pesquisa associa a uma '
+          'recuperação mais estável.',
+    ),
   ];
 }
