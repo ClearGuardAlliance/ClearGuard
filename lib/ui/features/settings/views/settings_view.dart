@@ -59,153 +59,147 @@ class _SettingsViewState extends State<SettingsView> {
           body: config == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
                   children: [
                     ...widget.viewModel.pendingActions.map(
-                      (action) => _PendingSettingCard(
-                        action: action,
-                        onCancel: () =>
-                            widget.viewModel.cancelPendingAction(action.id),
+                      (action) => Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: _PendingSettingCard(
+                          action: action,
+                          onCancel: () =>
+                              widget.viewModel.cancelPendingAction(action.id),
+                        ),
                       ),
                     ),
-                    if (widget.viewModel.pendingActions.isNotEmpty)
-                      const SizedBox(height: 16),
-                    Text(
-                      l10n.accountabilitySectionTitle,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _webhookController,
-                      keyboardType: TextInputType.url,
-                      decoration: InputDecoration(
-                        labelText: l10n.webhookSettingsLabel,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: OutlinedButton(
-                        onPressed: () => _requestWebhookChange(context),
-                        child: Text(l10n.requestChangeButton),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
+                    _SectionCard(
+                      icon: Icons.shield_moon_outlined,
+                      title: l10n.accountabilitySectionTitle,
                       children: [
-                        Text(l10n.waitTimeLabel),
-                        const SizedBox(width: 12),
-                        DropdownButton<int>(
-                          value: _delayMinutes,
-                          items: const [15, 30, 60, 120]
-                              .map(
-                                (m) => DropdownMenuItem(
-                                  value: m,
-                                  child: Text(l10n.minutesShort(m)),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) => setState(
-                            () => _delayMinutes = value ?? _delayMinutes,
+                        TextField(
+                          controller: _webhookController,
+                          keyboardType: TextInputType.url,
+                          decoration: InputDecoration(
+                            labelText: l10n.webhookSettingsLabel,
                           ),
+                        ),
+                        const SizedBox(height: 8),
+                        OutlinedButton(
+                          onPressed: () => _requestWebhookChange(context),
+                          child: Text(l10n.requestChangeButton),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Text(l10n.waitTimeLabel),
+                            const SizedBox(width: 12),
+                            _DelayDropdown(
+                              value: _delayMinutes,
+                              onChanged: (value) => setState(
+                                () => _delayMinutes = value ?? _delayMinutes,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        OutlinedButton(
+                          onPressed: () => _requestDelayChange(context),
+                          child: Text(l10n.requestChangeButton),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: OutlinedButton(
-                        onPressed: () => _requestDelayChange(context),
-                        child: Text(l10n.requestChangeButton),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    Text(
-                      l10n.blocklistSectionTitle,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _remoteBlocklistController,
-                      keyboardType: TextInputType.url,
-                      decoration: InputDecoration(
-                        labelText: l10n.remoteBlocklistUrlLabel,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: OutlinedButton(
-                        onPressed: () => _requestRemoteBlocklistChange(context),
-                        child: Text(l10n.requestChangeButton),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    Text(
-                      l10n.deviceAdminSectionTitle,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 12),
-                    if (widget.viewModel.isDeviceAdminActive)
-                      Text(l10n.deviceAdminActiveText)
-                    else
-                      FilledButton(
-                        onPressed: () => widget.viewModel.activateDeviceAdmin(),
-                        child: Text(l10n.activateButton),
-                      ),
-                    const SizedBox(height: 32),
-                    Text(
-                      l10n.batterySectionTitle,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 12),
-                    if (widget.viewModel.isIgnoringBatteryOptimizations)
-                      Text(l10n.batteryExemptText)
-                    else
-                      FilledButton(
-                        onPressed: () => widget.viewModel
-                            .requestIgnoreBatteryOptimizations(),
-                        child: Text(l10n.batteryExemptButton),
-                      ),
-                    const SizedBox(height: 32),
-                    Text(
-                      l10n.blockWindowSectionTitle,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      l10n.blockWindowDescription,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 12),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(l10n.blockWindowSwitchLabel),
-                      value: widget.viewModel.blockWindow.enabled,
-                      onChanged: (enabled) => widget.viewModel.setBlockWindow(
-                        widget.viewModel.blockWindow.copyWith(
-                          enabled: enabled,
-                        ),
-                      ),
-                    ),
-                    Row(
+                    const SizedBox(height: 16),
+                    _SectionCard(
+                      icon: Icons.block_outlined,
+                      title: l10n.blocklistSectionTitle,
                       children: [
-                        Expanded(
-                          child: OutlinedButton(
+                        TextField(
+                          controller: _remoteBlocklistController,
+                          keyboardType: TextInputType.url,
+                          decoration: InputDecoration(
+                            labelText: l10n.remoteBlocklistUrlLabel,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        OutlinedButton(
+                          onPressed: () =>
+                              _requestRemoteBlocklistChange(context),
+                          child: Text(l10n.requestChangeButton),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _SectionCard(
+                      icon: Icons.admin_panel_settings_outlined,
+                      title: l10n.deviceAdminSectionTitle,
+                      children: [
+                        if (widget.viewModel.isDeviceAdminActive)
+                          Text(l10n.deviceAdminActiveText)
+                        else
+                          FilledButton(
                             onPressed: () =>
-                                _pickWindowTime(context, isStart: true),
-                            child: Text(
-                              l10n.blockWindowStartLabel(windowStart),
+                                widget.viewModel.activateDeviceAdmin(),
+                            child: Text(l10n.activateButton),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _SectionCard(
+                      icon: Icons.battery_charging_full_outlined,
+                      title: l10n.batterySectionTitle,
+                      children: [
+                        if (widget.viewModel.isIgnoringBatteryOptimizations)
+                          Text(l10n.batteryExemptText)
+                        else
+                          FilledButton(
+                            onPressed: () => widget.viewModel
+                                .requestIgnoreBatteryOptimizations(),
+                            child: Text(l10n.batteryExemptButton),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _SectionCard(
+                      icon: Icons.schedule_outlined,
+                      title: l10n.blockWindowSectionTitle,
+                      children: [
+                        Text(
+                          l10n.blockWindowDescription,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        const SizedBox(height: 12),
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(l10n.blockWindowSwitchLabel),
+                          value: widget.viewModel.blockWindow.enabled,
+                          onChanged: (enabled) =>
+                              widget.viewModel.setBlockWindow(
+                            widget.viewModel.blockWindow.copyWith(
+                              enabled: enabled,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () =>
-                                _pickWindowTime(context, isStart: false),
-                            child: Text(l10n.blockWindowEndLabel(windowEnd)),
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () =>
+                                    _pickWindowTime(context, isStart: true),
+                                child: Text(
+                                  l10n.blockWindowStartLabel(windowStart),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () =>
+                                    _pickWindowTime(context, isStart: false),
+                                child: Text(
+                                  l10n.blockWindowEndLabel(windowEnd),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -312,6 +306,96 @@ class _SettingsViewState extends State<SettingsView> {
             child: Text(l10n.confirmButton),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SectionCard extends StatelessWidget {
+  const _SectionCard({
+    required this.icon,
+    required this.title,
+    required this.children,
+  });
+
+  final IconData icon;
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: scheme.onPrimaryContainer, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ...children,
+        ],
+      ),
+    );
+  }
+}
+
+class _DelayDropdown extends StatelessWidget {
+  const _DelayDropdown({required this.value, required this.onChanged});
+
+  final int value;
+  final ValueChanged<int?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<int>(
+          value: value,
+          items: const [15, 30, 60, 120]
+              .map(
+                (m) => DropdownMenuItem(
+                  value: m,
+                  child: Text(l10n.minutesShort(m)),
+                ),
+              )
+              .toList(),
+          onChanged: onChanged,
+        ),
       ),
     );
   }
