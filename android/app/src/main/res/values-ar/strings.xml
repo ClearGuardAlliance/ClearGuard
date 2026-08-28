@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClearGuard</string>
+    <string name="accessibility_service_description">
+        يقرأ النص الظاهر على الشاشة لاكتشاف وحظر المحتوى الفاضح
+        الذي تجاوز فلتر DNS الخاص بـ ClearGuard.
+    </string>
+
+    <string name="settings_guard_description">
+        يمنع تعديل إعدادات التطبيق.
+    </string>
+
+    <string name="trigger_app_guard_description">
+        يكتشف فتح تطبيق من قائمة الخطر لعرض إيقاف مؤقت أو حظر الوصول
+        خلال الساعات المحددة.
+    </string>
+
+    <string name="device_admin_explanation">
+        يجعل إلغاء تثبيت ClearGuard خطوة متعمدة، بدلًا من مجرد
+        نقرة واحدة من الشاشة الرئيسية.
+    </string>
+
+    <string name="block_overlay_title">المحتوى محظور بواسطة ClearGuard</string>
+    <string name="back_to_home_button">العودة إلى الشاشة الرئيسية</string>
+
+    <string name="trigger_guard_block_title">خارج الساعات المسموح بها</string>
+    <string name="trigger_guard_block_body">
+        هذا التطبيق محظور في هذا الوقت بواسطة ClearGuard.
+    </string>
+    <string name="trigger_guard_pause_title">
+        خذ نفسًا قبل المتابعة
+    </string>
+    <string name="trigger_guard_continue_button">متابعة</string>
+    <string name="trigger_guard_ready_label">جاهز</string>
+</resources>
