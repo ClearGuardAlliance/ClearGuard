@@ -52,7 +52,11 @@ class DashboardViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   Future<void> initialize() async {
-    await _protectionRepository.initialize();
+    try {
+      await _protectionRepository.initialize();
+    } on Exception {
+      _status = ProtectionStatus.error;
+    }
     _statusSubscription = _protectionRepository.statusStream.listen((status) {
       _status = status;
       notifyListeners();
@@ -61,17 +65,24 @@ class DashboardViewModel extends ChangeNotifier {
     _ticker = Timer.periodic(const Duration(seconds: 5), (_) => _tick());
     await _tick();
 
-    _blockedDomainCount = await _updateBlocklistUseCase();
+    try {
+      _blockedDomainCount = await _updateBlocklistUseCase();
+    } on Exception {
+      // Keep showing the dashboard even if the blocklist sync fails.
+    }
     notifyListeners();
   }
 
   Future<void> _tick() async {
     unawaited(_accountabilityRepository.flushPendingNotifications());
 
-    final justApplied = await _applyReadyPendingActionsUseCase();
+    await _applyReadyPendingActionsUseCase();
     _pendingActions = await _accountabilityRepository.loadPendingActions();
-    if (justApplied.isNotEmpty) {
+    try {
       _status = await _protectionRepository.refreshStatus();
+    } on Exception {
+      // Keep the last known status if the platform check fails; the next
+      // tick will retry instead of leaving the UI stuck.
     }
     notifyListeners();
   }
