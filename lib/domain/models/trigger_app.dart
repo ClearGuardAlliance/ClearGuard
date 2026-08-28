@@ -82,6 +82,12 @@ class TriggerApp {
       weight: 1,
     ),
     TriggerApp(
+      packageName: 'tv.twitch.android.app',
+      displayName: 'Twitch',
+      category: TriggerAppCategory.socialMedia,
+      weight: 1,
+    ),
+    TriggerApp(
       packageName: 'com.tinder',
       displayName: 'Tinder',
       category: TriggerAppCategory.dating,
@@ -90,6 +96,18 @@ class TriggerApp {
     TriggerApp(
       packageName: 'com.bumble.app',
       displayName: 'Bumble',
+      category: TriggerAppCategory.dating,
+      weight: 3,
+    ),
+    TriggerApp(
+      packageName: 'com.grindrapp.android',
+      displayName: 'Grindr',
+      category: TriggerAppCategory.dating,
+      weight: 3,
+    ),
+    TriggerApp(
+      packageName: 'co.hinge.app',
+      displayName: 'Hinge',
       category: TriggerAppCategory.dating,
       weight: 3,
     ),
@@ -106,6 +124,12 @@ class TriggerApp {
       weight: 1,
     ),
     TriggerApp(
+      packageName: 'kik.android',
+      displayName: 'Kik',
+      category: TriggerAppCategory.messaging,
+      weight: 2,
+    ),
+    TriggerApp(
       packageName: 'com.nordvpn.android',
       displayName: 'NordVPN',
       category: TriggerAppCategory.circumvention,
@@ -120,6 +144,18 @@ class TriggerApp {
     TriggerApp(
       packageName: 'ch.protonvpn.android',
       displayName: 'Proton VPN',
+      category: TriggerAppCategory.circumvention,
+      weight: 4,
+    ),
+    TriggerApp(
+      packageName: 'com.psiphon3',
+      displayName: 'Psiphon',
+      category: TriggerAppCategory.circumvention,
+      weight: 4,
+    ),
+    TriggerApp(
+      packageName: 'com.windscribe.vpn',
+      displayName: 'Windscribe',
       category: TriggerAppCategory.circumvention,
       weight: 4,
     ),

@@ -72,5 +72,12 @@ class WellbeingTip {
           'deslize sem se atacar é o que a pesquisa associa a uma '
           'recuperação mais estável.',
     ),
+    WellbeingTip(
+      title: 'Registre por escrito, não só na cabeça',
+      body: 'Quando bater um impulso, anote a situação, a intensidade de '
+          '1 a 10 e o que ajudou a passar. Esse registro estruturado é uma '
+          'técnica central da TCC para revelar padrões que a memória '
+          'sozinha deixa passar.',
+    ),
   ];
 }

@@ -77,13 +77,19 @@
         <package android:name="com.tumblr" />
         <package android:name="com.facebook.katana" />
         <package android:name="com.pinterest" />
+        <package android:name="tv.twitch.android.app" />
         <package android:name="com.tinder" />
         <package android:name="com.bumble.app" />
+        <package android:name="com.grindrapp.android" />
+        <package android:name="co.hinge.app" />
         <package android:name="org.telegram.messenger" />
         <package android:name="com.discord" />
+        <package android:name="kik.android" />
         <package android:name="com.nordvpn.android" />
         <package android:name="com.expressvpn.vpn" />
         <package android:name="ch.protonvpn.android" />
+        <package android:name="com.psiphon3" />
+        <package android:name="com.windscribe.vpn" />
         <package android:name="org.torproject.torbrowser" />
         <package android:name="org.torproject.android" />
     </queries>
