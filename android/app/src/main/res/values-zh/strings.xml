@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClearGuard</string>
+    <string name="accessibility_service_description">
+        读取屏幕上可见的文本，检测并屏蔽绕过 ClearGuard DNS 过滤器的露骨内容。
+    </string>
+
+    <string name="settings_guard_description">
+        阻止对应用进行配置更改。
+    </string>
+
+    <string name="trigger_app_guard_description">
+        检测风险列表中的应用何时被打开，以便在设定时段内显示暂停提示或屏蔽访问。
+    </string>
+
+    <string name="device_admin_explanation">
+        让卸载 ClearGuard 成为一个需要刻意执行的步骤，而不是在主屏幕上轻轻一点就能完成。
+    </string>
+
+    <string name="block_overlay_title">内容已被 ClearGuard 屏蔽</string>
+    <string name="back_to_home_button">返回主屏幕</string>
+
+    <string name="trigger_guard_block_title">不在允许时段内</string>
+    <string name="trigger_guard_block_body">
+        此时该应用已被 ClearGuard 屏蔽。
+    </string>
+    <string name="trigger_guard_pause_title">
+        继续之前，先深呼吸一下
+    </string>
+    <string name="trigger_guard_continue_button">继续</string>
+    <string name="trigger_guard_ready_label">准备就绪</string>
+</resources>
