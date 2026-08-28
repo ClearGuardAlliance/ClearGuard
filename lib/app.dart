@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clearguard/data/repositories/accountability_repository.dart';
+import 'package:clearguard/data/repositories/block_window_repository.dart';
 import 'package:clearguard/data/repositories/blocklist_repository.dart';
 import 'package:clearguard/data/repositories/protection_repository.dart';
 import 'package:clearguard/data/repositories/protection_streak_repository.dart';
@@ -13,6 +14,7 @@ import 'package:clearguard/data/services/notification_outbox.dart';
 import 'package:clearguard/data/services/pending_action_store.dart';
 import 'package:clearguard/data/services/screen_monitor_platform_service.dart';
 import 'package:clearguard/data/services/secure_credentials_service.dart';
+import 'package:clearguard/data/services/trigger_guard_platform_service.dart';
 import 'package:clearguard/data/services/vpn_platform_service.dart';
 import 'package:clearguard/data/services/webhook_notifier_service.dart';
 import 'package:clearguard/domain/use_cases/apply_ready_pending_actions_use_case.dart';
@@ -20,6 +22,7 @@ import 'package:clearguard/domain/use_cases/cancel_pending_action_use_case.dart'
 import 'package:clearguard/domain/use_cases/detect_trigger_apps_use_case.dart';
 import 'package:clearguard/domain/use_cases/enable_protection_use_case.dart';
 import 'package:clearguard/domain/use_cases/request_sensitive_action_use_case.dart';
+import 'package:clearguard/domain/use_cases/sync_trigger_guard_use_case.dart';
 import 'package:clearguard/domain/use_cases/update_blocklist_use_case.dart';
 import 'package:clearguard/ui/core/theme/app_theme.dart';
 import 'package:clearguard/ui/features/dashboard/view_models/dashboard_view_model.dart';
@@ -52,6 +55,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
   late final _deviceAdminService = DeviceAdminPlatformService();
   late final _installedAppsService = InstalledAppsPlatformService();
   late final _notificationService = LocalNotificationService();
+  late final _triggerGuardService = TriggerGuardPlatformService();
 
   late final _protectionRepository = ProtectionRepository(
     vpnService: _vpnService,
@@ -69,6 +73,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
     installedAppsService: _installedAppsService,
   );
   late final _protectionStreakRepository = ProtectionStreakRepository();
+  late final _blockWindowRepository = BlockWindowRepository();
 
   late final _enableProtectionUseCase = EnableProtectionUseCase(
     protectionRepository: _protectionRepository,
@@ -91,6 +96,10 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
   );
   late final _detectTriggerAppsUseCase = DetectTriggerAppsUseCase(
     repository: _triggerAppsRepository,
+  );
+  late final _syncTriggerGuardUseCase = SyncTriggerGuardUseCase(
+    blockWindowRepository: _blockWindowRepository,
+    platformService: _triggerGuardService,
   );
 
   bool? _isConfigured;
@@ -123,6 +132,8 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
             deviceAdminService: _deviceAdminService,
             requestSensitiveActionUseCase: _requestSensitiveActionUseCase,
             cancelPendingActionUseCase: _cancelPendingActionUseCase,
+            blockWindowRepository: _blockWindowRepository,
+            syncTriggerGuardUseCase: _syncTriggerGuardUseCase,
           ),
         ),
       ),
@@ -171,6 +182,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
               updateBlocklistUseCase: _updateBlocklistUseCase,
               protectionStreakRepository: _protectionStreakRepository,
               notificationService: _notificationService,
+              syncTriggerGuardUseCase: _syncTriggerGuardUseCase,
             ),
             onOpenSettings: () => _openSettings(context),
             onOpenTriggerApps: () => _openTriggerApps(context),

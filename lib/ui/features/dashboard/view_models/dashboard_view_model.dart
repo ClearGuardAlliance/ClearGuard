@@ -12,6 +12,7 @@ import 'package:clearguard/domain/use_cases/apply_ready_pending_actions_use_case
 import 'package:clearguard/domain/use_cases/cancel_pending_action_use_case.dart';
 import 'package:clearguard/domain/use_cases/enable_protection_use_case.dart';
 import 'package:clearguard/domain/use_cases/request_sensitive_action_use_case.dart';
+import 'package:clearguard/domain/use_cases/sync_trigger_guard_use_case.dart';
 import 'package:clearguard/domain/use_cases/update_blocklist_use_case.dart';
 import 'package:flutter/foundation.dart';
 
@@ -26,6 +27,7 @@ class DashboardViewModel extends ChangeNotifier {
     required UpdateBlocklistUseCase updateBlocklistUseCase,
     required ProtectionStreakRepository protectionStreakRepository,
     required LocalNotificationService notificationService,
+    required SyncTriggerGuardUseCase syncTriggerGuardUseCase,
   })  : _protectionRepository = protectionRepository,
         _accountabilityRepository = accountabilityRepository,
         _enableProtectionUseCase = enableProtectionUseCase,
@@ -34,7 +36,8 @@ class DashboardViewModel extends ChangeNotifier {
         _cancelPendingActionUseCase = cancelPendingActionUseCase,
         _updateBlocklistUseCase = updateBlocklistUseCase,
         _protectionStreakRepository = protectionStreakRepository,
-        _notificationService = notificationService;
+        _notificationService = notificationService,
+        _syncTriggerGuardUseCase = syncTriggerGuardUseCase;
 
   final ProtectionRepository _protectionRepository;
   final AccountabilityRepository _accountabilityRepository;
@@ -45,6 +48,7 @@ class DashboardViewModel extends ChangeNotifier {
   final UpdateBlocklistUseCase _updateBlocklistUseCase;
   final ProtectionStreakRepository _protectionStreakRepository;
   final LocalNotificationService _notificationService;
+  final SyncTriggerGuardUseCase _syncTriggerGuardUseCase;
 
   StreamSubscription<ProtectionStatus>? _statusSubscription;
   Timer? _ticker;
@@ -88,6 +92,7 @@ class DashboardViewModel extends ChangeNotifier {
       isProtectionActive: _status == ProtectionStatus.active,
     );
     unawaited(_refreshDailyReminder());
+    unawaited(_syncTriggerGuardUseCase().catchError((_) {}));
     notifyListeners();
   }
 

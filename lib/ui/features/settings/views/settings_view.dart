@@ -39,6 +39,12 @@ class _SettingsViewState extends State<SettingsView> {
       listenable: widget.viewModel,
       builder: (context, _) {
         final config = widget.viewModel.config;
+        final windowStart = _formatMinutes(
+          widget.viewModel.blockWindow.startMinutes,
+        );
+        final windowEnd = _formatMinutes(
+          widget.viewModel.blockWindow.endMinutes,
+        );
         if (config != null && !_initializedFields) {
           _webhookController.text = config.webhookUrl;
           _remoteBlocklistController.text = widget.viewModel.remoteBlocklistUrl;
@@ -161,6 +167,47 @@ class _SettingsViewState extends State<SettingsView> {
                             .requestIgnoreBatteryOptimizations(),
                         child: const Text('Isentar de otimização de bateria'),
                       ),
+                    const SizedBox(height: 32),
+                    Text(
+                      'Bloqueio por horário',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Fora do horário liberado, apps de risco ficam '
+                      'bloqueados em vez de só pausados.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('Ativar bloqueio por horário'),
+                      value: widget.viewModel.blockWindow.enabled,
+                      onChanged: (enabled) => widget.viewModel.setBlockWindow(
+                        widget.viewModel.blockWindow.copyWith(
+                          enabled: enabled,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () =>
+                                _pickWindowTime(context, isStart: true),
+                            child: Text('Início: $windowStart'),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () =>
+                                _pickWindowTime(context, isStart: false),
+                            child: Text('Fim: $windowEnd'),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
         );
@@ -208,6 +255,35 @@ class _SettingsViewState extends State<SettingsView> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(widget.viewModel.errorMessage!)));
+  }
+
+  Future<void> _pickWindowTime(
+    BuildContext context, {
+    required bool isStart,
+  }) async {
+    final window = widget.viewModel.blockWindow;
+    final currentMinutes = isStart ? window.startMinutes : window.endMinutes;
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(
+        hour: currentMinutes ~/ 60,
+        minute: currentMinutes % 60,
+      ),
+    );
+    if (picked == null || !context.mounted) return;
+
+    final minutes = picked.hour * 60 + picked.minute;
+    await widget.viewModel.setBlockWindow(
+      isStart
+          ? window.copyWith(startMinutes: minutes)
+          : window.copyWith(endMinutes: minutes),
+    );
+  }
+
+  String _formatMinutes(int minutes) {
+    final hour = (minutes ~/ 60).toString().padLeft(2, '0');
+    final minute = (minutes % 60).toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 
   Future<String?> _promptPin(BuildContext context) {
