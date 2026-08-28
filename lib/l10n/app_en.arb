@@ -1,0 +1,179 @@
+{
+  "@@locale": "en",
+  "appTitle": "ClearGuard",
+
+  "onboardingAppBarTitle": "Set up ClearGuard",
+  "onboardingTrustTitle": "Trust setup",
+  "onboardingTrustBody": "Ideally, whoever types the PIN and webhook below is your accountability partner, not you. Any attempt to disable protection will trigger a warning to that webhook before it takes effect.",
+  "pinLabel": "PIN (min. 6 digits)",
+  "pinConfirmLabel": "Confirm PIN",
+  "webhookOnboardingLabel": "Partner's webhook (Discord/Slack/Telegram)",
+  "partnerNameLabel": "What to call your partner (e.g. \"Ana\")",
+  "delayBeforeChangeLabel": "Wait time before any change takes effect:",
+  "minutesShort": "{minutes} min",
+  "@minutesShort": {
+    "placeholders": { "minutes": { "type": "int" } }
+  },
+  "continueButton": "Continue",
+  "defaultPartnerLabel": "your partner",
+  "vpnPermissionBody": "Android will ask for local VPN permission. That's how ClearGuard filters blocked domains, without sending your traffic to any external server.",
+  "grantVpnButton": "Grant VPN permission",
+  "screenMonitorBody": "Now enable ClearGuard's Accessibility service in Android settings. It backs up the DNS block by detecting explicit content on pages that already loaded.",
+  "openAccessibilitySettingsButton": "Open Accessibility settings",
+  "confirmScreenMonitorButton": "Already enabled it, continue",
+
+  "howProtectionWorksTitle": "How protection works",
+  "dnsFilterTitle": "DNS filtering",
+  "dnsFilterBody": "A local VPN tunnel refuses domains from the block list before the page even loads, without sending your traffic to any external server.",
+  "screenMonitorInfoTitle": "Screen monitoring",
+  "screenMonitorInfoBody": "An accessibility service detects explicit content on pages that already loaded, as a backup to the DNS filter.",
+  "accountabilityInfoTitle": "Accountability",
+  "accountabilityInfoBody": "Any attempt to touch these protections goes through a PIN and a waiting period, with a warning sent to your trusted partner.",
+  "reactivateProtectionButton": "Reactivate protection now",
+  "disableAlreadyRequestedButton": "Deactivation already requested",
+  "requestDisableProtectionButton": "Request to disable protection",
+  "confirmWithPinTitle": "Confirm with PIN",
+  "pinAccountabilityLabel": "Accountability PIN",
+  "cancelButton": "Cancel",
+  "requestButton": "Request",
+  "triggerAppsCardTitle": "Risk apps",
+  "triggerAppsCardBody": "See which installed apps could be a trigger and get tips for dealing with them.",
+  "pendingChangeWithPartner": "Pending change: takes effect in {minutes} min. Your partner has already been notified.",
+  "@pendingChangeWithPartner": {
+    "placeholders": { "minutes": { "type": "int" } }
+  },
+  "pendingChangeAnyMoment": "Pending change: takes effect any moment now.",
+  "pendingChangeMinutesOnly": "Pending change: takes effect in {minutes} min.",
+  "@pendingChangeMinutesOnly": {
+    "placeholders": { "minutes": { "type": "int" } }
+  },
+  "streakDays": "{count, plural, one{1 day in a row} other{{count} days in a row}}",
+  "@streakDays": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "streakRecord": "Record: {count}",
+  "@streakRecord": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "statusActiveTitle": "Protection active",
+  "statusActiveWithDomains": "{count} domains on the block list.",
+  "@statusActiveWithDomains": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "statusSyncingBlocklist": "Syncing block list…",
+  "statusStartingTitle": "Activating protection…",
+  "statusStartingBody": "This only takes a few seconds.",
+  "statusDisabledTitle": "Protection disabled",
+  "statusDisabledBody": "Your traffic isn't being filtered right now.",
+  "statusErrorTitle": "Couldn't check status",
+  "statusErrorBody": "Check your connection and try again.",
+
+  "settingsAppBarTitle": "Settings",
+  "accountabilitySectionTitle": "Accountability",
+  "webhookSettingsLabel": "Partner's webhook",
+  "requestChangeButton": "Request change",
+  "waitTimeLabel": "Wait time:",
+  "blocklistSectionTitle": "Block list",
+  "remoteBlocklistUrlLabel": "Remote list URL (optional)",
+  "deviceAdminSectionTitle": "Device administrator",
+  "deviceAdminActiveText": "Active: uninstalling requires going through system settings first.",
+  "activateButton": "Activate",
+  "batterySectionTitle": "Battery",
+  "batteryExemptText": "Exempt: Android shouldn't kill protection in the background to save battery.",
+  "batteryExemptButton": "Exempt from battery optimization",
+  "blockWindowSectionTitle": "Scheduled block",
+  "blockWindowDescription": "Outside the allowed hours, risk apps get blocked instead of just paused.",
+  "blockWindowSwitchLabel": "Enable scheduled block",
+  "blockWindowStartLabel": "Start: {time}",
+  "@blockWindowStartLabel": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+  "blockWindowEndLabel": "End: {time}",
+  "@blockWindowEndLabel": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+  "confirmButton": "Confirm",
+  "pinIncorrectError": "Incorrect PIN.",
+
+  "detectedAppsTitle": "Detected apps",
+  "tipsTitle": "Tips",
+  "riskNoneSubtitle": "No app from our risk list was found.",
+  "riskLowSubtitle": "{count, plural, one{1 low-risk app found.} other{{count} low-risk apps found.}}",
+  "@riskLowSubtitle": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "riskMediumSubtitle": "{count, plural, one{1 app deserves attention.} other{{count} apps deserve attention.}}",
+  "@riskMediumSubtitle": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "riskHighSubtitle": "Several risk apps, including ways to bypass the filter.",
+
+  "riskLevelNone": "No risk app detected",
+  "riskLevelLow": "Low risk",
+  "riskLevelMedium": "Moderate risk",
+  "riskLevelHigh": "High risk",
+
+  "categorySocialMedia": "Social media",
+  "categoryDating": "Dating app",
+  "categoryMessaging": "Unmoderated messaging",
+  "categoryCircumvention": "Could bypass the filter",
+
+  "notificationStreakTitle": "🔥 {count, plural, one{1 day protected in a row} other{{count} days protected in a row}}",
+  "@notificationStreakTitle": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "notificationResumeTitle": "Time to get back to protecting yourself",
+
+  "tipUrgeSurfingTitle": "Surf the urge",
+  "tipUrgeSurfingBody": "The urge usually peaks and fades on its own within 15 to 20 minutes. Instead of fighting it, just notice it without acting — \"urge surfing\" is a cognitive-behavioral technique backed by research for handling compulsions.",
+  "tipHaltTitle": "Check HALT before you react",
+  "tipHaltBody": "Hungry, Angry, Lonely, Tired (HALT) are the four states most linked to relapse in the prevention literature. Before judging the urge, ask whether one of these four is weighing on you right now.",
+  "tipMapTriggersTitle": "Map your triggers",
+  "tipMapTriggersBody": "Write down the time, place, and what you were feeling the last few times you nearly opened a risk app. Spotting the pattern ahead of time is one of CBT's core techniques for reducing relapse.",
+  "tipTalkBeforeNeedingTitle": "Talk before you need to",
+  "tipTalkBeforeNeedingBody": "Telling your trusted partner when the day gets hard, before any relapse, lifts the weight of shame and strengthens your support network — loneliness is one of the strongest triggers.",
+  "tipPhoneOutOfRoomTitle": "Phone out of the bedroom at night",
+  "tipPhoneOutOfRoomBody": "Moments of boredom and tiredness at night account for a good share of relapses. Charging your phone outside the bedroom removes easy access right at that time.",
+  "tipRelapseNotFailureTitle": "A relapse doesn't erase your progress",
+  "tipRelapseNotFailureBody": "The goal is the trend over time, not a perfect record. Treating a slip as total failure tends to make the relapse worse; refocus on the next moment instead of giving up.",
+  "tipIfThenPlanTitle": "Have an if-then plan",
+  "tipIfThenPlanBody": "Decide now: \"if I feel the urge to open [app], then I will [specific action]\". Research on if-then plans shows that pre-linking a trigger to a response works better than relying on willpower in the moment.",
+  "tipMoveYourBodyTitle": "Move your body for 10 minutes",
+  "tipMoveYourBodyBody": "Moderate-to-vigorous exercise reduces urge intensity almost immediately, according to studies across different types of compulsion. A brisk walk or a short workout already helps.",
+  "tipSelfCompassionTitle": "Treat guilt with kindness, not punishment",
+  "tipSelfCompassionBody": "Shame (\"I am the problem\") is linked to more relapse than self-compassion (\"I slipped, so what?\"). Acknowledging the slip without attacking yourself is what research links to a more stable recovery.",
+  "tipWriteItDownTitle": "Write it down, not just in your head",
+  "tipWriteItDownBody": "When an urge hits, note the situation, its intensity from 1 to 10, and what helped it pass. This structured log is a core CBT technique for revealing patterns memory alone misses.",
+
+  "webhookConfiguredMessage": "ClearGuard set up. {partnerLabel} now gets a warning whenever a protection change is requested on this device, {minutes} min ahead of it taking effect.",
+  "@webhookConfiguredMessage": {
+    "placeholders": {
+      "partnerLabel": { "type": "String" },
+      "minutes": { "type": "int" }
+    }
+  },
+  "webhookCancelledMessage": "Request to \"{actionDescription}\" was cancelled before it took effect.",
+  "@webhookCancelledMessage": {
+    "placeholders": { "actionDescription": { "type": "String" } }
+  },
+  "webhookAppliedMessage": "\"{actionDescription}\" is now in effect on this device.",
+  "@webhookAppliedMessage": {
+    "placeholders": { "actionDescription": { "type": "String" } }
+  },
+  "webhookRequestedMessage": "Request: \"{actionDescription}\" on this device. Takes effect at {readyAt} (in {minutes} min) unless someone cancels it.",
+  "@webhookRequestedMessage": {
+    "placeholders": {
+      "actionDescription": { "type": "String" },
+      "readyAt": { "type": "String" },
+      "minutes": { "type": "int" }
+    }
+  },
+  "actionDisableProtection": "disable protection",
+  "actionRemoveBlocklistDomain": "remove domain from the block list",
+  "actionChangeWebhookUrl": "change the notification webhook",
+  "actionChangeRemoteBlocklistUrl": "change the remote block list",
+  "actionIncreaseDelay": "increase the change wait time",
+  "actionDecreaseDelay": "decrease the change wait time",
+  "actionDeactivateDeviceAdmin": "deactivate the device administrator (allows uninstalling)"
+}
