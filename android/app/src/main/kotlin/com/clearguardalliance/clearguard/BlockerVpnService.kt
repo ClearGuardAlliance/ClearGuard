@@ -320,11 +320,6 @@ class BlockerVpnService : VpnService() {
 
         private val UPSTREAM_DNS_SERVERS = listOf("208.67.222.123", "208.67.220.123")
 
-        // Public DNS resolvers commonly used for DNS-over-HTTPS/TLS, which would
-        // otherwise let a browser bypass the filter above by not using the system
-        // resolver at all. Routing their IPs into the tunnel means any non-DNS
-        // (i.e. DoH/DoT) traffic to them hits handlePacket and gets silently
-        // dropped, forcing a fallback to plain DNS on port 53, which is filtered.
         private val BYPASS_RESOLVER_IPS = listOf(
             "1.1.1.1",
             "1.0.0.1",

@@ -38,6 +38,7 @@ class TriggerAppGuardService : AccessibilityService() {
         if (event?.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         val packageName = event.packageName?.toString() ?: return
         if (packageName !in triggerPackages) return
+        if (!FeatureFlags.isAccessibilityGuardEnabled(this)) return
 
         if (isWithinBlockWindow()) {
             launchGuard(TriggerAppGuardActivity.MODE_BLOCK)

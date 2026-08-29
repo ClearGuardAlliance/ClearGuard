@@ -1,3 +1,4 @@
+import 'package:clearguard/data/repositories/accessibility_features_repository.dart';
 import 'package:clearguard/data/repositories/accountability_repository.dart';
 import 'package:clearguard/data/repositories/block_window_repository.dart';
 import 'package:clearguard/data/repositories/blocklist_repository.dart';
@@ -22,6 +23,7 @@ class SettingsViewModel extends ChangeNotifier {
     required CancelPendingActionUseCase cancelPendingActionUseCase,
     required BlockWindowRepository blockWindowRepository,
     required SyncTriggerGuardUseCase syncTriggerGuardUseCase,
+    required AccessibilityFeaturesRepository accessibilityFeaturesRepository,
   })  : _accountabilityRepository = accountabilityRepository,
         _blocklistRepository = blocklistRepository,
         _protectionRepository = protectionRepository,
@@ -29,7 +31,8 @@ class SettingsViewModel extends ChangeNotifier {
         _requestSensitiveActionUseCase = requestSensitiveActionUseCase,
         _cancelPendingActionUseCase = cancelPendingActionUseCase,
         _blockWindowRepository = blockWindowRepository,
-        _syncTriggerGuardUseCase = syncTriggerGuardUseCase;
+        _syncTriggerGuardUseCase = syncTriggerGuardUseCase,
+        _accessibilityFeaturesRepository = accessibilityFeaturesRepository;
 
   final AccountabilityRepository _accountabilityRepository;
   final BlocklistRepository _blocklistRepository;
@@ -39,6 +42,7 @@ class SettingsViewModel extends ChangeNotifier {
   final CancelPendingActionUseCase _cancelPendingActionUseCase;
   final BlockWindowRepository _blockWindowRepository;
   final SyncTriggerGuardUseCase _syncTriggerGuardUseCase;
+  final AccessibilityFeaturesRepository _accessibilityFeaturesRepository;
 
   AccountabilityConfig? _config;
   AccountabilityConfig? get config => _config;
@@ -61,6 +65,9 @@ class SettingsViewModel extends ChangeNotifier {
   BlockWindow _blockWindow = BlockWindow.defaultWindow;
   BlockWindow get blockWindow => _blockWindow;
 
+  bool _accessibilityFeaturesEnabled = true;
+  bool get accessibilityFeaturesEnabled => _accessibilityFeaturesEnabled;
+
   Future<void> initialize() async {
     _config = await _accountabilityRepository.loadConfig();
     _remoteBlocklistUrl = await _blocklistRepository.remoteListUrl();
@@ -76,6 +83,8 @@ class SettingsViewModel extends ChangeNotifier {
       _isIgnoringBatteryOptimizations = false;
     }
     _blockWindow = await _blockWindowRepository.current();
+    _accessibilityFeaturesEnabled =
+        await _accessibilityFeaturesRepository.isEnabled();
     await _refreshPendingActions();
     notifyListeners();
   }
@@ -86,6 +95,15 @@ class SettingsViewModel extends ChangeNotifier {
     await _syncTriggerGuardUseCase().catchError((_) {});
     notifyListeners();
   }
+
+  Future<void> setAccessibilityFeaturesEnabled({required bool enabled}) async {
+    await _accessibilityFeaturesRepository.setEnabled(enabled: enabled);
+    _accessibilityFeaturesEnabled = enabled;
+    notifyListeners();
+  }
+
+  Future<void> openAccessibilitySettings() =>
+      _protectionRepository.openScreenMonitorSettings();
 
   Future<void> _refreshPendingActions() async {
     final all = await _accountabilityRepository.loadPendingActions();

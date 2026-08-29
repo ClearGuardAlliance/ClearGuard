@@ -23,6 +23,7 @@ class SettingsGuardService : AccessibilityService() {
         val packageName = event.packageName?.toString() ?: return
         if (packageName !in GUARDED_PACKAGES) return
 
+        if (!FeatureFlags.isAccessibilityGuardEnabled(this)) return
         if (!settingsContainsClearGuard()) return
 
         val now = System.currentTimeMillis()

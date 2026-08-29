@@ -28,7 +28,6 @@ class PackageInstallReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        // Mirrors TriggerAppCategory.circumvention in lib/domain/models/trigger_app.dart.
         private val WATCHED_PACKAGES = setOf(
             "com.nordvpn.android",
             "com.expressvpn.vpn",

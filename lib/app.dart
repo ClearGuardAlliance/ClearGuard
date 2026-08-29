@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clearguard/data/repositories/accessibility_features_repository.dart';
 import 'package:clearguard/data/repositories/accountability_repository.dart';
 import 'package:clearguard/data/repositories/block_window_repository.dart';
 import 'package:clearguard/data/repositories/blocklist_repository.dart';
@@ -80,6 +81,8 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
   );
   late final _protectionStreakRepository = ProtectionStreakRepository();
   late final _blockWindowRepository = BlockWindowRepository();
+  late final _accessibilityFeaturesRepository =
+      AccessibilityFeaturesRepository();
 
   late final _enableProtectionUseCase = EnableProtectionUseCase(
     protectionRepository: _protectionRepository,
@@ -140,6 +143,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
             cancelPendingActionUseCase: _cancelPendingActionUseCase,
             blockWindowRepository: _blockWindowRepository,
             syncTriggerGuardUseCase: _syncTriggerGuardUseCase,
+            accessibilityFeaturesRepository: _accessibilityFeaturesRepository,
           ),
           onOpenBlocklist: _openBlocklist,
         ),

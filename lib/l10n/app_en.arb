@@ -87,6 +87,9 @@
   "blockWindowSectionTitle": "Scheduled block",
   "blockWindowDescription": "Outside the allowed hours, risk apps get blocked instead of just paused.",
   "blockWindowSwitchLabel": "Enable scheduled block",
+  "accessibilityFeatureSectionTitle": "Advanced monitoring",
+  "accessibilityFeatureDescription": "Some banking apps (like Nubank) refuse to open, or hide sensitive screens, while any accessibility service is turned on, even ClearGuard's. If that happens, turn this off, then also turn ClearGuard off in Android's Accessibility settings before opening your bank app. DNS filtering keeps working either way; turn it back on afterwards.",
+  "accessibilityFeatureSwitchLabel": "Accessibility service active",
   "blockWindowStartLabel": "Start: {time}",
   "@blockWindowStartLabel": {
     "placeholders": { "time": { "type": "String" } }

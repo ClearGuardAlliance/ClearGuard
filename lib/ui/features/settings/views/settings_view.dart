@@ -216,6 +216,36 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 16),
+                    _SectionCard(
+                      icon: Icons.accessibility_new_outlined,
+                      title: l10n.accessibilityFeatureSectionTitle,
+                      children: [
+                        Text(
+                          l10n.accessibilityFeatureDescription,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        const SizedBox(height: 12),
+                        Material(
+                          type: MaterialType.transparency,
+                          child: SwitchListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(l10n.accessibilityFeatureSwitchLabel),
+                            value:
+                                widget.viewModel.accessibilityFeaturesEnabled,
+                            onChanged: (enabled) => widget.viewModel
+                                .setAccessibilityFeaturesEnabled(
+                              enabled: enabled,
+                            ),
+                          ),
+                        ),
+                        OutlinedButton(
+                          onPressed: () =>
+                              widget.viewModel.openAccessibilitySettings(),
+                          child: Text(l10n.openAccessibilitySettingsButton),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
         );

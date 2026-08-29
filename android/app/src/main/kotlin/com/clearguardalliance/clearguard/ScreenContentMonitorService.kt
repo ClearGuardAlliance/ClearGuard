@@ -45,6 +45,7 @@ class ScreenContentMonitorService : AccessibilityService() {
         val now = System.currentTimeMillis()
         if (now - lastTriggeredAtMs < TRIGGER_COOLDOWN_MS) return
         if (keywords.isEmpty()) return
+        if (!FeatureFlags.isAccessibilityGuardEnabled(this)) return
 
         val root = rootInActiveWindow ?: return
         val budget = NodeBudget(MAX_NODES_PER_SCAN)
