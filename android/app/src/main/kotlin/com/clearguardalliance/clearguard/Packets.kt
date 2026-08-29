@@ -140,6 +140,42 @@ internal object SafeSearchRewriter {
     }
 }
 
+internal object TranslateProxyHost {
+    private const val SUFFIX = ".translate.goog"
+
+    /**
+     * Google's web proxy exposes any site at `<encoded-host>.translate.goog`, encoding
+     * "." as "-" and a literal "-" as "--" (e.g. "pornhub.com" -> "pornhub-com",
+     * "my-site.com" -> "my--site-com"). This decodes that back to the real hostname
+     * so it can be checked against the normal blocklist, closing a common DNS-filter
+     * bypass. Returns null when `domain` isn't a translate.goog proxy host.
+     */
+    fun decodeTargetHost(domain: String): String? {
+        if (!domain.endsWith(SUFFIX)) return null
+        val encoded = domain.removeSuffix(SUFFIX)
+        if (encoded.isEmpty()) return null
+
+        val decoded = StringBuilder()
+        var i = 0
+        while (i < encoded.length) {
+            val c = encoded[i]
+            if (c == '-') {
+                if (i + 1 < encoded.length && encoded[i + 1] == '-') {
+                    decoded.append('-')
+                    i += 2
+                } else {
+                    decoded.append('.')
+                    i += 1
+                }
+            } else {
+                decoded.append(c)
+                i += 1
+            }
+        }
+        return decoded.toString()
+    }
+}
+
 internal object SafeSearchPolicy {
     fun enforcedHostFor(domain: String): String? {
         return when {

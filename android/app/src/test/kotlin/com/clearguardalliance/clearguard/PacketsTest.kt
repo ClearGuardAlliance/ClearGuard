@@ -22,6 +22,24 @@ private fun buildQueryMessage(id: Int, domain: String, type: Int = 1, dnsClass: 
 class PacketsTest {
 
     @Test
+    fun `TranslateProxyHost decodes a plain proxied domain`() {
+        assertEquals("pornhub.com", TranslateProxyHost.decodeTargetHost("pornhub-com.translate.goog"))
+        assertEquals("xvideos.com", TranslateProxyHost.decodeTargetHost("xvideos-com.translate.goog"))
+    }
+
+    @Test
+    fun `TranslateProxyHost decodes literal dashes in the original domain`() {
+        assertEquals("my-site.com", TranslateProxyHost.decodeTargetHost("my--site-com.translate.goog"))
+    }
+
+    @Test
+    fun `TranslateProxyHost returns null for non-proxy domains`() {
+        assertNull(TranslateProxyHost.decodeTargetHost("pornhub.com"))
+        assertNull(TranslateProxyHost.decodeTargetHost("translate.goog"))
+        assertNull(TranslateProxyHost.decodeTargetHost(".translate.goog"))
+    }
+
+    @Test
     fun `DnsQuery parses a simple domain name`() {
         val message = buildQueryMessage(id = 0x1234, domain = "example.com")
         val query = DnsQuery.parse(message)

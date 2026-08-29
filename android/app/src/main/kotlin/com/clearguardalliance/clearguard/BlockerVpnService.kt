@@ -161,6 +161,12 @@ class BlockerVpnService : VpnService() {
     }
 
     private fun isBlocked(domain: String): Boolean {
+        if (isBlockedBySuffix(domain)) return true
+        val proxiedTarget = TranslateProxyHost.decodeTargetHost(domain) ?: return false
+        return isBlockedBySuffix(proxiedTarget)
+    }
+
+    private fun isBlockedBySuffix(domain: String): Boolean {
         var candidate = domain
         while (true) {
             if (blockedDomains.contains(candidate)) return true
