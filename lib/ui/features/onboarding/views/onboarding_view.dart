@@ -101,10 +101,11 @@ class _OnboardingViewState extends State<OnboardingView> {
           decoration: InputDecoration(labelText: l10n.partnerNameLabel),
         ),
         const SizedBox(height: 12),
-        Row(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(l10n.delayBeforeChangeLabel),
-            const SizedBox(width: 12),
+            const SizedBox(height: 8),
             DropdownButton<int>(
               value: _delayMinutes,
               items: const [15, 30, 60, 120]
