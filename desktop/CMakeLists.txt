@@ -14,10 +14,12 @@ if(NOT Qt6_FOUND)
 endif()
 
 if(Qt6_FOUND)
+    set(QT_CORE_TARGET Qt6::Core)
     set(QT_WIDGETS_TARGET Qt6::Widgets)
     set(QT_TEST_TARGET Qt6::Test)
     set(QT_NETWORK_TARGET Qt6::Network)
 else()
+    set(QT_CORE_TARGET Qt5::Core)
     set(QT_WIDGETS_TARGET Qt5::Widgets)
     set(QT_TEST_TARGET Qt5::Test)
     set(QT_NETWORK_TARGET Qt5::Network)
@@ -50,6 +52,26 @@ add_library(system_dns_lib STATIC
 )
 target_include_directories(system_dns_lib PUBLIC src)
 
+add_library(crypto_lib STATIC
+    src/crypto/sha256.cpp
+    src/crypto/sha256.h
+    src/crypto/pin_credentials.cpp
+    src/crypto/pin_credentials.h
+)
+target_include_directories(crypto_lib PUBLIC src)
+
+add_library(accountability_lib STATIC
+    src/domain/pending_action.cpp
+    src/domain/pending_action.h
+    src/domain/accountability_config.h
+    src/accountability/webhook_notifier.cpp
+    src/accountability/webhook_notifier.h
+    src/accountability/accountability_repository.cpp
+    src/accountability/accountability_repository.h
+)
+target_include_directories(accountability_lib PUBLIC src)
+target_link_libraries(accountability_lib PUBLIC crypto_lib ${QT_CORE_TARGET} ${QT_NETWORK_TARGET})
+
 add_library(mainwindow_lib STATIC
     src/mainwindow.cpp
     src/mainwindow.h
@@ -81,3 +103,15 @@ add_test(NAME test_dns_filter_server COMMAND test_dns_filter_server)
 add_executable(test_system_dns tests/test_system_dns.cpp)
 target_link_libraries(test_system_dns PRIVATE system_dns_lib ${QT_TEST_TARGET})
 add_test(NAME test_system_dns COMMAND test_system_dns)
+
+add_executable(test_crypto tests/test_crypto.cpp)
+target_link_libraries(test_crypto PRIVATE crypto_lib ${QT_TEST_TARGET})
+add_test(NAME test_crypto COMMAND test_crypto)
+
+add_executable(test_pending_action tests/test_pending_action.cpp)
+target_link_libraries(test_pending_action PRIVATE accountability_lib ${QT_TEST_TARGET})
+add_test(NAME test_pending_action COMMAND test_pending_action)
+
+add_executable(test_accountability_repository tests/test_accountability_repository.cpp)
+target_link_libraries(test_accountability_repository PRIVATE accountability_lib ${QT_TEST_TARGET})
+add_test(NAME test_accountability_repository COMMAND test_accountability_repository)
