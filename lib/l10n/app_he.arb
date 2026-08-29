@@ -123,5 +123,30 @@
   "actionChangeRemoteBlocklistUrl": "שינוי רשימת החסימה המרוחקת",
   "actionIncreaseDelay": "הגדלת זמן ההמתנה לשינויים",
   "actionDecreaseDelay": "הקטנת זמן ההמתנה לשינויים",
-  "actionDeactivateDeviceAdmin": "ביטול הפעלת מנהל המכשיר (מאפשר הסרת התקנה)"
+  "actionDeactivateDeviceAdmin": "ביטול הפעלת מנהל המכשיר (מאפשר הסרת התקנה)",
+
+  "viewBlocklistButton": "הצג דומיינים חסומים",
+  "blocklistViewerTitle": "דומיינים חסומים",
+  "blockedDomainCount": "{count, plural, one{דומיין אחד ברשימה} two{שני דומיינים ברשימה} many{{count} דומיינים ברשימה} other{{count} דומיינים ברשימה}}",
+  "searchDomainsHint": "חפש דומיין",
+  "noDomainsFound": "לא נמצא דומיין שתואם לחיפוש שלך.",
+
+  "streakHistoryTitle": "היסטוריית רצף",
+  "streakCurrentLabel": "רצף נוכחי",
+  "streakRecordLabel": "שיא",
+  "streakLastDaysTitle": "{count} הימים האחרונים",
+  "streakActiveLegend": "מוגן",
+  "streakInactiveLegend": "לא מוגן",
+
+  "supportResourcesCardTitle": "משאבי תמיכה",
+  "supportResourcesCardBody": "הנחיות לגבי עזרה מקצועית, תמיכת עמיתים, ומה לעשות במצב משבר.",
+  "supportResourcesTitle": "משאבי תמיכה",
+  "supportFindTherapistTitle": "איך למצוא מטפל",
+  "supportFindTherapistBody": "חפש אנשי מקצוע בעלי ניסיון בטיפול קוגניטיבי-התנהגותי (CBT) או בטיפול קבלה ומחויבות (ACT) להתנהגות כפייתית. לגופים המסדירים פסיכולוגיה באזורך יש לרוב כלי חיפוש לפי תחום התמחות, ומטפלים רבים מציעים טיפול מקוון.",
+  "supportPeerSupportTitle": "קבוצות תמיכה של עמיתים",
+  "supportPeerSupportBody": "קבוצות תמיכה של עמיתים — פנים אל פנים או מקוונות — מכנסות יחד אנשים שמתמודדים עם אותו סוג של אתגר. הידיעה שאתה לא לבד בזה, ושמיעת אסטרטגיות מאנשים שכבר עברו את זה, נוטות להפחית את הבושה שמזינה נסיגה.",
+  "supportInvolveTrustedPeopleTitle": "שתף אנשים שאתה סומך עליהם",
+  "supportInvolveTrustedPeopleBody": "השותף לאחריות שהגדרת הוא רק ההתחלה. ככל שיותר אנשים שאתה סומך עליהם יודעים מה אתה מנסה לשנות, כך לסודיות יש פחות כוח על הנסיגה.",
+  "supportCrisisHelpTitle": "אם זה מקרה חירום",
+  "supportCrisisHelpBody": "אם אתה נמצא במשבר או חושב לפגוע בעצמך, פנה עכשיו לשירותי החירום של המדינה שלך או לקו חם מקומי למשבר נפשי. זה חשוב יותר מכל הגדרה באפליקציה הזו."
 }
