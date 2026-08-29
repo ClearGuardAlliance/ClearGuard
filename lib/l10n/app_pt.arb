@@ -123,5 +123,30 @@
   "actionChangeRemoteBlocklistUrl": "trocar a lista remota de domínios bloqueados",
   "actionIncreaseDelay": "aumentar o tempo de espera de mudanças",
   "actionDecreaseDelay": "diminuir o tempo de espera de mudanças",
-  "actionDeactivateDeviceAdmin": "desativar o administrador do dispositivo (permite desinstalar)"
+  "actionDeactivateDeviceAdmin": "desativar o administrador do dispositivo (permite desinstalar)",
+
+  "viewBlocklistButton": "Ver domínios bloqueados",
+  "blocklistViewerTitle": "Domínios bloqueados",
+  "blockedDomainCount": "{count, plural, one{1 domínio na lista} other{{count} domínios na lista}}",
+  "searchDomainsHint": "Buscar domínio",
+  "noDomainsFound": "Nenhum domínio corresponde à busca.",
+
+  "streakHistoryTitle": "Histórico de sequência",
+  "streakCurrentLabel": "Sequência atual",
+  "streakRecordLabel": "Recorde",
+  "streakLastDaysTitle": "Últimos {count} dias",
+  "streakActiveLegend": "Protegido",
+  "streakInactiveLegend": "Sem proteção",
+
+  "supportResourcesCardTitle": "Recursos de apoio",
+  "supportResourcesCardBody": "Orientações sobre ajuda profissional, apoio entre pares e o que fazer numa crise.",
+  "supportResourcesTitle": "Recursos de apoio",
+  "supportFindTherapistTitle": "Como encontrar um terapeuta",
+  "supportFindTherapistBody": "Procure profissionais com experiência em terapia cognitivo-comportamental (TCC) ou terapia de aceitação e compromisso (ACT) para comportamento compulsivo. Conselhos regionais de psicologia costumam ter busca por especialidade, e muitos terapeutas atendem por telehealth.",
+  "supportPeerSupportTitle": "Grupos de apoio entre pares",
+  "supportPeerSupportBody": "Grupos de apoio recíproco — presenciais ou online — reúnem pessoas enfrentando o mesmo tipo de desafio. Saber que você não está sozinho nisso, e ouvir estratégias de quem já passou por ali, costuma reduzir a vergonha que alimenta as recaídas.",
+  "supportInvolveTrustedPeopleTitle": "Envolva quem você confia",
+  "supportInvolveTrustedPeopleBody": "O parceiro de accountability que você configurou é um começo. Quanto mais pessoas de confiança souberem o que você está tentando mudar, menos poder o segredo tem sobre a recaída.",
+  "supportCrisisHelpTitle": "Se for uma emergência",
+  "supportCrisisHelpBody": "Se você estiver em crise ou pensando em se machucar, procure o serviço de emergência do seu país ou uma linha de apoio à saúde mental local agora. Isso vale mais do que qualquer configuração deste app."
 }

@@ -5,6 +5,7 @@ class ProtectionStreakRepository {
   static const _currentKey = 'streak_current';
   static const _longestKey = 'streak_longest';
   static const _lastRecordedDateKey = 'streak_last_recorded_date';
+  static const _activeDaysKey = 'streak_active_days';
 
   Future<ProtectionStreak> current() async {
     final prefs = await SharedPreferences.getInstance();
@@ -12,6 +13,12 @@ class ProtectionStreakRepository {
       current: prefs.getInt(_currentKey) ?? 0,
       longest: prefs.getInt(_longestKey) ?? 0,
     );
+  }
+
+  Future<Set<DateTime>> activeDays() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getStringList(_activeDaysKey) ?? const [];
+    return raw.map(DateTime.parse).toSet();
   }
 
   Future<ProtectionStreak> recordDay({
@@ -47,6 +54,14 @@ class ProtectionStreakRepository {
     await prefs.setInt(_currentKey, current);
     await prefs.setInt(_longestKey, longest);
     await prefs.setString(_lastRecordedDateKey, today.toIso8601String());
+
+    if (isProtectionActive) {
+      final activeDays = prefs.getStringList(_activeDaysKey) ?? const [];
+      await prefs.setStringList(_activeDaysKey, [
+        ...activeDays,
+        today.toIso8601String(),
+      ]);
+    }
 
     return ProtectionStreak(current: current, longest: longest);
   }

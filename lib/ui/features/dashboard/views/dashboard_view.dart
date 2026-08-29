@@ -13,12 +13,16 @@ class DashboardView extends StatefulWidget {
     required this.viewModel,
     required this.onOpenSettings,
     required this.onOpenTriggerApps,
+    required this.onOpenStreakHistory,
+    required this.onOpenSupportResources,
     super.key,
   });
 
   final DashboardViewModel viewModel;
   final void Function(BuildContext) onOpenSettings;
   final void Function(BuildContext) onOpenTriggerApps;
+  final void Function(BuildContext) onOpenStreakHistory;
+  final void Function(BuildContext) onOpenSupportResources;
 
   @override
   State<DashboardView> createState() => _DashboardViewState();
@@ -58,7 +62,10 @@ class _DashboardViewState extends State<DashboardView> {
                 ),
                 if ((widget.viewModel.streak?.current ?? 0) > 0) ...[
                   const SizedBox(height: 12),
-                  _StreakBadge(streak: widget.viewModel.streak!),
+                  _StreakBadge(
+                    streak: widget.viewModel.streak!,
+                    onTap: () => widget.onOpenStreakHistory(context),
+                  ),
                 ],
                 ...widget.viewModel.pendingActions
                     .where((a) => a.state == PendingActionState.pending)
@@ -75,6 +82,10 @@ class _DashboardViewState extends State<DashboardView> {
                 const SizedBox(height: 20),
                 _TriggerAppsEntryCard(
                   onTap: () => widget.onOpenTriggerApps(context),
+                ),
+                const SizedBox(height: 12),
+                _SupportResourcesEntryCard(
+                  onTap: () => widget.onOpenSupportResources(context),
                 ),
                 const SizedBox(height: 28),
                 Text(
@@ -305,6 +316,70 @@ class _TriggerAppsEntryCard extends StatelessWidget {
   }
 }
 
+class _SupportResourcesEntryCard extends StatelessWidget {
+  const _SupportResourcesEntryCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Material(
+      color: scheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.volunteer_activism_outlined,
+                  color: scheme.onPrimaryContainer,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.supportResourcesCardTitle,
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.supportResourcesCardBody,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _PendingActionCard extends StatelessWidget {
   const _PendingActionCard({required this.action, required this.onCancel});
 
@@ -339,9 +414,10 @@ class _PendingActionCard extends StatelessWidget {
 }
 
 class _StreakBadge extends StatelessWidget {
-  const _StreakBadge({required this.streak});
+  const _StreakBadge({required this.streak, required this.onTap});
 
   final ProtectionStreak streak;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -349,32 +425,38 @@ class _StreakBadge extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final l10n = AppLocalizations.of(context)!;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerLow,
+    return Material(
+      color: scheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          const Text('🔥', style: TextStyle(fontSize: 20)),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              l10n.streakDays(streak.current),
-              style: textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              const Text('🔥', style: TextStyle(fontSize: 20)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  l10n.streakDays(streak.current),
+                  style: textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            ),
+              if (streak.longest > streak.current)
+                Text(
+                  l10n.streakRecord(streak.longest),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              const SizedBox(width: 4),
+              Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+            ],
           ),
-          if (streak.longest > streak.current)
-            Text(
-              l10n.streakRecord(streak.longest),
-              style: textTheme.bodySmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }

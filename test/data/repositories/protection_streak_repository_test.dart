@@ -104,5 +104,26 @@ void main() {
       expect(streak.current, 0);
       expect(streak.longest, 2);
     });
+
+    test('activeDays records only days protection was active', () async {
+      final repository = ProtectionStreakRepository();
+
+      await repository.recordDay(
+        isProtectionActive: true,
+        now: DateTime(2026, 1, 1),
+      );
+      await repository.recordDay(
+        isProtectionActive: false,
+        now: DateTime(2026, 1, 2),
+      );
+      await repository.recordDay(
+        isProtectionActive: true,
+        now: DateTime(2026, 1, 3),
+      );
+
+      final activeDays = await repository.activeDays();
+
+      expect(activeDays, {DateTime(2026, 1, 1), DateTime(2026, 1, 3)});
+    });
   });
 }

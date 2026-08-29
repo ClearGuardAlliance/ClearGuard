@@ -1,3 +1,4 @@
+import 'package:clearguard/domain/models/support_resource.dart';
 import 'package:clearguard/domain/models/trigger_app.dart';
 import 'package:clearguard/domain/models/trigger_apps_report.dart';
 import 'package:clearguard/domain/models/wellbeing_tip.dart';
@@ -46,5 +47,23 @@ extension WellbeingTipText on WellbeingTip {
         WellbeingTip.moveYourBody => l10n.tipMoveYourBodyBody,
         WellbeingTip.selfCompassion => l10n.tipSelfCompassionBody,
         WellbeingTip.writeItDown => l10n.tipWriteItDownBody,
+      };
+}
+
+extension SupportResourceText on SupportResource {
+  String title(AppLocalizations l10n) => switch (this) {
+        SupportResource.findTherapist => l10n.supportFindTherapistTitle,
+        SupportResource.peerSupport => l10n.supportPeerSupportTitle,
+        SupportResource.involveTrustedPeople =>
+          l10n.supportInvolveTrustedPeopleTitle,
+        SupportResource.crisisHelp => l10n.supportCrisisHelpTitle,
+      };
+
+  String body(AppLocalizations l10n) => switch (this) {
+        SupportResource.findTherapist => l10n.supportFindTherapistBody,
+        SupportResource.peerSupport => l10n.supportPeerSupportBody,
+        SupportResource.involveTrustedPeople =>
+          l10n.supportInvolveTrustedPeopleBody,
+        SupportResource.crisisHelp => l10n.supportCrisisHelpBody,
       };
 }

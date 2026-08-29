@@ -175,5 +175,36 @@
   "actionChangeRemoteBlocklistUrl": "change the remote block list",
   "actionIncreaseDelay": "increase the change wait time",
   "actionDecreaseDelay": "decrease the change wait time",
-  "actionDeactivateDeviceAdmin": "deactivate the device administrator (allows uninstalling)"
+  "actionDeactivateDeviceAdmin": "deactivate the device administrator (allows uninstalling)",
+
+  "viewBlocklistButton": "View blocked domains",
+  "blocklistViewerTitle": "Blocked domains",
+  "blockedDomainCount": "{count, plural, one{1 domain on the list} other{{count} domains on the list}}",
+  "@blockedDomainCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "searchDomainsHint": "Search domain",
+  "noDomainsFound": "No domain matches your search.",
+
+  "streakHistoryTitle": "Streak history",
+  "streakCurrentLabel": "Current streak",
+  "streakRecordLabel": "Record",
+  "streakLastDaysTitle": "Last {count} days",
+  "@streakLastDaysTitle": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "streakActiveLegend": "Protected",
+  "streakInactiveLegend": "Not protected",
+
+  "supportResourcesCardTitle": "Support resources",
+  "supportResourcesCardBody": "Guidance on professional help, peer support, and what to do in a crisis.",
+  "supportResourcesTitle": "Support resources",
+  "supportFindTherapistTitle": "How to find a therapist",
+  "supportFindTherapistBody": "Look for professionals experienced in cognitive behavioral therapy (CBT) or acceptance and commitment therapy (ACT) for compulsive behavior. Regional psychology boards often have specialty search tools, and many therapists offer telehealth.",
+  "supportPeerSupportTitle": "Peer support groups",
+  "supportPeerSupportBody": "Peer support groups — in person or online — bring together people facing the same kind of challenge. Knowing you're not alone in this, and hearing strategies from people who've been there, tends to reduce the shame that feeds relapse.",
+  "supportInvolveTrustedPeopleTitle": "Involve people you trust",
+  "supportInvolveTrustedPeopleBody": "The accountability partner you set up is a start. The more trusted people who know what you're trying to change, the less power secrecy has over relapse.",
+  "supportCrisisHelpTitle": "If this is an emergency",
+  "supportCrisisHelpBody": "If you're in crisis or thinking about harming yourself, contact your country's emergency services or a local mental health crisis line right now. That matters more than anything in this app's settings."
 }

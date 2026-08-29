@@ -26,12 +26,17 @@ import 'package:clearguard/domain/use_cases/sync_trigger_guard_use_case.dart';
 import 'package:clearguard/domain/use_cases/update_blocklist_use_case.dart';
 import 'package:clearguard/l10n/generated/app_localizations.dart';
 import 'package:clearguard/ui/core/theme/app_theme.dart';
+import 'package:clearguard/ui/features/blocklist/view_models/blocklist_view_model.dart';
+import 'package:clearguard/ui/features/blocklist/views/blocklist_view.dart';
 import 'package:clearguard/ui/features/dashboard/view_models/dashboard_view_model.dart';
 import 'package:clearguard/ui/features/dashboard/views/dashboard_view.dart';
 import 'package:clearguard/ui/features/onboarding/view_models/onboarding_view_model.dart';
 import 'package:clearguard/ui/features/onboarding/views/onboarding_view.dart';
 import 'package:clearguard/ui/features/settings/view_models/settings_view_model.dart';
 import 'package:clearguard/ui/features/settings/views/settings_view.dart';
+import 'package:clearguard/ui/features/streak_history/view_models/streak_history_view_model.dart';
+import 'package:clearguard/ui/features/streak_history/views/streak_history_view.dart';
+import 'package:clearguard/ui/features/support/views/support_resources_view.dart';
 import 'package:clearguard/ui/features/trigger_apps/view_models/trigger_apps_view_model.dart';
 import 'package:clearguard/ui/features/trigger_apps/views/trigger_apps_view.dart';
 import 'package:flutter/material.dart';
@@ -136,6 +141,7 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
             blockWindowRepository: _blockWindowRepository,
             syncTriggerGuardUseCase: _syncTriggerGuardUseCase,
           ),
+          onOpenBlocklist: _openBlocklist,
         ),
       ),
     );
@@ -147,6 +153,38 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
         builder: (_) => TriggerAppsView(
           viewModel: TriggerAppsViewModel(
             detectTriggerApps: _detectTriggerAppsUseCase,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openStreakHistory(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => StreakHistoryView(
+          viewModel: StreakHistoryViewModel(
+            repository: _protectionStreakRepository,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openSupportResources(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const SupportResourcesView(),
+      ),
+    );
+  }
+
+  void _openBlocklist(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => BlocklistView(
+          viewModel: BlocklistViewModel(
+            blocklistRepository: _blocklistRepository,
           ),
         ),
       ),
@@ -189,6 +227,8 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
             ),
             onOpenSettings: _openSettings,
             onOpenTriggerApps: _openTriggerApps,
+            onOpenStreakHistory: _openStreakHistory,
+            onOpenSupportResources: _openSupportResources,
           ),
       },
     );

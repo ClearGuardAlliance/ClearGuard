@@ -7,9 +7,14 @@ import 'package:clearguard/ui/features/settings/view_models/settings_view_model.
 import 'package:flutter/material.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({required this.viewModel, super.key});
+  const SettingsView({
+    required this.viewModel,
+    required this.onOpenBlocklist,
+    super.key,
+  });
 
   final SettingsViewModel viewModel;
+  final void Function(BuildContext) onOpenBlocklist;
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -124,6 +129,11 @@ class _SettingsViewState extends State<SettingsView> {
                           onPressed: () =>
                               _requestRemoteBlocklistChange(context),
                           child: Text(l10n.requestChangeButton),
+                        ),
+                        const SizedBox(height: 8),
+                        OutlinedButton(
+                          onPressed: () => widget.onOpenBlocklist(context),
+                          child: Text(l10n.viewBlocklistButton),
                         ),
                       ],
                     ),
