@@ -40,6 +40,16 @@ endif()
 find_package(Threads REQUIRED)
 target_link_libraries(dns_lib PUBLIC Threads::Threads)
 
+add_library(system_dns_lib STATIC
+    src/system_dns/system_dns_configurator.cpp
+    src/system_dns/system_dns_configurator.h
+    src/system_dns/resolv_conf_configurator.cpp
+    src/system_dns/resolv_conf_configurator.h
+    src/system_dns/systemd_resolved_configurator.cpp
+    src/system_dns/systemd_resolved_configurator.h
+)
+target_include_directories(system_dns_lib PUBLIC src)
+
 add_library(mainwindow_lib STATIC
     src/mainwindow.cpp
     src/mainwindow.h
@@ -67,3 +77,7 @@ add_test(NAME test_dns_message COMMAND test_dns_message)
 add_executable(test_dns_filter_server tests/test_dns_filter_server.cpp)
 target_link_libraries(test_dns_filter_server PRIVATE dns_lib ${QT_TEST_TARGET} ${QT_NETWORK_TARGET})
 add_test(NAME test_dns_filter_server COMMAND test_dns_filter_server)
+
+add_executable(test_system_dns tests/test_system_dns.cpp)
+target_link_libraries(test_system_dns PRIVATE system_dns_lib ${QT_TEST_TARGET})
+add_test(NAME test_system_dns COMMAND test_system_dns)
