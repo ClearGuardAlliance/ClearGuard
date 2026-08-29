@@ -1,0 +1,13 @@
+freebsd_task:
+  only_if: $CIRRUS_CHANGE_IN_REPO =~ '.*desktop/.*'
+
+  freebsd_instance:
+    image_family: freebsd-14-1
+
+  working_directory: desktop
+
+  install_script: pkg install -y qt6-base cmake pkgconf
+
+  configure_script: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+  build_script: cmake --build build
