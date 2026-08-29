@@ -177,14 +177,17 @@ class _SettingsViewState extends State<SettingsView> {
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 12),
-                        SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(l10n.blockWindowSwitchLabel),
-                          value: widget.viewModel.blockWindow.enabled,
-                          onChanged: (enabled) =>
-                              widget.viewModel.setBlockWindow(
-                            widget.viewModel.blockWindow.copyWith(
-                              enabled: enabled,
+                        Material(
+                          type: MaterialType.transparency,
+                          child: SwitchListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(l10n.blockWindowSwitchLabel),
+                            value: widget.viewModel.blockWindow.enabled,
+                            onChanged: (enabled) =>
+                                widget.viewModel.setBlockWindow(
+                              widget.viewModel.blockWindow.copyWith(
+                                enabled: enabled,
+                              ),
                             ),
                           ),
                         ),
