@@ -123,5 +123,30 @@
   "actionChangeRemoteBlocklistUrl": "リモートブロックリストを変更する",
   "actionIncreaseDelay": "変更の待機時間を長くする",
   "actionDecreaseDelay": "変更の待機時間を短くする",
-  "actionDeactivateDeviceAdmin": "デバイス管理者を無効にする(アンインストールを可能にする)"
+  "actionDeactivateDeviceAdmin": "デバイス管理者を無効にする(アンインストールを可能にする)",
+
+  "viewBlocklistButton": "ブロック対象のドメインを表示",
+  "blocklistViewerTitle": "ブロック対象のドメイン",
+  "blockedDomainCount": "{count, plural, other{リストに{count}件のドメイン}}",
+  "searchDomainsHint": "ドメインを検索",
+  "noDomainsFound": "検索条件に一致するドメインがありません。",
+
+  "streakHistoryTitle": "連続記録の履歴",
+  "streakCurrentLabel": "現在の連続記録",
+  "streakRecordLabel": "記録",
+  "streakLastDaysTitle": "{count, plural, other{直近{count}日間}}",
+  "streakActiveLegend": "保護中",
+  "streakInactiveLegend": "未保護",
+
+  "supportResourcesCardTitle": "サポート情報",
+  "supportResourcesCardBody": "専門家によるサポート、ピアサポート、緊急時の対応について案内します。",
+  "supportResourcesTitle": "サポート情報",
+  "supportFindTherapistTitle": "セラピストの探し方",
+  "supportFindTherapistBody": "強迫的な行動に対して、認知行動療法(CBT)やアクセプタンス&コミットメント・セラピー(ACT)の経験がある専門家を探しましょう。地域の心理士会などが専門分野別の検索ツールを提供していることが多く、オンライン診療に対応するセラピストも増えています。",
+  "supportPeerSupportTitle": "ピアサポートグループ",
+  "supportPeerSupportBody": "対面でもオンラインでも、ピアサポートグループは同じような課題を抱える人たちが集まる場です。自分だけではないと知ること、そして実際に経験した人たちの工夫を聞くことは、再発を招く恥の意識を和らげるのに役立ちます。",
+  "supportInvolveTrustedPeopleTitle": "信頼できる人を巻き込む",
+  "supportInvolveTrustedPeopleBody": "設定したアカウンタビリティパートナーは、その第一歩です。変えようとしていることを知っている信頼できる人が増えるほど、秘密にすることが再発に与える力は弱まります。",
+  "supportCrisisHelpTitle": "緊急の場合は",
+  "supportCrisisHelpBody": "危機的な状況にある場合や、自分を傷つけることを考えている場合は、今すぐお住まいの国の緊急通報窓口、または地域の精神保健の緊急相談窓口に連絡してください。それは、このアプリのどの設定よりも優先されるべきことです。"
 }
