@@ -22,6 +22,8 @@
   "howProtectionWorksTitle": "Como a proteção funciona",
   "dnsFilterTitle": "Filtro por DNS",
   "dnsFilterBody": "Um túnel VPN local recusa domínios da lista de bloqueio antes que a página chegue a carregar, sem enviar seu tráfego para nenhum servidor externo.",
+  "safeSearchInfoTitle": "SafeSearch e bloqueio de bypass",
+  "safeSearchInfoBody": "Buscas no Google, YouTube, Bing e DuckDuckGo são forçadas para o modo seguro estrito, e o tráfego para provedores de DNS privado conhecidos, usados para driblar filtros, é bloqueado.",
   "screenMonitorInfoTitle": "Monitoramento de tela",
   "screenMonitorInfoBody": "Um serviço de acessibilidade detecta conteúdo explícito em páginas que já carregaram, como reforço ao filtro de DNS.",
   "accountabilityInfoTitle": "Accountability",

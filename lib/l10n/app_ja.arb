@@ -22,6 +22,8 @@
   "howProtectionWorksTitle": "保護の仕組み",
   "dnsFilterTitle": "DNSフィルタリング",
   "dnsFilterBody": "ローカルVPNトンネルが、ページが読み込まれる前にブロックリスト内のドメインを拒否します。通信が外部サーバーに送信されることはありません。",
+  "safeSearchInfoTitle": "SafeSearchとバイパスのブロック",
+  "safeSearchInfoBody": "Google、YouTube、Bing、DuckDuckGoの検索は厳格なセーフモードに強制され、フィルターを回避するためによく使われるプライベートDNSプロバイダーへの通信もブロックされます。",
   "screenMonitorInfoTitle": "画面モニタリング",
   "screenMonitorInfoBody": "ユーザー補助サービスが、すでに読み込まれたページ内のアダルトコンテンツを検知し、DNSフィルターを補完します。",
   "accountabilityInfoTitle": "アカウンタビリティ",

@@ -100,6 +100,12 @@ class _DashboardViewState extends State<DashboardView> {
                 ),
                 const SizedBox(height: 16),
                 _InfoRow(
+                  icon: Icons.search_off_outlined,
+                  title: l10n.safeSearchInfoTitle,
+                  description: l10n.safeSearchInfoBody,
+                ),
+                const SizedBox(height: 16),
+                _InfoRow(
                   icon: Icons.visibility_outlined,
                   title: l10n.screenMonitorInfoTitle,
                   description: l10n.screenMonitorInfoBody,

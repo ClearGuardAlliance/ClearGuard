@@ -22,6 +22,8 @@
   "howProtectionWorksTitle": "保护是如何工作的",
   "dnsFilterTitle": "DNS 过滤",
   "dnsFilterBody": "本地 VPN 隧道会在页面加载之前就拒绝屏蔽列表中的域名，且不会把你的流量发送到任何外部服务器。",
+  "safeSearchInfoTitle": "SafeSearch 与防规避拦截",
+  "safeSearchInfoBody": "Google、YouTube、Bing 和 DuckDuckGo 的搜索会被强制切换到严格安全模式，用于绕过过滤的知名私有 DNS 提供商流量也会被拦截。",
   "screenMonitorInfoTitle": "屏幕监测",
   "screenMonitorInfoBody": "无障碍服务会检测已加载页面中的露骨内容，作为 DNS 过滤的补充保障。",
   "accountabilityInfoTitle": "问责机制",

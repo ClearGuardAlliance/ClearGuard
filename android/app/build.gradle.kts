@@ -52,4 +52,5 @@ flutter {
 dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.7")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    testImplementation("junit:junit:4.13.2")
 }

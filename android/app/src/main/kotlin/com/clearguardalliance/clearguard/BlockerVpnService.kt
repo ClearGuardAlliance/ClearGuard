@@ -56,6 +56,10 @@ class BlockerVpnService : VpnService() {
             .addDnsServer(DNS_SERVER_ADDRESS)
             .addRoute(DNS_SERVER_ADDRESS, 32)
 
+        for (resolverIp in BYPASS_RESOLVER_IPS) {
+            builder.addRoute(resolverIp, 32)
+        }
+
         val establishedInterface = builder.establish()
         if (establishedInterface == null) {
             broadcastStatus(Status.ERROR)
@@ -130,6 +134,14 @@ class BlockerVpnService : VpnService() {
         val dnsMessage = packet.copyOfRange(dnsStart, packet.size)
         val query = DnsQuery.parse(dnsMessage) ?: return
 
+        val enforcedHost = SafeSearchPolicy.enforcedHostFor(query.domainName)
+        if (enforcedHost != null) {
+            forwardExecutor.execute {
+                forwardSafeSearchRewrite(dnsMessage, query, enforcedHost, ip, udp, output)
+            }
+            return
+        }
+
         if (isBlocked(query.domainName)) {
             val response = DnsResponses.sinkhole(dnsMessage, query)
             writeUdpPacket(
@@ -173,6 +185,37 @@ class BlockerVpnService : VpnService() {
                 destinationAddress = ip.sourceAddress,
                 destinationPort = udp.sourcePort,
                 payload = responseBytes,
+            )
+            return
+        }
+    }
+
+    private fun forwardSafeSearchRewrite(
+        dnsMessage: ByteArray,
+        query: DnsQuery,
+        enforcedHost: String,
+        ip: Ipv4Header,
+        udp: UdpHeader,
+        output: FileOutputStream,
+    ) {
+        val originalQuestion = dnsMessage.copyOfRange(12, query.questionEndOffset)
+        val rewrittenQuery = SafeSearchRewriter.buildUpstreamQuery(dnsMessage, query, enforcedHost)
+        val rewrittenQuestionLength = SafeSearchRewriter.rewrittenQuestionLength(query, enforcedHost)
+
+        for (server in UPSTREAM_DNS_SERVERS) {
+            val raw = queryUpstream(rewrittenQuery, server) ?: continue
+            val response = SafeSearchRewriter.restoreOriginalName(
+                raw,
+                originalQuestion,
+                rewrittenQuestionLength,
+            ) ?: continue
+            writeUdpPacket(
+                output = output,
+                sourceAddress = ip.destinationAddress,
+                sourcePort = udp.destinationPort,
+                destinationAddress = ip.sourceAddress,
+                destinationPort = udp.sourcePort,
+                payload = response,
             )
             return
         }
@@ -270,6 +313,26 @@ class BlockerVpnService : VpnService() {
         private const val DNS_SERVER_ADDRESS = "10.111.222.2"
 
         private val UPSTREAM_DNS_SERVERS = listOf("208.67.222.123", "208.67.220.123")
+
+        // Public DNS resolvers commonly used for DNS-over-HTTPS/TLS, which would
+        // otherwise let a browser bypass the filter above by not using the system
+        // resolver at all. Routing their IPs into the tunnel means any non-DNS
+        // (i.e. DoH/DoT) traffic to them hits handlePacket and gets silently
+        // dropped, forcing a fallback to plain DNS on port 53, which is filtered.
+        private val BYPASS_RESOLVER_IPS = listOf(
+            "1.1.1.1",
+            "1.0.0.1",
+            "8.8.8.8",
+            "8.8.4.4",
+            "9.9.9.9",
+            "149.112.112.112",
+            "208.67.222.222",
+            "208.67.220.220",
+            "94.140.14.14",
+            "94.140.15.15",
+            "185.222.222.222",
+            "45.11.45.11",
+        )
 
         @Volatile
         var currentStatus: Status = Status.DISABLED

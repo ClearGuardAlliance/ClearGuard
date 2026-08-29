@@ -22,6 +22,8 @@
   "howProtectionWorksTitle": "كيف تعمل الحماية",
   "dnsFilterTitle": "تصفية DNS",
   "dnsFilterBody": "نفق VPN محلي يرفض النطاقات الموجودة في قائمة الحظر قبل أن تبدأ الصفحة بالتحميل حتى، دون إرسال بيانات تصفحك إلى أي خادم خارجي.",
+  "safeSearchInfoTitle": "SafeSearch وحظر التحايل",
+  "safeSearchInfoBody": "يتم فرض وضع الأمان الصارم على عمليات البحث في Google وYouTube وBing وDuckDuckGo، ويُحظر الوصول إلى خوادم DNS الخاصة الشهيرة التي تُستخدم للتحايل على الفلاتر.",
   "screenMonitorInfoTitle": "مراقبة الشاشة",
   "screenMonitorInfoBody": "تكتشف خدمة إمكانية الوصول المحتوى الفاضح في الصفحات التي تم تحميلها بالفعل، كدعم إضافي لتصفية DNS.",
   "accountabilityInfoTitle": "المساءلة",

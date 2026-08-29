@@ -42,7 +42,12 @@ internal data class UdpHeader(val sourcePort: Int, val destinationPort: Int) {
     }
 }
 
-internal data class DnsQuery(val id: Int, val domainName: String, val questionEndOffset: Int) {
+internal data class DnsQuery(
+    val id: Int,
+    val domainName: String,
+    val nameEndOffset: Int,
+    val questionEndOffset: Int,
+) {
     companion object {
         private const val HEADER_LENGTH = 12
         private const val MAX_LABEL_HOPS = 128
@@ -78,11 +83,80 @@ internal data class DnsQuery(val id: Int, val domainName: String, val questionEn
             }
 
             if (offset + 4 > dnsMessage.size) return null
+            val nameEndOffset = offset
             val questionEndOffset = offset + 4
 
-            return DnsQuery(id = id, domainName = name.toString().lowercase(), questionEndOffset = questionEndOffset)
+            return DnsQuery(
+                id = id,
+                domainName = name.toString().lowercase(),
+                nameEndOffset = nameEndOffset,
+                questionEndOffset = questionEndOffset,
+            )
         }
     }
+}
+
+internal object DnsNames {
+    fun encode(domain: String): ByteArray {
+        val labels = domain.split('.').filter { it.isNotEmpty() }
+        val size = labels.sumOf { it.length + 1 } + 1
+        val encoded = ByteArray(size)
+        var offset = 0
+        for (label in labels) {
+            val bytes = label.toByteArray(Charsets.US_ASCII)
+            encoded[offset] = bytes.size.toByte()
+            offset += 1
+            bytes.copyInto(encoded, offset)
+            offset += bytes.size
+        }
+        encoded[offset] = 0
+        return encoded
+    }
+}
+
+internal object SafeSearchRewriter {
+    fun buildUpstreamQuery(dnsMessage: ByteArray, query: DnsQuery, enforcedHost: String): ByteArray {
+        val header = dnsMessage.copyOfRange(0, 12)
+        val encodedName = DnsNames.encode(enforcedHost)
+        val qtypeAndClass = dnsMessage.copyOfRange(query.nameEndOffset, query.questionEndOffset)
+        val tail = dnsMessage.copyOfRange(query.questionEndOffset, dnsMessage.size)
+        return header + encodedName + qtypeAndClass + tail
+    }
+
+    fun rewrittenQuestionLength(query: DnsQuery, enforcedHost: String): Int {
+        return DnsNames.encode(enforcedHost).size + (query.questionEndOffset - query.nameEndOffset)
+    }
+
+    fun restoreOriginalName(
+        upstreamResponse: ByteArray,
+        originalQuestion: ByteArray,
+        rewrittenQuestionLength: Int,
+    ): ByteArray? {
+        val responseQuestionEnd = 12 + rewrittenQuestionLength
+        if (upstreamResponse.size < responseQuestionEnd) return null
+        val header = upstreamResponse.copyOfRange(0, 12)
+        val tail = upstreamResponse.copyOfRange(responseQuestionEnd, upstreamResponse.size)
+        return header + originalQuestion + tail
+    }
+}
+
+internal object SafeSearchPolicy {
+    fun enforcedHostFor(domain: String): String? {
+        return when {
+            domain == "google.com" -> GOOGLE_SEARCH
+            domain.startsWith("www.google.") -> GOOGLE_SEARCH
+            domain.startsWith("google.") -> GOOGLE_SEARCH
+            domain == "youtube.com" || domain == "www.youtube.com" || domain == "m.youtube.com" -> YOUTUBE
+            domain == "bing.com" || domain == "www.bing.com" -> BING
+            domain == "duckduckgo.com" || domain == "www.duckduckgo.com" -> DUCKDUCKGO
+            else -> null
+        }
+    }
+
+    private const val GOOGLE_SEARCH = "forcesafesearch.google.com"
+    private const val YOUTUBE = "restrict.youtube.com"
+    private const val BING = "strict.bing.com"
+    private const val DUCKDUCKGO = "safe.duckduckgo.com"
 }
 
 internal object DnsResponses {

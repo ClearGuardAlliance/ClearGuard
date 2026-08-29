@@ -25,6 +25,8 @@
   "howProtectionWorksTitle": "How protection works",
   "dnsFilterTitle": "DNS filtering",
   "dnsFilterBody": "A local VPN tunnel refuses domains from the block list before the page even loads, without sending your traffic to any external server.",
+  "safeSearchInfoTitle": "SafeSearch and bypass blocking",
+  "safeSearchInfoBody": "Google, YouTube, Bing and DuckDuckGo searches are forced into their strict safe mode, and traffic to well-known private DNS providers used to dodge filters is blocked.",
   "screenMonitorInfoTitle": "Screen monitoring",
   "screenMonitorInfoBody": "An accessibility service detects explicit content on pages that already loaded, as a backup to the DNS filter.",
   "accountabilityInfoTitle": "Accountability",

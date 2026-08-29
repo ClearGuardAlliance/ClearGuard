@@ -22,6 +22,8 @@
   "howProtectionWorksTitle": "איך ההגנה פועלת",
   "dnsFilterTitle": "סינון DNS",
   "dnsFilterBody": "מנהרת VPN מקומית חוסמת דומיינים מרשימת החסימה עוד לפני שהדף נטען, בלי לשלוח את התעבורה שלך לשום שרת חיצוני.",
+  "safeSearchInfoTitle": "SafeSearch וחסימת עקיפה",
+  "safeSearchInfoBody": "חיפושים ב-Google, YouTube, Bing ו-DuckDuckGo מאולצים למצב הבטוח והמחמיר שלהם, והתעבורה לספקי DNS פרטיים ידועים המשמשים לעקיפת הסינון נחסמת.",
   "screenMonitorInfoTitle": "ניטור מסך",
   "screenMonitorInfoBody": "שירות נגישות מזהה תוכן בוטה בדפים שכבר נטענו, כגיבוי לסינון ה-DNS.",
   "accountabilityInfoTitle": "אחריות",
