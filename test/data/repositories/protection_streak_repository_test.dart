@@ -110,7 +110,7 @@ void main() {
 
       await repository.recordDay(
         isProtectionActive: true,
-        now: DateTime(2026, 1, 1),
+        now: DateTime(2026),
       );
       await repository.recordDay(
         isProtectionActive: false,
@@ -123,7 +123,7 @@ void main() {
 
       final activeDays = await repository.activeDays();
 
-      expect(activeDays, {DateTime(2026, 1, 1), DateTime(2026, 1, 3)});
+      expect(activeDays, {DateTime(2026), DateTime(2026, 1, 3)});
     });
   });
 }

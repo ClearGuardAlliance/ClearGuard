@@ -123,5 +123,30 @@
   "actionChangeRemoteBlocklistUrl": "تغيير قائمة الحظر البعيدة",
   "actionIncreaseDelay": "زيادة وقت انتظار التغييرات",
   "actionDecreaseDelay": "تقليل وقت انتظار التغييرات",
-  "actionDeactivateDeviceAdmin": "تعطيل مسؤول الجهاز (يسمح بإلغاء التثبيت)"
+  "actionDeactivateDeviceAdmin": "تعطيل مسؤول الجهاز (يسمح بإلغاء التثبيت)",
+
+  "viewBlocklistButton": "عرض النطاقات المحظورة",
+  "blocklistViewerTitle": "النطاقات المحظورة",
+  "blockedDomainCount": "{count, plural, zero{لا توجد نطاقات على القائمة} one{نطاق واحد على القائمة} two{نطاقان على القائمة} few{{count} نطاقات على القائمة} many{{count} نطاقًا على القائمة} other{{count} نطاق على القائمة}}",
+  "searchDomainsHint": "ابحث عن نطاق",
+  "noDomainsFound": "لا يوجد نطاق يطابق بحثك.",
+
+  "streakHistoryTitle": "سجل الأيام المتتالية",
+  "streakCurrentLabel": "التتابع الحالي",
+  "streakRecordLabel": "الرقم القياسي",
+  "streakLastDaysTitle": "{count, plural, zero{لا أيام} one{آخر يوم واحد} two{آخر يومين} few{آخر {count} أيام} many{آخر {count} يومًا} other{آخر {count} يوم}}",
+  "streakActiveLegend": "محمي",
+  "streakInactiveLegend": "غير محمي",
+
+  "supportResourcesCardTitle": "موارد الدعم",
+  "supportResourcesCardBody": "إرشادات حول المساعدة المتخصصة، والدعم من الأقران، وما يجب فعله في حالات الأزمات.",
+  "supportResourcesTitle": "موارد الدعم",
+  "supportFindTherapistTitle": "كيفية العثور على معالج نفسي",
+  "supportFindTherapistBody": "ابحث عن مختصين لديهم خبرة في العلاج السلوكي المعرفي (CBT) أو علاج القبول والالتزام (ACT) للسلوك القهري. غالبًا ما توفر الهيئات الإقليمية لعلم النفس أدوات بحث حسب التخصص، ويقدّم كثير من المعالجين استشارات عن بُعد.",
+  "supportPeerSupportTitle": "مجموعات دعم الأقران",
+  "supportPeerSupportBody": "تجمع مجموعات دعم الأقران — سواء حضوريًا أو عبر الإنترنت — أشخاصًا يواجهون التحدي نفسه. إدراك أنك لست وحدك في هذا، والاستماع إلى استراتيجيات ممن مرّوا بالتجربة نفسها، يساعدان عادةً على تقليل الشعور بالخجل الذي يغذي الانتكاس.",
+  "supportInvolveTrustedPeopleTitle": "أشرك أشخاصًا تثق بهم",
+  "supportInvolveTrustedPeopleBody": "شريك المساءلة الذي أعددته هو بداية جيدة. فكلما زاد عدد الأشخاص الموثوقين الذين يعرفون ما تحاول تغييره، قلّت سيطرة السرية على الانتكاس.",
+  "supportCrisisHelpTitle": "إذا كانت هذه حالة طارئة",
+  "supportCrisisHelpBody": "إذا كنت تمر بأزمة أو تفكر في إيذاء نفسك، فتواصل الآن مع خدمات الطوارئ في بلدك أو مع خط أزمات الصحة النفسية المحلي. هذا أهم من أي إعداد في هذا التطبيق."
 }
