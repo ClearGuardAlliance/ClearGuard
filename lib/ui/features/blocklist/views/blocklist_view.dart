@@ -28,6 +28,48 @@ class _BlocklistViewState extends State<BlocklistView> {
     super.dispose();
   }
 
+  Future<void> _requestRemoval(BuildContext context, String domain) async {
+    final pin = await _promptPin(context);
+    if (pin == null || !context.mounted) return;
+    final success = await widget.viewModel.requestRemoval(pin, domain);
+    if (!context.mounted || success) return;
+    final message = widget.viewModel.errorMessage;
+    if (message != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  Future<String?> _promptPin(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final pinController = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.confirmWithPinTitle),
+        content: TextField(
+          controller: pinController,
+          obscureText: true,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(labelText: l10n.pinAccountabilityLabel),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.cancelButton),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(dialogContext).pop(pinController.text),
+            child: Text(l10n.confirmButton),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -86,15 +128,45 @@ class _BlocklistViewState extends State<BlocklistView> {
                                 horizontal: 20,
                               ),
                               itemCount: domains.length,
-                              itemBuilder: (context, index) => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                ),
-                                child: Text(
-                                  domains[index],
-                                  style: textTheme.bodyMedium,
-                                ),
-                              ),
+                              itemBuilder: (context, index) {
+                                final domain = domains[index];
+                                final pendingId = widget.viewModel
+                                    .pendingRemovalIdFor(domain);
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 6,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          domain,
+                                          style: textTheme.bodyMedium,
+                                        ),
+                                      ),
+                                      if (pendingId != null)
+                                        TextButton(
+                                          onPressed: () => widget.viewModel
+                                              .cancelRemoval(pendingId),
+                                          child: Text(
+                                            l10n.removalPendingLabel,
+                                          ),
+                                        )
+                                      else
+                                        IconButton(
+                                          tooltip: l10n.requestRemovalTooltip,
+                                          icon: const Icon(
+                                            Icons.remove_circle_outline,
+                                          ),
+                                          onPressed: () => _requestRemoval(
+                                            context,
+                                            domain,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                     ),
                   ],

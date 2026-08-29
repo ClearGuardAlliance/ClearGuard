@@ -130,6 +130,8 @@
   "blockedDomainCount": "{count, plural, one{{count} домен в списке} few{{count} домена в списке} many{{count} доменов в списке} other{{count} домена в списке}}",
   "searchDomainsHint": "Поиск домена",
   "noDomainsFound": "Ни один домен не соответствует запросу.",
+  "requestRemovalTooltip": "Запросить удаление",
+  "removalPendingLabel": "Ожидание",
 
   "streakHistoryTitle": "История серии",
   "streakCurrentLabel": "Текущая серия",

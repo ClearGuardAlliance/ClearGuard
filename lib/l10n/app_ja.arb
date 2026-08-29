@@ -130,6 +130,8 @@
   "blockedDomainCount": "{count, plural, other{リストに{count}件のドメイン}}",
   "searchDomainsHint": "ドメインを検索",
   "noDomainsFound": "検索条件に一致するドメインがありません。",
+  "requestRemovalTooltip": "削除をリクエスト",
+  "removalPendingLabel": "保留中",
 
   "streakHistoryTitle": "連続記録の履歴",
   "streakCurrentLabel": "現在の連続記録",

@@ -130,6 +130,8 @@
   "blockedDomainCount": "{count, plural, zero{لا توجد نطاقات على القائمة} one{نطاق واحد على القائمة} two{نطاقان على القائمة} few{{count} نطاقات على القائمة} many{{count} نطاقًا على القائمة} other{{count} نطاق على القائمة}}",
   "searchDomainsHint": "ابحث عن نطاق",
   "noDomainsFound": "لا يوجد نطاق يطابق بحثك.",
+  "requestRemovalTooltip": "طلب الإزالة",
+  "removalPendingLabel": "قيد الانتظار",
 
   "streakHistoryTitle": "سجل الأيام المتتالية",
   "streakCurrentLabel": "التتابع الحالي",

@@ -185,6 +185,9 @@ class _ClearGuardAppState extends State<ClearGuardApp> {
         builder: (_) => BlocklistView(
           viewModel: BlocklistViewModel(
             blocklistRepository: _blocklistRepository,
+            accountabilityRepository: _accountabilityRepository,
+            requestSensitiveActionUseCase: _requestSensitiveActionUseCase,
+            cancelPendingActionUseCase: _cancelPendingActionUseCase,
           ),
         ),
       ),

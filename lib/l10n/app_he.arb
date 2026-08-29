@@ -130,6 +130,8 @@
   "blockedDomainCount": "{count, plural, one{דומיין אחד ברשימה} two{שני דומיינים ברשימה} many{{count} דומיינים ברשימה} other{{count} דומיינים ברשימה}}",
   "searchDomainsHint": "חפש דומיין",
   "noDomainsFound": "לא נמצא דומיין שתואם לחיפוש שלך.",
+  "requestRemovalTooltip": "בקש הסרה",
+  "removalPendingLabel": "ממתין",
 
   "streakHistoryTitle": "היסטוריית רצף",
   "streakCurrentLabel": "רצף נוכחי",

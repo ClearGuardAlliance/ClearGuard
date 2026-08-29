@@ -130,6 +130,8 @@
   "blockedDomainCount": "{count, plural, other{列表中有 {count} 个域名}}",
   "searchDomainsHint": "搜索域名",
   "noDomainsFound": "没有找到匹配的域名。",
+  "requestRemovalTooltip": "请求移除",
+  "removalPendingLabel": "待处理",
 
   "streakHistoryTitle": "连续天数历史",
   "streakCurrentLabel": "当前连续天数",

@@ -185,6 +185,8 @@
   },
   "searchDomainsHint": "Search domain",
   "noDomainsFound": "No domain matches your search.",
+  "requestRemovalTooltip": "Request removal",
+  "removalPendingLabel": "Pending",
 
   "streakHistoryTitle": "Streak history",
   "streakCurrentLabel": "Current streak",

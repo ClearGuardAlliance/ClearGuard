@@ -130,6 +130,8 @@
   "blockedDomainCount": "{count, plural, one{1 domínio na lista} other{{count} domínios na lista}}",
   "searchDomainsHint": "Buscar domínio",
   "noDomainsFound": "Nenhum domínio corresponde à busca.",
+  "requestRemovalTooltip": "Solicitar remoção",
+  "removalPendingLabel": "Pendente",
 
   "streakHistoryTitle": "Histórico de sequência",
   "streakCurrentLabel": "Sequência atual",
