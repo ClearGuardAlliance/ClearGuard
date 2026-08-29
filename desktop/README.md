@@ -1,18 +1,18 @@
 # ClearGuard Desktop
 
-Esqueleto Qt Widgets nativo (sem webview), CMake, C++17. Alvo: Linux, macOS, Windows, FreeBSD.
+Native Qt Widgets app (no webview), CMake, C++17. Targets Linux, macOS, Windows, FreeBSD.
 
-## Dependências
+## Dependencies
 
 - CMake >= 3.16
-- Qt6 (ou Qt5 >= 5.15 como fallback)
-- Um compilador C++17 (gcc/clang/MSVC)
+- Qt6 (or Qt5 >= 5.15 as a fallback)
+- A C++17 compiler (gcc/clang/MSVC)
 
-### Instalar Qt por plataforma
+### Installing Qt per platform
 
 - **Linux (Debian/Ubuntu)**: `sudo apt install qt6-base-dev cmake build-essential`
 - **macOS**: `brew install qt cmake`
-- **Windows**: instalador oficial da Qt Company, ou `vcpkg install qt6-base`
+- **Windows**: official Qt Company installer, or `vcpkg install qt6-base`
 - **FreeBSD**: `pkg install qt6-base cmake`
 
 ## Build
@@ -22,15 +22,15 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
-O binário fica em `build/clearguard_desktop` (ou `build/clearguard_desktop.app` no macOS).
+The binary lands at `build/clearguard_desktop` (or `build/clearguard_desktop.app` on macOS).
 
-## Rodar
+## Run
 
 ```sh
 ./build/clearguard_desktop
 ```
 
-## Testes
+## Tests
 
 ```sh
 ctest --test-dir build
@@ -38,4 +38,4 @@ ctest --test-dir build
 
 ## CI
 
-Linux, macOS e Windows via GitHub Actions (`.github/workflows/desktop.yml`, na raiz do repo). FreeBSD via Cirrus CI (`.cirrus.yml`, na raiz do repo) — precisa conectar o repositório em cirrus-ci.com depois do push.
+Linux, macOS and Windows via GitHub Actions (`.github/workflows/desktop.yml`, at the repo root). FreeBSD via Cirrus CI (`.cirrus.yml`, at the repo root) — needs the repository connected at cirrus-ci.com after pushing.

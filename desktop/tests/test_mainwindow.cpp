@@ -6,20 +6,23 @@ class TestMainWindow : public QObject {
     Q_OBJECT
 
 private slots:
-    void startsAtZero();
-    void incrementsOnClick();
+    void startsStopped();
+    void toggleStartsAndStopsProtection();
 };
 
-void TestMainWindow::startsAtZero() {
+void TestMainWindow::startsStopped() {
     MainWindow window;
-    QCOMPARE(window.clickCount(), 0);
+    QVERIFY(!window.isProtectionRunning());
 }
 
-void TestMainWindow::incrementsOnClick() {
+void TestMainWindow::toggleStartsAndStopsProtection() {
     MainWindow window;
-    QMetaObject::invokeMethod(&window, "onButtonClicked");
-    QMetaObject::invokeMethod(&window, "onButtonClicked");
-    QCOMPARE(window.clickCount(), 2);
+
+    QMetaObject::invokeMethod(&window, "onToggleClicked");
+    QVERIFY(window.isProtectionRunning());
+
+    QMetaObject::invokeMethod(&window, "onToggleClicked");
+    QVERIFY(!window.isProtectionRunning());
 }
 
 QTEST_MAIN(TestMainWindow)

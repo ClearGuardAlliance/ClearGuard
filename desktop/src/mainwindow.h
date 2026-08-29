@@ -2,6 +2,9 @@
 
 #include <QMainWindow>
 
+#include "dns/blocklist.h"
+#include "dns/dns_filter_server.h"
+
 class QLabel;
 class QPushButton;
 
@@ -10,14 +13,18 @@ class MainWindow : public QMainWindow {
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
-    int clickCount() const;
+    bool isProtectionRunning() const;
 
 private slots:
-    void onButtonClicked();
+    void onToggleClicked();
 
 private:
+    void refreshStatusLabel();
+
     QLabel *statusLabel;
-    QPushButton *actionButton;
-    int m_clickCount = 0;
+    QPushButton *toggleButton;
+    clearguard::dns::Blocklist blocklist;
+    clearguard::dns::DnsFilterServer server;
 };

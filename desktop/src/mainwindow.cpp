@@ -5,31 +5,57 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+using namespace clearguard::dns;
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setWindowTitle("ClearGuard Desktop");
     resize(480, 320);
+
+    blocklist.loadDefaults();
 
     auto *central = new QWidget(this);
     auto *layout = new QVBoxLayout(central);
     layout->setAlignment(Qt::AlignCenter);
 
-    statusLabel = new QLabel("Nenhum clique ainda.", central);
+    statusLabel = new QLabel(central);
     statusLabel->setAlignment(Qt::AlignCenter);
 
-    actionButton = new QPushButton("Clique aqui", central);
-    connect(actionButton, &QPushButton::clicked, this, &MainWindow::onButtonClicked);
+    toggleButton = new QPushButton(central);
+    connect(toggleButton, &QPushButton::clicked, this, &MainWindow::onToggleClicked);
 
     layout->addWidget(statusLabel);
-    layout->addWidget(actionButton);
+    layout->addWidget(toggleButton);
 
     setCentralWidget(central);
+    refreshStatusLabel();
 }
 
-int MainWindow::clickCount() const {
-    return m_clickCount;
+MainWindow::~MainWindow() {
+    server.stop();
 }
 
-void MainWindow::onButtonClicked() {
-    m_clickCount++;
-    statusLabel->setText(QString("Cliques: %1").arg(m_clickCount));
+bool MainWindow::isProtectionRunning() const {
+    return server.status() == ServerStatus::Running;
+}
+
+void MainWindow::onToggleClicked() {
+    if (isProtectionRunning()) {
+        server.stop();
+    } else {
+        server.start(blocklist, 0, "208.67.222.123", 53);
+    }
+    refreshStatusLabel();
+}
+
+void MainWindow::refreshStatusLabel() {
+    if (isProtectionRunning()) {
+        statusLabel->setText(
+            QString("Protection running on 127.0.0.1:%1 (%2 domains blocked)")
+                .arg(server.boundPort())
+                .arg(blocklist.size()));
+        toggleButton->setText("Stop protection");
+    } else {
+        statusLabel->setText(QString("Protection stopped (%1 domains loaded)").arg(blocklist.size()));
+        toggleButton->setText("Start protection");
+    }
 }
