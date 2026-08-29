@@ -76,7 +76,7 @@ add_library(mainwindow_lib STATIC
     src/mainwindow.cpp
     src/mainwindow.h
 )
-target_link_libraries(mainwindow_lib PUBLIC ${QT_WIDGETS_TARGET} dns_lib)
+target_link_libraries(mainwindow_lib PUBLIC ${QT_WIDGETS_TARGET} dns_lib accountability_lib)
 target_include_directories(mainwindow_lib PUBLIC src)
 
 add_executable(clearguard_desktop src/main.cpp)
