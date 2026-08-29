@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent, std::string storageDirectory, WebhookNot
     stack = new QStackedWidget(this);
     stack->addWidget(buildSetupPage());
     stack->addWidget(buildMainPage());
+    stack->addWidget(buildSettingsPage());
     setCentralWidget(stack);
 
     stack->setCurrentIndex(isConfigured() ? 1 : 0);
@@ -124,11 +125,88 @@ QWidget *MainWindow::buildMainPage() {
     cancelPendingButton->setVisible(false);
     connect(cancelPendingButton, &QPushButton::clicked, this, &MainWindow::onCancelPendingClicked);
 
+    openSettingsButton = new QPushButton("Settings");
+    connect(openSettingsButton, &QPushButton::clicked, this, &MainWindow::onOpenSettingsClicked);
+
     layout->addWidget(statusLabel);
     layout->addWidget(pendingLabel);
     layout->addWidget(actionErrorLabel);
     layout->addWidget(toggleButton);
     layout->addWidget(cancelPendingButton);
+    layout->addWidget(openSettingsButton);
+
+    return page;
+}
+
+QWidget *MainWindow::buildSettingsPage() {
+    auto *page = new QWidget();
+    auto *layout = new QVBoxLayout(page);
+
+    auto *backButton = new QPushButton("Back");
+    connect(backButton, &QPushButton::clicked, this, &MainWindow::onBackFromSettingsClicked);
+
+    auto *webhookTitle = new QLabel("Accountability webhook");
+    webhookTitle->setStyleSheet("font-weight: bold;");
+
+    currentWebhookLabel = new QLabel();
+
+    newWebhookEdit = new QLineEdit();
+    newWebhookEdit->setObjectName("newWebhookEdit");
+    newWebhookEdit->setPlaceholderText("New webhook URL");
+
+    auto *requestWebhookButton = new QPushButton("Request webhook change");
+    connect(requestWebhookButton, &QPushButton::clicked, this, &MainWindow::onRequestWebhookChangeClicked);
+
+    webhookPendingLabel = new QLabel();
+    webhookPendingLabel->setWordWrap(true);
+    webhookPendingLabel->setVisible(false);
+
+    cancelWebhookPendingButton = new QPushButton("Cancel webhook change");
+    cancelWebhookPendingButton->setVisible(false);
+    connect(cancelWebhookPendingButton, &QPushButton::clicked, this, &MainWindow::onCancelWebhookPendingClicked);
+
+    auto *delayTitle = new QLabel("Delay before changes apply");
+    delayTitle->setStyleSheet("font-weight: bold;");
+
+    currentDelayLabel = new QLabel();
+
+    newDelayCombo = new QComboBox();
+    newDelayCombo->setObjectName("newDelayCombo");
+    newDelayCombo->addItem("15 minutes", 15);
+    newDelayCombo->addItem("30 minutes", 30);
+    newDelayCombo->addItem("60 minutes", 60);
+    newDelayCombo->addItem("120 minutes", 120);
+
+    auto *requestDelayButton = new QPushButton("Request delay change");
+    connect(requestDelayButton, &QPushButton::clicked, this, &MainWindow::onRequestDelayChangeClicked);
+
+    delayPendingLabel = new QLabel();
+    delayPendingLabel->setWordWrap(true);
+    delayPendingLabel->setVisible(false);
+
+    cancelDelayPendingButton = new QPushButton("Cancel delay change");
+    cancelDelayPendingButton->setVisible(false);
+    connect(cancelDelayPendingButton, &QPushButton::clicked, this, &MainWindow::onCancelDelayPendingClicked);
+
+    settingsErrorLabel = new QLabel();
+    settingsErrorLabel->setStyleSheet("color: #c0392b;");
+    settingsErrorLabel->setVisible(false);
+
+    layout->addWidget(backButton);
+    layout->addWidget(webhookTitle);
+    layout->addWidget(currentWebhookLabel);
+    layout->addWidget(newWebhookEdit);
+    layout->addWidget(requestWebhookButton);
+    layout->addWidget(webhookPendingLabel);
+    layout->addWidget(cancelWebhookPendingButton);
+    layout->addWidget(delayTitle);
+    layout->addWidget(currentDelayLabel);
+    layout->addWidget(newDelayCombo);
+    layout->addWidget(requestDelayButton);
+    layout->addWidget(delayPendingLabel);
+    layout->addWidget(cancelDelayPendingButton);
+    layout->addWidget(settingsErrorLabel);
+    layout->addStretch();
 
     return page;
 }
@@ -213,29 +291,117 @@ void MainWindow::onCancelPendingClicked() {
     refreshMainPage();
 }
 
+void MainWindow::onOpenSettingsClicked() {
+    refreshSettingsPage();
+    stack->setCurrentIndex(2);
+}
+
+void MainWindow::onBackFromSettingsClicked() {
+    stack->setCurrentIndex(1);
+}
+
+void MainWindow::onRequestWebhookChangeClicked() {
+    settingsErrorLabel->setVisible(false);
+    QString newUrl = newWebhookEdit->text();
+    if (newUrl.isEmpty() || pendingWebhookActionId) return;
+
+    auto pin = promptForPin();
+    if (!pin) return;
+
+    if (!accountability->verifyPin(*pin)) {
+        settingsErrorLabel->setText("Incorrect PIN.");
+        settingsErrorLabel->setVisible(true);
+        return;
+    }
+
+    auto action =
+        accountability->createPendingAction(PendingActionType::ChangeWebhookUrl, {{"newUrl", newUrl.toStdString()}});
+    pendingWebhookActionId = action.id;
+    refreshSettingsPage();
+}
+
+void MainWindow::onCancelWebhookPendingClicked() {
+    if (!pendingWebhookActionId) return;
+    accountability->cancelPendingAction(*pendingWebhookActionId);
+    pendingWebhookActionId.reset();
+    refreshSettingsPage();
+}
+
+void MainWindow::onRequestDelayChangeClicked() {
+    settingsErrorLabel->setVisible(false);
+    if (pendingDelayActionId) return;
+
+    int newMinutes = newDelayCombo->currentData().toInt();
+
+    auto pin = promptForPin();
+    if (!pin) return;
+
+    if (!accountability->verifyPin(*pin)) {
+        settingsErrorLabel->setText("Incorrect PIN.");
+        settingsErrorLabel->setVisible(true);
+        return;
+    }
+
+    auto config = accountability->loadConfig();
+    int currentMinutes = config ? static_cast<int>(config->sensitiveActionDelay.count())
+                                 : static_cast<int>(AccountabilityConfig::defaultDelay().count());
+    auto type = newMinutes >= currentMinutes ? PendingActionType::IncreaseSensitiveActionDelay
+                                              : PendingActionType::DecreaseSensitiveActionDelay;
+
+    auto action =
+        accountability->createPendingAction(type, {{"newDelayMinutes", std::to_string(newMinutes)}});
+    pendingDelayActionId = action.id;
+    refreshSettingsPage();
+}
+
+void MainWindow::onCancelDelayPendingClicked() {
+    if (!pendingDelayActionId) return;
+    accountability->cancelPendingAction(*pendingDelayActionId);
+    pendingDelayActionId.reset();
+    refreshSettingsPage();
+}
+
 void MainWindow::checkPendingActions() {
     if (!isConfigured()) return;
 
     auto actions = accountability->loadPendingActions();
-    auto it = std::find_if(actions.begin(), actions.end(), [](const auto &a) {
+    for (const auto &action : actions) {
+        if (action.state != PendingActionState::Pending || !action.isReadyToApply()) continue;
+
+        switch (action.type) {
+            case PendingActionType::DisableProtection:
+                server.stop();
+                accountability->markApplied(action.id);
+                break;
+            case PendingActionType::ChangeWebhookUrl: {
+                auto payloadIt = action.payload.find("newUrl");
+                if (payloadIt != action.payload.end()) accountability->applyWebhookUrlChange(payloadIt->second);
+                accountability->markApplied(action.id);
+                break;
+            }
+            case PendingActionType::IncreaseSensitiveActionDelay:
+            case PendingActionType::DecreaseSensitiveActionDelay: {
+                auto payloadIt = action.payload.find("newDelayMinutes");
+                if (payloadIt != action.payload.end()) {
+                    accountability->applyDelayChange(std::chrono::minutes(std::stoi(payloadIt->second)));
+                }
+                accountability->markApplied(action.id);
+                break;
+            }
+            case PendingActionType::RemoveBlocklistDomain:
+            case PendingActionType::ChangeRemoteBlocklistUrl:
+                break;
+        }
+    }
+
+    auto refreshed = accountability->loadPendingActions();
+    auto disableIt = std::find_if(refreshed.begin(), refreshed.end(), [](const auto &a) {
         return a.type == PendingActionType::DisableProtection && a.state == PendingActionState::Pending;
     });
-
-    if (it == actions.end()) {
-        pendingDisableActionId.reset();
-        refreshMainPage();
-        return;
-    }
-
-    pendingDisableActionId = it->id;
-
-    if (it->isReadyToApply()) {
-        server.stop();
-        accountability->markApplied(it->id);
-        pendingDisableActionId.reset();
-    }
+    pendingDisableActionId = disableIt != refreshed.end() ? std::optional<std::string>(disableIt->id) : std::nullopt;
 
     refreshMainPage();
+    refreshSettingsPage();
 }
 
 void MainWindow::refreshMainPage() {
@@ -266,4 +432,48 @@ void MainWindow::refreshMainPage() {
     cancelPendingButton->setVisible(false);
     toggleButton->setEnabled(true);
     toggleButton->setText(isProtectionRunning() ? "Request stop protection" : "Start protection");
+}
+
+void MainWindow::refreshSettingsPage() {
+    auto config = accountability->loadConfig();
+
+    currentWebhookLabel->setText(config ? QString("Current: %1").arg(QString::fromStdString(config->webhookUrl))
+                                         : QString("Current: (not set)"));
+    currentDelayLabel->setText(
+        QString("Current: %1 minutes")
+            .arg(config ? config->sensitiveActionDelay.count() : AccountabilityConfig::defaultDelay().count()));
+
+    auto actions = accountability->loadPendingActions();
+
+    auto webhookIt = std::find_if(actions.begin(), actions.end(), [](const auto &a) {
+        return a.type == PendingActionType::ChangeWebhookUrl && a.state == PendingActionState::Pending;
+    });
+    if (webhookIt != actions.end()) {
+        pendingWebhookActionId = webhookIt->id;
+        auto remaining = std::chrono::duration_cast<std::chrono::minutes>(webhookIt->timeRemaining());
+        webhookPendingLabel->setText(QString("Change pending — takes effect in %1 min.").arg(remaining.count()));
+        webhookPendingLabel->setVisible(true);
+        cancelWebhookPendingButton->setVisible(true);
+    } else {
+        pendingWebhookActionId.reset();
+        webhookPendingLabel->setVisible(false);
+        cancelWebhookPendingButton->setVisible(false);
+    }
+
+    auto delayIt = std::find_if(actions.begin(), actions.end(), [](const auto &a) {
+        return (a.type == PendingActionType::IncreaseSensitiveActionDelay ||
+                a.type == PendingActionType::DecreaseSensitiveActionDelay) &&
+               a.state == PendingActionState::Pending;
+    });
+    if (delayIt != actions.end()) {
+        pendingDelayActionId = delayIt->id;
+        auto remaining = std::chrono::duration_cast<std::chrono::minutes>(delayIt->timeRemaining());
+        delayPendingLabel->setText(QString("Change pending — takes effect in %1 min.").arg(remaining.count()));
+        delayPendingLabel->setVisible(true);
+        cancelDelayPendingButton->setVisible(true);
+    } else {
+        pendingDelayActionId.reset();
+        delayPendingLabel->setVisible(false);
+        cancelDelayPendingButton->setVisible(false);
+    }
 }

@@ -38,12 +38,20 @@ private slots:
     void onSetupSubmitted();
     void onToggleClicked();
     void onCancelPendingClicked();
+    void onOpenSettingsClicked();
+    void onBackFromSettingsClicked();
+    void onRequestWebhookChangeClicked();
+    void onCancelWebhookPendingClicked();
+    void onRequestDelayChangeClicked();
+    void onCancelDelayPendingClicked();
     void checkPendingActions();
 
 private:
     QWidget *buildSetupPage();
     QWidget *buildMainPage();
+    QWidget *buildSettingsPage();
     void refreshMainPage();
+    void refreshSettingsPage();
 
     QStackedWidget *stack;
 
@@ -59,6 +67,19 @@ private:
     QLabel *actionErrorLabel;
     QPushButton *toggleButton;
     QPushButton *cancelPendingButton;
+    QPushButton *openSettingsButton;
+
+    QLabel *currentWebhookLabel;
+    QLineEdit *newWebhookEdit;
+    QLabel *webhookPendingLabel;
+    QPushButton *cancelWebhookPendingButton;
+
+    QLabel *currentDelayLabel;
+    QComboBox *newDelayCombo;
+    QLabel *delayPendingLabel;
+    QPushButton *cancelDelayPendingButton;
+
+    QLabel *settingsErrorLabel;
 
     QTimer *pendingActionsTimer;
 
@@ -68,4 +89,6 @@ private:
     clearguard::accountability::WebhookNotifier &notifier;
     std::unique_ptr<clearguard::accountability::AccountabilityRepository> accountability;
     std::optional<std::string> pendingDisableActionId;
+    std::optional<std::string> pendingWebhookActionId;
+    std::optional<std::string> pendingDelayActionId;
 };
