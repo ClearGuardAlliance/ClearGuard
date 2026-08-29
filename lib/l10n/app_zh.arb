@@ -123,5 +123,30 @@
   "actionChangeRemoteBlocklistUrl": "更改远程屏蔽列表",
   "actionIncreaseDelay": "增加更改等待时间",
   "actionDecreaseDelay": "缩短更改等待时间",
-  "actionDeactivateDeviceAdmin": "停用设备管理员（允许卸载）"
+  "actionDeactivateDeviceAdmin": "停用设备管理员（允许卸载）",
+
+  "viewBlocklistButton": "查看已屏蔽域名",
+  "blocklistViewerTitle": "已屏蔽域名",
+  "blockedDomainCount": "{count, plural, other{列表中有 {count} 个域名}}",
+  "searchDomainsHint": "搜索域名",
+  "noDomainsFound": "没有找到匹配的域名。",
+
+  "streakHistoryTitle": "连续天数历史",
+  "streakCurrentLabel": "当前连续天数",
+  "streakRecordLabel": "最高纪录",
+  "streakLastDaysTitle": "{count, plural, other{最近 {count} 天}}",
+  "streakActiveLegend": "已保护",
+  "streakInactiveLegend": "未保护",
+
+  "supportResourcesCardTitle": "支持资源",
+  "supportResourcesCardBody": "有关寻求专业帮助、同伴支持，以及危机应对方式的指引。",
+  "supportResourcesTitle": "支持资源",
+  "supportFindTherapistTitle": "如何寻找治疗师",
+  "supportFindTherapistBody": "寻找在认知行为疗法（CBT）或接纳承诺疗法（ACT）方面有强迫行为治疗经验的专业人士。各地心理学协会通常提供按专长搜索的工具，许多治疗师也提供远程问诊服务。",
+  "supportPeerSupportTitle": "同伴支持小组",
+  "supportPeerSupportBody": "同伴支持小组——无论是线下还是线上——将面临相同困扰的人聚集在一起。知道自己并不孤单，并听取过来人的应对经验，往往能减少滋生复发的羞耻感。",
+  "supportInvolveTrustedPeopleTitle": "让你信任的人参与进来",
+  "supportInvolveTrustedPeopleBody": "你设置的问责伙伴只是一个开始。了解你正在努力改变什么的信任之人越多，秘密对复发的掌控力就越弱。",
+  "supportCrisisHelpTitle": "如果这是紧急情况",
+  "supportCrisisHelpBody": "如果你正处于危机之中，或有伤害自己的想法，请立即联系你所在国家的紧急服务机构，或当地的心理健康危机热线。这比这个应用里的任何设置都更重要。"
 }
