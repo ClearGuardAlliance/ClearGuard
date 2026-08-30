@@ -19,7 +19,8 @@ using namespace clearguard::domain;
 using namespace clearguard::system_dns;
 
 MainWindow::MainWindow(QWidget *parent, std::string storageDirectory, WebhookNotifier *notifierOverride,
-                        std::unique_ptr<SystemDnsConfigurator> systemDnsOverride)
+                        std::unique_ptr<SystemDnsConfigurator> systemDnsOverride,
+                        std::unique_ptr<FirewallBypassBlocker> firewallBypassOverride)
     : QMainWindow(parent), notifier(notifierOverride ? *notifierOverride : defaultNotifier) {
     setWindowTitle("ClearGuard Desktop");
     resize(480, 420);
@@ -31,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent, std::string storageDirectory, WebhookNot
 
     systemDnsConfigurator =
         systemDnsOverride ? std::move(systemDnsOverride) : createSystemDnsConfigurator();
+    firewallBypassBlocker =
+        firewallBypassOverride ? std::move(firewallBypassOverride) : createFirewallBypassBlocker();
 
     blocklist.loadDefaults();
 
@@ -57,6 +60,10 @@ void MainWindow::stopProtection() {
     if (systemDnsApplied) {
         systemDnsConfigurator->restore();
         systemDnsApplied = false;
+    }
+    if (firewallBypassApplied) {
+        firewallBypassBlocker->restore();
+        firewallBypassApplied = false;
     }
 }
 
@@ -134,9 +141,18 @@ QWidget *MainWindow::buildMainPage() {
     actionErrorLabel->setVisible(false);
 
     systemDnsCheckbox = new QCheckBox("Also redirect system DNS (needs admin/root privileges)");
+    systemDnsCheckbox->setObjectName("systemDnsCheckbox");
     systemDnsCheckbox->setEnabled(systemDnsConfigurator->isSupported());
     if (!systemDnsConfigurator->isSupported()) {
         systemDnsCheckbox->setToolTip("Not supported yet on this platform.");
+    }
+
+    firewallBypassCheckbox =
+        new QCheckBox("Also block known DNS-over-HTTPS/TLS bypass resolvers (needs admin/root privileges)");
+    firewallBypassCheckbox->setObjectName("firewallBypassCheckbox");
+    firewallBypassCheckbox->setEnabled(firewallBypassBlocker->isSupported());
+    if (!firewallBypassBlocker->isSupported()) {
+        firewallBypassCheckbox->setToolTip("Not supported yet on this platform.");
     }
 
     toggleButton = new QPushButton();
@@ -153,6 +169,7 @@ QWidget *MainWindow::buildMainPage() {
     layout->addWidget(pendingLabel);
     layout->addWidget(actionErrorLabel);
     layout->addWidget(systemDnsCheckbox);
+    layout->addWidget(firewallBypassCheckbox);
     layout->addWidget(toggleButton);
     layout->addWidget(cancelPendingButton);
     layout->addWidget(openSettingsButton);
@@ -253,6 +270,14 @@ bool MainWindow::isSystemDnsSupported() const {
     return systemDnsConfigurator->isSupported();
 }
 
+bool MainWindow::isFirewallBypassBlockApplied() const {
+    return firewallBypassApplied;
+}
+
+bool MainWindow::isFirewallBypassBlockSupported() const {
+    return firewallBypassBlocker->isSupported();
+}
+
 AccountabilityRepository &MainWindow::accountabilityRepository() {
     return *accountability;
 }
@@ -312,6 +337,16 @@ void MainWindow::onToggleClicked() {
                 actionErrorLabel->setText(
                     "Filter is running, but the system DNS redirect failed (needs admin/root "
                     "privileges). Point your network's DNS to 127.0.0.1 manually for full protection.");
+                actionErrorLabel->setVisible(true);
+            }
+        }
+
+        if (firewallBypassCheckbox->isChecked()) {
+            firewallBypassApplied = firewallBypassBlocker->apply();
+            if (!firewallBypassApplied) {
+                actionErrorLabel->setText(
+                    "Filter is running, but blocking DNS-over-HTTPS/TLS bypass resolvers failed "
+                    "(needs admin/root privileges).");
                 actionErrorLabel->setVisible(true);
             }
         }

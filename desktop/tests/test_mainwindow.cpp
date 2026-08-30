@@ -35,12 +35,41 @@ private:
     bool applied_ = false;
 };
 
+class FakeFirewallBypassBlocker : public clearguard::system_dns::FirewallBypassBlocker {
+public:
+    explicit FakeFirewallBypassBlocker(bool supported) : supported_(supported) {}
+
+    bool isSupported() const override {
+        return supported_;
+    }
+
+    bool apply() override {
+        applied_ = true;
+        return true;
+    }
+
+    bool restore() override {
+        applied_ = false;
+        return true;
+    }
+
+    bool applied() const {
+        return applied_;
+    }
+
+private:
+    bool supported_;
+    bool applied_ = false;
+};
+
 class TestableMainWindow : public MainWindow {
 public:
     explicit TestableMainWindow(
         std::string storageDirectory,
-        std::unique_ptr<clearguard::system_dns::SystemDnsConfigurator> systemDnsOverride = nullptr)
-        : MainWindow(nullptr, std::move(storageDirectory), &nullNotifier, std::move(systemDnsOverride)) {}
+        std::unique_ptr<clearguard::system_dns::SystemDnsConfigurator> systemDnsOverride = nullptr,
+        std::unique_ptr<clearguard::system_dns::FirewallBypassBlocker> firewallBypassOverride = nullptr)
+        : MainWindow(nullptr, std::move(storageDirectory), &nullNotifier, std::move(systemDnsOverride),
+                     std::move(firewallBypassOverride)) {}
 
     std::optional<std::string> fixedPin;
 
@@ -74,6 +103,8 @@ private slots:
     void startingWithoutSystemDnsLeavesItUnapplied();
     void requestingSystemDnsWithoutPrivilegesFailsGracefully();
     void systemDnsCheckboxReflectsInjectedConfiguratorSupport();
+    void firewallBypassCheckboxReflectsInjectedBlockerSupport();
+    void startingWithFirewallBypassCheckedAppliesFakeBlocker();
 };
 
 void TestMainWindow::startsUnconfigured() {
@@ -296,7 +327,7 @@ void TestMainWindow::requestingSystemDnsWithoutPrivilegesFailsGracefully() {
     QTemporaryDir dir;
     MainWindow window(nullptr, dir.path().toStdString());
 
-    auto *checkbox = window.findChild<QCheckBox *>();
+    auto *checkbox = window.findChild<QCheckBox *>("systemDnsCheckbox");
     QVERIFY(checkbox);
     if (checkbox->isEnabled()) {
         checkbox->setChecked(true);
@@ -319,9 +350,41 @@ void TestMainWindow::systemDnsCheckboxReflectsInjectedConfiguratorSupport() {
                                           std::make_unique<FakeSystemDnsConfigurator>(false));
     QVERIFY(!unsupportedWindow.isSystemDnsSupported());
 
-    auto *checkbox = unsupportedWindow.findChild<QCheckBox *>();
+    auto *checkbox = unsupportedWindow.findChild<QCheckBox *>("systemDnsCheckbox");
     QVERIFY(checkbox);
     QVERIFY(!checkbox->isEnabled());
+}
+
+void TestMainWindow::firewallBypassCheckboxReflectsInjectedBlockerSupport() {
+    QTemporaryDir dir;
+    TestableMainWindow supportedWindow(dir.path().toStdString(), nullptr,
+                                        std::make_unique<FakeFirewallBypassBlocker>(true));
+    QVERIFY(supportedWindow.isFirewallBypassBlockSupported());
+
+    QTemporaryDir otherDir;
+    TestableMainWindow unsupportedWindow(otherDir.path().toStdString(), nullptr,
+                                          std::make_unique<FakeFirewallBypassBlocker>(false));
+    QVERIFY(!unsupportedWindow.isFirewallBypassBlockSupported());
+
+    auto *checkbox = unsupportedWindow.findChild<QCheckBox *>("firewallBypassCheckbox");
+    QVERIFY(checkbox);
+    QVERIFY(!checkbox->isEnabled());
+}
+
+void TestMainWindow::startingWithFirewallBypassCheckedAppliesFakeBlocker() {
+    QTemporaryDir dir;
+    TestableMainWindow window(dir.path().toStdString(), nullptr,
+                               std::make_unique<FakeFirewallBypassBlocker>(true));
+
+    auto *checkbox = window.findChild<QCheckBox *>("firewallBypassCheckbox");
+    QVERIFY(checkbox);
+    QVERIFY(checkbox->isEnabled());
+    checkbox->setChecked(true);
+
+    QMetaObject::invokeMethod(&window, "onToggleClicked");
+
+    QVERIFY(window.isProtectionRunning());
+    QVERIFY(window.isFirewallBypassBlockApplied());
 }
 
 QTEST_MAIN(TestMainWindow)

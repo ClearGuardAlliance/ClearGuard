@@ -51,6 +51,16 @@ add_library(system_dns_lib STATIC
     src/system_dns/resolv_conf_configurator.h
     src/system_dns/systemd_resolved_configurator.cpp
     src/system_dns/systemd_resolved_configurator.h
+    src/system_dns/bypass_resolver_ips.cpp
+    src/system_dns/bypass_resolver_ips.h
+    src/system_dns/firewall_bypass_blocker.cpp
+    src/system_dns/firewall_bypass_blocker.h
+    src/system_dns/iptables_bypass_blocker.cpp
+    src/system_dns/iptables_bypass_blocker.h
+    src/system_dns/pf_bypass_blocker.cpp
+    src/system_dns/pf_bypass_blocker.h
+    src/system_dns/windows_firewall_bypass_blocker.cpp
+    src/system_dns/windows_firewall_bypass_blocker.h
 )
 target_include_directories(system_dns_lib PUBLIC src)
 
@@ -109,6 +119,10 @@ add_test(NAME test_dns_filter_server COMMAND test_dns_filter_server)
 add_executable(test_system_dns tests/test_system_dns.cpp)
 target_link_libraries(test_system_dns PRIVATE system_dns_lib ${QT_TEST_TARGET})
 add_test(NAME test_system_dns COMMAND test_system_dns)
+
+add_executable(test_firewall_bypass_blocker tests/test_firewall_bypass_blocker.cpp)
+target_link_libraries(test_firewall_bypass_blocker PRIVATE system_dns_lib ${QT_TEST_TARGET})
+add_test(NAME test_firewall_bypass_blocker COMMAND test_firewall_bypass_blocker)
 
 add_executable(test_crypto tests/test_crypto.cpp)
 target_link_libraries(test_crypto PRIVATE crypto_lib ${QT_TEST_TARGET})

@@ -10,6 +10,7 @@
 #include "accountability/webhook_notifier.h"
 #include "dns/blocklist.h"
 #include "dns/dns_filter_server.h"
+#include "system_dns/firewall_bypass_blocker.h"
 #include "system_dns/system_dns_configurator.h"
 
 class QCheckBox;
@@ -24,9 +25,11 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr, std::string storageDirectory = std::string(),
-                         clearguard::accountability::WebhookNotifier *notifierOverride = nullptr,
-                         std::unique_ptr<clearguard::system_dns::SystemDnsConfigurator> systemDnsOverride = nullptr);
+    explicit MainWindow(
+        QWidget *parent = nullptr, std::string storageDirectory = std::string(),
+        clearguard::accountability::WebhookNotifier *notifierOverride = nullptr,
+        std::unique_ptr<clearguard::system_dns::SystemDnsConfigurator> systemDnsOverride = nullptr,
+        std::unique_ptr<clearguard::system_dns::FirewallBypassBlocker> firewallBypassOverride = nullptr);
     ~MainWindow() override;
 
     bool isProtectionRunning() const;
@@ -34,6 +37,8 @@ public:
     bool hasPendingDisableRequest() const;
     bool isSystemDnsApplied() const;
     bool isSystemDnsSupported() const;
+    bool isFirewallBypassBlockApplied() const;
+    bool isFirewallBypassBlockSupported() const;
     clearguard::accountability::AccountabilityRepository &accountabilityRepository();
 
 protected:
@@ -72,6 +77,7 @@ private:
     QLabel *pendingLabel;
     QLabel *actionErrorLabel;
     QCheckBox *systemDnsCheckbox;
+    QCheckBox *firewallBypassCheckbox;
     QPushButton *toggleButton;
     QPushButton *cancelPendingButton;
     QPushButton *openSettingsButton;
@@ -94,6 +100,8 @@ private:
     clearguard::dns::DnsFilterServer server;
     std::unique_ptr<clearguard::system_dns::SystemDnsConfigurator> systemDnsConfigurator;
     bool systemDnsApplied = false;
+    std::unique_ptr<clearguard::system_dns::FirewallBypassBlocker> firewallBypassBlocker;
+    bool firewallBypassApplied = false;
     clearguard::accountability::HttpWebhookNotifier defaultNotifier;
     clearguard::accountability::WebhookNotifier &notifier;
     std::unique_ptr<clearguard::accountability::AccountabilityRepository> accountability;
