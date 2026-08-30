@@ -1,4 +1,5 @@
 #include <QtTest>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QTemporaryDir>
@@ -7,10 +8,39 @@
 
 namespace {
 
+class FakeSystemDnsConfigurator : public clearguard::system_dns::SystemDnsConfigurator {
+public:
+    explicit FakeSystemDnsConfigurator(bool supported) : supported_(supported) {}
+
+    bool isSupported() const override {
+        return supported_;
+    }
+
+    bool apply() override {
+        applied_ = true;
+        return true;
+    }
+
+    bool restore() override {
+        applied_ = false;
+        return true;
+    }
+
+    bool applied() const {
+        return applied_;
+    }
+
+private:
+    bool supported_;
+    bool applied_ = false;
+};
+
 class TestableMainWindow : public MainWindow {
 public:
-    explicit TestableMainWindow(std::string storageDirectory)
-        : MainWindow(nullptr, std::move(storageDirectory), &nullNotifier) {}
+    explicit TestableMainWindow(
+        std::string storageDirectory,
+        std::unique_ptr<clearguard::system_dns::SystemDnsConfigurator> systemDnsOverride = nullptr)
+        : MainWindow(nullptr, std::move(storageDirectory), &nullNotifier, std::move(systemDnsOverride)) {}
 
     std::optional<std::string> fixedPin;
 
@@ -41,6 +71,9 @@ private slots:
     void requestingDelayChangePicksIncreaseWhenRaisingDelay();
     void requestingDelayChangePicksDecreaseWhenLoweringDelay();
     void requestingDelayChangeAppliesOnceDelayElapses();
+    void startingWithoutSystemDnsLeavesItUnapplied();
+    void requestingSystemDnsWithoutPrivilegesFailsGracefully();
+    void systemDnsCheckboxReflectsInjectedConfiguratorSupport();
 };
 
 void TestMainWindow::startsUnconfigured() {
@@ -247,6 +280,48 @@ void TestMainWindow::requestingDelayChangeAppliesOnceDelayElapses() {
     auto config = window.accountabilityRepository().loadConfig();
     QVERIFY(config.has_value());
     QCOMPARE(config->sensitiveActionDelay.count(), 120LL);
+}
+
+void TestMainWindow::startingWithoutSystemDnsLeavesItUnapplied() {
+    QTemporaryDir dir;
+    MainWindow window(nullptr, dir.path().toStdString());
+
+    QMetaObject::invokeMethod(&window, "onToggleClicked");
+
+    QVERIFY(window.isProtectionRunning());
+    QVERIFY(!window.isSystemDnsApplied());
+}
+
+void TestMainWindow::requestingSystemDnsWithoutPrivilegesFailsGracefully() {
+    QTemporaryDir dir;
+    MainWindow window(nullptr, dir.path().toStdString());
+
+    auto *checkbox = window.findChild<QCheckBox *>();
+    QVERIFY(checkbox);
+    if (checkbox->isEnabled()) {
+        checkbox->setChecked(true);
+    }
+
+    QMetaObject::invokeMethod(&window, "onToggleClicked");
+
+    QVERIFY(!window.isProtectionRunning());
+    QVERIFY(!window.isSystemDnsApplied());
+}
+
+void TestMainWindow::systemDnsCheckboxReflectsInjectedConfiguratorSupport() {
+    QTemporaryDir dir;
+    TestableMainWindow supportedWindow(dir.path().toStdString(),
+                                        std::make_unique<FakeSystemDnsConfigurator>(true));
+    QVERIFY(supportedWindow.isSystemDnsSupported());
+
+    QTemporaryDir otherDir;
+    TestableMainWindow unsupportedWindow(otherDir.path().toStdString(),
+                                          std::make_unique<FakeSystemDnsConfigurator>(false));
+    QVERIFY(!unsupportedWindow.isSystemDnsSupported());
+
+    auto *checkbox = unsupportedWindow.findChild<QCheckBox *>();
+    QVERIFY(checkbox);
+    QVERIFY(!checkbox->isEnabled());
 }
 
 QTEST_MAIN(TestMainWindow)

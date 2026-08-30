@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include <QCheckBox>
 #include <QComboBox>
 #include <QInputDialog>
 #include <QLabel>
@@ -15,8 +16,10 @@
 using namespace clearguard::dns;
 using namespace clearguard::accountability;
 using namespace clearguard::domain;
+using namespace clearguard::system_dns;
 
-MainWindow::MainWindow(QWidget *parent, std::string storageDirectory, WebhookNotifier *notifierOverride)
+MainWindow::MainWindow(QWidget *parent, std::string storageDirectory, WebhookNotifier *notifierOverride,
+                        std::unique_ptr<SystemDnsConfigurator> systemDnsOverride)
     : QMainWindow(parent), notifier(notifierOverride ? *notifierOverride : defaultNotifier) {
     setWindowTitle("ClearGuard Desktop");
     resize(480, 420);
@@ -25,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent, std::string storageDirectory, WebhookNot
         storageDirectory = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString();
     }
     accountability = std::make_unique<AccountabilityRepository>(storageDirectory, notifier);
+
+    systemDnsConfigurator =
+        systemDnsOverride ? std::move(systemDnsOverride) : createSystemDnsConfigurator();
 
     blocklist.loadDefaults();
 
@@ -43,7 +49,15 @@ MainWindow::MainWindow(QWidget *parent, std::string storageDirectory, WebhookNot
 }
 
 MainWindow::~MainWindow() {
+    stopProtection();
+}
+
+void MainWindow::stopProtection() {
     server.stop();
+    if (systemDnsApplied) {
+        systemDnsConfigurator->restore();
+        systemDnsApplied = false;
+    }
 }
 
 QWidget *MainWindow::buildSetupPage() {
@@ -116,7 +130,14 @@ QWidget *MainWindow::buildMainPage() {
     actionErrorLabel = new QLabel();
     actionErrorLabel->setAlignment(Qt::AlignCenter);
     actionErrorLabel->setStyleSheet("color: #c0392b;");
+    actionErrorLabel->setWordWrap(true);
     actionErrorLabel->setVisible(false);
+
+    systemDnsCheckbox = new QCheckBox("Also redirect system DNS (needs admin/root privileges)");
+    systemDnsCheckbox->setEnabled(systemDnsConfigurator->isSupported());
+    if (!systemDnsConfigurator->isSupported()) {
+        systemDnsCheckbox->setToolTip("Not supported yet on this platform.");
+    }
 
     toggleButton = new QPushButton();
     connect(toggleButton, &QPushButton::clicked, this, &MainWindow::onToggleClicked);
@@ -131,6 +152,7 @@ QWidget *MainWindow::buildMainPage() {
     layout->addWidget(statusLabel);
     layout->addWidget(pendingLabel);
     layout->addWidget(actionErrorLabel);
+    layout->addWidget(systemDnsCheckbox);
     layout->addWidget(toggleButton);
     layout->addWidget(cancelPendingButton);
     layout->addWidget(openSettingsButton);
@@ -223,6 +245,14 @@ bool MainWindow::hasPendingDisableRequest() const {
     return pendingDisableActionId.has_value();
 }
 
+bool MainWindow::isSystemDnsApplied() const {
+    return systemDnsApplied;
+}
+
+bool MainWindow::isSystemDnsSupported() const {
+    return systemDnsConfigurator->isSupported();
+}
+
 AccountabilityRepository &MainWindow::accountabilityRepository() {
     return *accountability;
 }
@@ -263,7 +293,29 @@ void MainWindow::onToggleClicked() {
     actionErrorLabel->setVisible(false);
 
     if (!isProtectionRunning()) {
-        server.start(blocklist, 0, "208.67.222.123", 53);
+        bool wantsSystemDns = systemDnsCheckbox->isChecked();
+        uint16_t port = wantsSystemDns ? 53 : 0;
+
+        if (!server.start(blocklist, port, "208.67.222.123", 53)) {
+            actionErrorLabel->setText(wantsSystemDns
+                                           ? "Could not bind port 53 — try running as administrator/root, "
+                                             "or turn off system DNS redirect."
+                                           : "Could not start the protection server.");
+            actionErrorLabel->setVisible(true);
+            refreshMainPage();
+            return;
+        }
+
+        if (wantsSystemDns) {
+            systemDnsApplied = systemDnsConfigurator->apply();
+            if (!systemDnsApplied) {
+                actionErrorLabel->setText(
+                    "Filter is running, but the system DNS redirect failed (needs admin/root "
+                    "privileges). Point your network's DNS to 127.0.0.1 manually for full protection.");
+                actionErrorLabel->setVisible(true);
+            }
+        }
+
         refreshMainPage();
         return;
     }
@@ -370,7 +422,7 @@ void MainWindow::checkPendingActions() {
 
         switch (action.type) {
             case PendingActionType::DisableProtection:
-                server.stop();
+                stopProtection();
                 accountability->markApplied(action.id);
                 break;
             case PendingActionType::ChangeWebhookUrl: {
