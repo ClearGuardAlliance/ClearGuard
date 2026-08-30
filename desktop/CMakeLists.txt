@@ -30,6 +30,8 @@ add_library(dns_lib STATIC
     src/dns/dns_message.h
     src/dns/blocklist.cpp
     src/dns/blocklist.h
+    src/dns/safe_search.cpp
+    src/dns/safe_search.h
     src/dns/dns_filter_server.cpp
     src/dns/dns_filter_server.h
 )
@@ -95,6 +97,10 @@ add_test(NAME test_mainwindow COMMAND test_mainwindow)
 add_executable(test_dns_message tests/test_dns_message.cpp)
 target_link_libraries(test_dns_message PRIVATE dns_lib ${QT_TEST_TARGET})
 add_test(NAME test_dns_message COMMAND test_dns_message)
+
+add_executable(test_safe_search tests/test_safe_search.cpp)
+target_link_libraries(test_safe_search PRIVATE dns_lib ${QT_TEST_TARGET})
+add_test(NAME test_safe_search COMMAND test_safe_search)
 
 add_executable(test_dns_filter_server tests/test_dns_filter_server.cpp)
 target_link_libraries(test_dns_filter_server PRIVATE dns_lib ${QT_TEST_TARGET} ${QT_NETWORK_TARGET})

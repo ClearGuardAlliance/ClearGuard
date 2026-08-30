@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "dns_message.h"
+#include "safe_search.h"
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -220,7 +221,19 @@ void DnsFilterServer::run(ClearGuardSocketHandle socketHandle, Blocklist blockli
         if (!query) continue;
 
         Bytes response;
-        if (blocklist.isBlockedIncludingProxies(query->domainName)) {
+        auto enforcedHost = enforcedSafeSearchHostFor(query->domainName);
+        if (enforcedHost) {
+            Bytes originalQuestion(message.begin() + 12, message.begin() + static_cast<long>(query->questionEndOffset));
+            Bytes rewrittenQuery = buildSafeSearchUpstreamQuery(message, *query, *enforcedHost);
+            size_t rewrittenLength = safeSearchRewrittenQuestionLength(*query, *enforcedHost);
+
+            Bytes upstreamResponse = forwardToUpstream(rewrittenQuery, upstreamHost, upstreamPort);
+            if (upstreamResponse.empty()) continue;
+
+            auto restored = restoreSafeSearchOriginalName(upstreamResponse, originalQuestion, rewrittenLength);
+            if (!restored) continue;
+            response = *restored;
+        } else if (blocklist.isBlockedIncludingProxies(query->domainName)) {
             response = buildSinkholeResponse(message, *query);
         } else {
             response = forwardToUpstream(message, upstreamHost, upstreamPort);
